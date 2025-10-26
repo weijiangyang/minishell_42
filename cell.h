@@ -29,5 +29,6 @@ int cell_env(char **args);
 pid_t fork_wrapper();
 void execvp_wrapper(const char *file, char *const av[]);
 int wait_wrapper(int *status);
+int cell_echo(char **args);
 
 #endif

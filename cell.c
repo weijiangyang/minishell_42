@@ -94,7 +94,7 @@ void cell_exec(char **args)
     i = 0;
     t_builtin g_builtin[] =
         {
-            // {.builtin_name = "echo", .foo = cell_echo},
+            {.builtin_name = "echo", .foo = cell_echo},
             {.builtin_name = "env", .foo = cell_env},
             {.builtin_name = "exit", .foo = cell_exit},
             {.builtin_name = NULL, .foo = NULL}};

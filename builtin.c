@@ -35,3 +35,26 @@ int cell_env(char **args)
     }
     return (0);
 }
+/**
+ * @shell 内置echo 命令
+ * 
+ * @参数： 二维字符数组
+ * @返回值： 1 或 0
+ */
+int cell_echo(char **args)
+{
+    int i = 1; // args[0] 通常是 "echo"
+
+    if (!args)
+        return (1);
+
+    while (args[i])
+    {
+        printf("%s", args[i]);
+        if (args[i + 1]) // 如果不是最后一个参数，输出空格
+            printf(" ");
+        i++;
+    }
+    printf("\n"); // 输出换行符
+    return (0);
+}
