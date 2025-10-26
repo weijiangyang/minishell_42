@@ -21,6 +21,33 @@ typedef struct  s_builtin
     int (*foo)(char **);
 }   t_builtin;
 
+typedef enum s_tokens
+{
+    PIPE = 1,    // '|' 管道符：将前后命令通过管道连接 /
+    GREAT,       //'>' 输出重定向（覆盖） /
+    GREAT_GREAT, // '>>' 输出重定向（追加） /
+    LESS,        //'<' 输入重定向（从文件读入） /
+    LESS_LESS,   //'<<' here-doc（直到 delimiter） /
+}                    t_tokens;
+
+typedef struct s_lexer
+{
+    char            str;
+    t_tokens        tokentype;
+    int             idx;
+    struct s_lexer  *prev;
+    struct s_lexer  *next;
+} t_lexer;
+
+typedef struct s_general
+{
+    t_lexer *lexer;      // tête du lexer
+    int some_value;      // exemple de membre
+    char **env;          // exemple : environnement
+    // ajoute ici tous les autres champs nécessaires
+} t_general;
+
+
 void getcwd_wrapped(char *buf, size_t size);
 void *malloc_wrapper(size_t size);
 void *realloc_wrapper(void *ptr, size_t size);
