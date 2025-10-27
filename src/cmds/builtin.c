@@ -1,4 +1,4 @@
-#include "cell.h"
+#include "../../include/minishell.h"
 /**
  * @shell 的内置退出命令
  * 
@@ -20,6 +20,7 @@ int    cell_exit(char **args)
  */
 int cell_env(char **args)
 {
+    (void) args;
     extern  char **environ;
 
     int i;

@@ -1,4 +1,4 @@
-#include "cell.h"
+#include "../include/minishell.h"
 // 分割符
 #define DEL " "
 // 全局变量： 状态号
@@ -10,28 +10,29 @@ int status = 0;
  */
 char *cell_read_line(void)
 {
-    char *buffer = NULL;
-    size_t buffer_size = 0;
     char cwd[BUFFER_SIZE];
-
     getcwd_wrapped(cwd, sizeof(cwd));
-    printf("%s ", cwd);
-    printf("$>");
-    if (getline(&buffer, &buffer_size, stdin) == -1)
-    {
-        free(buffer);
-        buffer = NULL;
-        if (feof(stdin))
-            printf("[EOF]\n");
-        else
-            printf("getline failed\n");
-    }
-    size_t len = strlen(buffer);
-    if (len > 0 && buffer[len - 1] == '\n')
-        buffer[len - 1] = '\0';
+    // 显示提示符
+    char *prompt = NULL;
+    // 你可以把 cwd + "$>" 组合成一个 prompt 字符串
+    asprintf(&prompt, "%s $> ", cwd);  // 或者自己手写拼接
 
-    return buffer;
+    char *input = readline(prompt);
+    free(prompt);
+
+    if (!input) {
+        // EOF 或错误
+        printf("[EOF]\n");
+        return NULL;
+    }
+
+    if (input[0] != '\0') {
+        add_history(input);
+    }
+    // readline 返回的字符串末尾没有 \n，所以一般不需要去除
+    return input;
 }
+
 /**
  * @将输入的字符串 line 按照指定的分隔符 DEL 拆分成多个子字符串，
  *   并将这些子字符串存储在一个动态分配的二维字符数组中
@@ -53,7 +54,7 @@ char **cell_split_line(char *line)
         tokens[position] = token;
         position++;
 
-        if (position >= buffer_size)
+        if (position >= (int)buffer_size)
         {
             buffer_size *= 2;
             tokens = realloc_wrapper(tokens, buffer_size * sizeof(*tokens));
@@ -113,13 +114,15 @@ void cell_exec(char **args)
 
 int main(int ac, char **av)
 {
+    (void)ac;
+    (void)av;
     // line → 用来保存从标准输入读取的一整行命令（比如 "ls -l"）
     // args → 将 line 按空格拆分成数组，用作程序参数(比如 “args“）
     char *line;
     char **args;
 
     // 循环从标准输入读取文本直到EOF 或没有输入时，循环终止， 解析出包含tokens的二维字符数组
-    while (line = cell_read_line())
+    while ((line = cell_read_line()))
     {
         args = cell_split_line(line);
         //命令解析并执行

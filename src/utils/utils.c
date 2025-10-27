@@ -1,4 +1,4 @@
-#include "cell.h"
+#include "../../include/minishell.h"
 /**
  * @获取当前工作地址， 并处理错误。 
  * 

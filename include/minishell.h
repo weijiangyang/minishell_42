@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <string.h>
 
 #ifndef BUFFER_SIZE
 #define BUFFER_SIZE 1024
@@ -32,7 +33,7 @@ typedef enum s_tokens
 
 typedef struct s_lexer
 {
-    char            str;
+    char            *str;
     t_tokens        tokentype;
     int             idx;
     struct s_lexer  *prev;
