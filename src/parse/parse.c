@@ -12,9 +12,10 @@
 
 
 
-#include "parser.h"
+#include "parse.h"
 
 token *head = NULL, *tail = NULL;
+int n_pipes = 0;
 // 创建一个 token 并返回
 token *creat_new_token(tok_type ty, char *txt)
 {
@@ -273,12 +274,14 @@ static ast *parse_pipeline(void)
     ast *left = parse_simple_cmd();
     while (peek_token() && peek_token()->type == TOK_PIPE)
     {
+        
         next_token(); // 消费"|"
         ast *right = parse_simple_cmd();
         ast *node = calloc(1, sizeof(ast));
         node->type = NODE_PIPE;
         node->left = left;
         node->right = right;
+        n_pipes++;
         left = node;
     }
     return (left);
@@ -405,6 +408,7 @@ static void print_ast(ast *node, int indent)
         print_ast(node->sub, indent + 2);
         break;
     }
+    
 }
 
 int main(int argc, char *argv[])
@@ -429,5 +433,6 @@ int main(int argc, char *argv[])
     // cleanup
     free_ast(root);
     free_tokens(tok);
+    printf("n_pipes:%d\n", n_pipes);
     return (0);
 }

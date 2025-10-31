@@ -6,6 +6,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <string.h>
+#include <ctype.h>
 
 typedef enum
 {
@@ -48,6 +49,7 @@ typedef struct s_ast
     char *redir_out;
     char *redir_append;
     char *heredoc_delim;
+    int n_pipes;
     // 当为组合节点时
     struct s_ast *left;
     struct s_ast *right;
