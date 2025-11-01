@@ -59,7 +59,7 @@ typedef struct s_ast
 
 // 全局或上下文中的token游标
 static token *g_cur;
-static ast *parse_simple_cmd(void);
-static ast *parse_pipeline(void);
-static ast *parse_and_or(void);
-static ast *parse_cmdline(void);
+static ast *parse_simple_cmd(token **cur);
+static ast *parse_pipeline(token **cur);
+static ast *parse_and_or(token **cur);
+static ast *parse_cmdline(token **cur);

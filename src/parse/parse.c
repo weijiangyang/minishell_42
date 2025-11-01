@@ -10,14 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #include "parse.h"
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-token *head = NULL, *tail = NULL;
-int n_pipes = 0;
-// 创建一个 token 并返回
-token *creat_new_token(tok_type ty, char *txt)
+static void free_ast(ast *node);
+static void free_tokens(token *tok);
+
+
+
+/* ---------- token helpers ---------- */
+
+token *creat_new_token(tok_type ty, const char *txt)
 {
     token *t = malloc(sizeof(token));
     if (!t)
@@ -28,220 +34,287 @@ token *creat_new_token(tok_type ty, char *txt)
     else
         t->text = NULL;
     t->next = NULL;
-    return (t);
+    return t;
 }
 
-void add_tok(tok_type ty, char *txt)
+int add_tok(token **header, token **tail, tok_type ty, const char *txt)
 {
-
+    if (header == NULL || tail == NULL)
+        return 0;
     token *t = creat_new_token(ty, txt);
-
     if (!t)
+        return 0;
+    if (*header == NULL)
     {
-        return;
+        *header = t;
+        *tail = t;
     }
-    if (head == NULL)
-        head = tail = t;
     else
     {
-
-        tail->next = t;
-        tail = t;
+        (*tail)->next = t;
+        *tail = t;
     }
+    return 1;
 }
-// 把输入字符串 str 分析成一个 token 链表，返回头指针
+
+/* tokenize: convert a string into a token list (head pointer returned) */
 static token *tokenize(const char *str)
 {
+    token *header = NULL;
+    token *tail = NULL;
     const char *p = str;
 
     while (*p)
     {
-        // 跳过空白
+        /* skip whitespace */
         if (isspace((unsigned char)*p))
         {
             p++;
             continue;
         }
 
-        // 多字符运算符： "&&", "||", ">>", "<<"
+        /* multi-char operators */
         if (p[0] == '&' && p[1] == '&')
         {
-            add_tok(TOK_AND, "&&");
+            add_tok(&header, &tail, TOK_AND, "&&");
             p += 2;
         }
         else if (p[0] == '|' && p[1] == '|')
         {
-            add_tok(TOK_OR, "||");
+            add_tok(&header, &tail, TOK_OR, "||");
             p += 2;
         }
         else if (p[0] == '>' && p[1] == '>')
         {
-            add_tok(TOK_APPEND, ">>");
+            add_tok(&header, &tail, TOK_APPEND, ">>");
             p += 2;
         }
         else if (p[0] == '<' && p[1] == '<')
         {
-            add_tok(TOK_HEREDOC, "<<");
+            add_tok(&header, &tail, TOK_HEREDOC, "<<");
             p += 2;
         }
         else
         {
-            // 单字符 token
+            /* single-char tokens or words */
             char c = *p;
             if (c == '|')
             {
-                add_tok(TOK_PIPE, "|");
+                add_tok(&header, &tail, TOK_PIPE, "|");
                 p++;
             }
             else if (c == '>')
             {
-                add_tok(TOK_REDIR_OUT, ">");
+                add_tok(&header, &tail, TOK_REDIR_OUT, ">");
                 p++;
             }
             else if (c == '<')
             {
-                add_tok(TOK_REDIR_IN, "<");
+                add_tok(&header, &tail, TOK_REDIR_IN, "<");
                 p++;
             }
             else if (c == '(')
             {
-                add_tok(TOK_LPAREN, "(");
+                add_tok(&header, &tail, TOK_LPAREN, "(");
                 p++;
             }
             else if (c == ')')
             {
-                add_tok(TOK_RPAREN, ")");
+                add_tok(&header, &tail, TOK_RPAREN, ")");
                 p++;
             }
             else
             {
-                // 普通 word：连续的非空白、非操作符字符
                 const char *start = p;
                 while (*p && !isspace((unsigned char)*p) && !(p[0] == '&' && p[1] == '&') && !(p[0] == '|' && p[1] == '|') && *p != '>' && *p != '<' && *p != '|' && *p != '(' && *p != ')')
                 {
                     p++;
                 }
-                size_t len = p - start;
+                size_t len = (size_t)(p - start);
                 char *buf = calloc(len + 1, 1);
+                if (!buf)
+                {
+                    free_tokens(header); /* use the free below; but we haven't declared free_tokens yet -- in your project ensure it exists before use or handle differently */
+                    return NULL;
+                }
                 strncpy(buf, start, len);
-                add_tok(TOK_WORD, buf);
+                add_tok(&header, &tail, TOK_WORD, buf);
                 free(buf);
             }
         }
     }
 
-    // 添加终结符
-    add_tok(TOK_END, NULL);
-    return head;
+    /* terminator */
+    add_tok(&header, &tail, TOK_END, NULL);
+    return header;
 }
 
-// 辅助函数
-static token *peek_token(void)
+/* ---------- token cursor API (cursor is token **cur) ---------- */
+
+/* peek at current token (does not advance) */
+static token *peek_token(token **cur)
 {
-    return g_cur;
+    if (!cur)
+        return NULL;
+    return *cur;
 }
-// 得到当前 token，然后内部状态（g_cur）被更新到下一个 token，为下一次处理做准备
-static token *next_token(void)
+
+/* consume current token and advance cursor.
+   returns the consumed token (old current) or NULL */
+static token *consume_token(token **cur)
 {
-    token *t = g_cur;
-    if (g_cur)
-        g_cur = g_cur->next;
-    return t;
+    if (!cur || !*cur)
+        return NULL;
+    token *old = *cur;
+    *cur = (*cur)->next;
+    return old;
 }
-// 验证当前 token 是否符合预期类型，然后消费（进到下一个 token）或报错
-static token *expect_token(tok_type type)
+
+/* ensure current token has the given type; consume it and return the consumed token.
+   returns NULL on mismatch */
+static token *expect_token(tok_type type, token **cur)
 {
-    if (!g_cur || g_cur->type != type)
+    if (!cur || !*cur || (*cur)->type != type)
     {
         fprintf(stderr, "Syntax error : expected token type %d\n", type);
+        return NULL;
     }
-    return (next_token());
+    return consume_token(cur);
 }
 
-static ast *parse_simple_cmd(void)
+/* ---------- forward declarations of parse functions (they take token **cur) ---------- */
+static ast *parse_and_or(token **cur);
+static ast *parse_pipeline(token **cur);
+static ast *parse_simple_cmd(token **cur);
+static ast *parse_cmdline(token **cur);
+
+/* ---------- parse implementations ---------- */
+
+static ast *parse_simple_cmd(token **cur)
 {
     token *t;
-    // 子shell
-    if (peek_token() && peek_token()->type == TOK_LPAREN)
+    token *pt = peek_token(cur);
+    if (pt && pt->type == TOK_LPAREN)
     {
-        // consume "()"
-        next_token();
+        /* subshell: consume "(" */
+        consume_token(cur);
         ast *node = calloc(1, sizeof(ast));
+        if (!node)
+            return NULL;
         node->type = NODE_SUBSHELL;
-        // 解析shell里的and/or表达式（或符合命令表达式）
-        node->sub = parse_and_or();
-        // expect ")"
-        expect_token(TOK_RPAREN);
-        return (node);
+        node->sub = parse_and_or(cur);
+        /* expect ")" */
+        if (!expect_token(TOK_RPAREN, cur))
+        {
+            fprintf(stderr, "Syntax error: expected ')'\n");
+            free_ast(node);
+            return NULL;
+        }
+        return node;
     }
-    // 否则，命令节点
+
+    /* normal command */
     ast *node = calloc(1, sizeof(ast));
+    if (!node)
+        return NULL;
     node->type = NODE_CMD;
-    // 初始化argv 数组（预留空间）
+
     size_t argv_cap = 8;
     size_t argc = 0;
     node->argv = calloc(argv_cap, sizeof(char *));
-    // 重定向前缀： 可能多个
-    while (peek_token() &&
-           (peek_token()->type == TOK_REDIR_IN ||
-            peek_token()->type == TOK_REDIR_OUT ||
-            peek_token()->type == TOK_APPEND ||
-            peek_token()->type == TOK_HEREDOC))
+    if (!node->argv)
     {
-        token *redir = next_token();
-        token *file = expect_token(TOK_WORD);
+        free(node);
+        return NULL;
+    }
+
+    /* prefix redirections: while current token is a redirection */
+    while ((pt = peek_token(cur)) &&
+           (pt->type == TOK_REDIR_IN ||
+            pt->type == TOK_REDIR_OUT ||
+            pt->type == TOK_APPEND ||
+            pt->type == TOK_HEREDOC))
+    {
+        token *redir = consume_token(cur);
+        token *file = expect_token(TOK_WORD, cur);
+        if (!file)
+        {
+            fprintf(stderr, "Syntax error: expected filename after redirection\n");
+            free_ast(node);
+            return NULL;
+        }
         switch (redir->type)
         {
         case TOK_REDIR_IN:
+            free(node->redir_in);
             node->redir_in = strdup(file->text);
             break;
         case TOK_REDIR_OUT:
+            free(node->redir_out);
             node->redir_out = strdup(file->text);
             break;
+        case TOK_APPEND:
+            free(node->redir_append);
+            node->redir_append = strdup(file->text);
+            break;
         case TOK_HEREDOC:
+            free(node->heredoc_delim);
             node->heredoc_delim = strdup(file->text);
             break;
         default:
             break;
         }
     }
-    // 接下来必须至少有一个word（命令或argument)
-    if (!peek_token() || peek_token()->type != TOK_WORD)
+
+    /* next token must be a word (command name) */
+    pt = peek_token(cur);
+    if (!pt || pt->type != TOK_WORD)
     {
-        // 语法错误
         fprintf(stderr, "Syntax error: expected command name\n");
-        // 处理错误：free node 等
-        return node;
+        free_ast(node);
+        return NULL;
     }
 
-    // 首个WORD是命令名
-    t = next_token();
+    /* consume the command name */
+    t = consume_token(cur);
     node->argv[argc++] = strdup(t->text);
 
-    // 后续可能跟 WORD 或重定向
-    while (peek_token() &&
-           (peek_token()->type == TOK_WORD ||
-            peek_token()->type == TOK_REDIR_IN ||
-            peek_token()->type == TOK_REDIR_OUT ||
-            peek_token()->type == TOK_APPEND ||
-            peek_token()->type == TOK_HEREDOC))
+    /* now loop over additional words and redirections */
+    while ((pt = peek_token(cur)) &&
+           (pt->type == TOK_WORD ||
+            pt->type == TOK_REDIR_IN ||
+            pt->type == TOK_REDIR_OUT ||
+            pt->type == TOK_APPEND ||
+            pt->type == TOK_HEREDOC))
     {
-        if (peek_token()->type == TOK_WORD)
+        if (pt->type == TOK_WORD)
         {
-            t = next_token();
-            // 若argv 不够则扩容
+            t = consume_token(cur);
             if (argc + 1 >= argv_cap)
             {
                 argv_cap *= 2;
-                node->argv = realloc(node->argv, argv_cap * sizeof(char *));
+                char **tmp = realloc(node->argv, argv_cap * sizeof(char *));
+                if (!tmp)
+                {
+                    fprintf(stderr, "realloc failed\n");
+                    free_ast(node);
+                    return NULL;
+                }
+                node->argv = tmp;
             }
             node->argv[argc++] = strdup(t->text);
         }
         else
         {
-            // 重定向后缀
-            token *redir = next_token();
-            token *file = expect_token(TOK_WORD);
+            /* redirection */
+            token *redir = consume_token(cur);
+            token *file = expect_token(TOK_WORD, cur);
+            if (!file)
+            {
+                fprintf(stderr, "Syntax error: expected filename after redirection\n");
+                free_ast(node);
+                return NULL;
+            }
             switch (redir->type)
             {
             case TOK_REDIR_IN:
@@ -265,57 +338,94 @@ static ast *parse_simple_cmd(void)
             }
         }
     }
+
     node->argv[argc] = NULL;
-    return (node);
+    return node;
 }
 
-static ast *parse_pipeline(void)
+static ast *parse_pipeline(token **cur)
 {
-    ast *left = parse_simple_cmd();
-    while (peek_token() && peek_token()->type == TOK_PIPE)
+    ast *left = parse_simple_cmd(cur);
+    int n_pipes = 0;
+    if (!left)
+        return NULL;
+
+    while (peek_token(cur) && peek_token(cur)->type == TOK_PIPE)
     {
-        
-        next_token(); // 消费"|"
-        ast *right = parse_simple_cmd();
+        /* consume '|' */
+        consume_token(cur);
+        ast *right = parse_simple_cmd(cur);
+        if (!right)
+        {
+            free_ast(left);
+            return NULL;
+        }
         ast *node = calloc(1, sizeof(ast));
+        if (!node)
+        {
+            free_ast(left);
+            free_ast(right);
+            return NULL;
+        }
         node->type = NODE_PIPE;
         node->left = left;
         node->right = right;
         n_pipes++;
         left = node;
     }
-    return (left);
+    left->n_pipes = n_pipes;
+    return left;
 }
 
-static ast *parse_and_or(void)
+static ast *parse_and_or(token **cur)
 {
-    ast *left = parse_pipeline();
-    while (peek_token() && (peek_token()->type == TOK_AND || peek_token()->type == TOK_OR))
+    ast *left = parse_pipeline(cur);
+    if (!left)
+        return NULL;
+
+    while (peek_token(cur) &&
+           (peek_token(cur)->type == TOK_AND || peek_token(cur)->type == TOK_OR))
     {
-        token *op = next_token();
-        ast *right = parse_pipeline();
+        token *op = consume_token(cur);
+        ast *right = parse_pipeline(cur);
+        if (!right)
+        {
+            free_ast(left);
+            return NULL;
+        }
         ast *node = calloc(1, sizeof(ast));
+        if (!node)
+        {
+            free_ast(left);
+            free_ast(right);
+            return NULL;
+        }
         node->type = (op->type == TOK_AND ? NODE_AND : NODE_OR);
         node->left = left;
         node->right = right;
         left = node;
     }
-    return (left);
+    return left;
 }
 
-static ast *parse_cmdline(void)
+static ast *parse_cmdline(token **cur)
 {
-    ast *root = parse_and_or();
-    if (peek_token() && peek_token()->type != TOK_END)
+    ast *root = parse_and_or(cur);
+    if (!root)
+        return NULL;
+
+    token *pt = peek_token(cur);
+    if (pt && pt->type != TOK_END)
     {
-        fprintf(stderr, "Syntax error: unexpected token at end (type %d)\n",
-                peek_token()->type);
-        exit(1);
+        fprintf(stderr, "Syntax error: unexpected token at end (type %d)\n", pt->type);
+        free_ast(root);
+        return NULL;
     }
-    return (root);
+    return root;
 }
 
-// ---------- AST / Token 内存释放 ----------
+/* ---------- AST / Token memory release ---------- */
+
 static void free_ast(ast *node)
 {
     if (!node)
@@ -345,13 +455,15 @@ static void free_ast(ast *node)
     case NODE_SUBSHELL:
         free_ast(node->sub);
         break;
+    default:
+        break;
     }
     free(node);
 }
 
 static void free_tokens(token *tok)
 {
-    while (tok && tok->next)
+    while (tok)
     {
         token *nx = tok->next;
         if (tok->text)
@@ -407,8 +519,10 @@ static void print_ast(ast *node, int indent)
         printf("SUBSHELL\n");
         print_ast(node->sub, indent + 2);
         break;
+    default:
+        printf("UNKNOWN NODE\n");
+        break;
     }
-    
 }
 
 int main(int argc, char *argv[])
@@ -420,19 +534,31 @@ int main(int argc, char *argv[])
     {
         return 0;
     }
-    // 去掉行末换行符
+    /* strip newline */
     buf[strcspn(buf, "\n")] = '\0';
 
     token *tok = tokenize(buf);
-    g_cur = tok;
+    if (!tok)
+    {
+        fprintf(stderr, "tokenize failed\n");
+        return 1;
+    }
 
-    ast *root = parse_cmdline();
-    printf("=== AST ===\n");
-    print_ast(root, 0);
+    /* parser now uses a cursor pointer */
+    token *cursor = tok;
+    ast *root = parse_cmdline(&cursor);
+    if (root)
+    {
+        printf("=== AST ===\n");
+        print_ast(root, 0);
+        free_ast(root);
+    }
+    else
+    {
+        fprintf(stderr, "Parsing failed.\n");
+    }
 
-    // cleanup
-    free_ast(root);
     free_tokens(tok);
-    printf("n_pipes:%d\n", n_pipes);
-    return (0);
+    
+    return 0;
 }
