@@ -4,6 +4,9 @@
 /*   expander.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: Invalid date        by ***********       #+#    #+#             */
+/*   Updated: 2025/12/20 17:03:16 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -11,75 +14,56 @@
 # define EXPANDER_H
 
 # include "../../libft/libft.h"
+# include "parse.h"
 # include <stddef.h>
 # include <stdlib.h>
-# include "parse.h"
 
-/* 前置声明 */
-typedef struct s_minishell  t_minishell;
+typedef struct s_minishell	t_minishell;
 
-// /* ===== AST（按你给定的结构，不增字段） ===== */
-// typedef enum e_node_type
-// {
-//     NODE_CMD,
-//     NODE_PIPE,
-//     NODE_AND,
-//     NODE_OR,
-//     NODE_SUBSHELL,
-//     NODE_BACKGROUND,
-//     NODE_SEQUENCE
-// }   node_type;
-
-// typedef struct s_ast
-// {
-//     node_type       type;
-//     /* node_cmd 有效字段 */
-//     char            **argv;
-//     char            *redir_in;
-//     char            *redir_out;
-//     char            *redir_append;
-//     char            *heredoc_delim;
-//     int             n_pipes;
-//     /* 组合节点 */
-//     struct s_ast    *left;
-//     struct s_ast    *right;
-//     /* 子shell */
-//     struct s_ast    *sub;
-//     int             is_background;
-//     int             heredoc_quoted; /* 1 表示分隔符曾被引号包裹 */
-// }   ast;
-
-/* ===== 引号状态机（原样保留） ===== */
-enum                        qstate
+enum						qstate
 {
-    Q_NONE = 0,
-    Q_SQ = 1,
-    Q_DQ = 2
+	Q_NONE = 0,
+	Q_SQ = 1,
+	Q_DQ = 2
 };
 
 typedef struct s_exp_data
 {
-    t_minishell             *minishell;
-    char                    **out;
-}                           t_exp_data;
+	t_minishell				*minishell;
+	char					**out;
+}							t_exp_data;
 
-/* ===== 新：基于 AST 的展开入口 ===== */
-int                         expander_ast(t_minishell *minishell, ast *root);
+/*
+** 函数作用：展开入口，parse 之后 exec 之前调用，遍历整棵 AST 做展开。
+** 参数：minishell(全局上下文), root(AST 根)
+*/
+int							expander_ast(t_minishell *minishell, ast *root);
 
-/* ===== 其余原有 API（保持不变） ===== */
-char                        *expander_str(t_minishell *minishell, char *str);
-int                         scan_expand_one(t_exp_data *data, const char *s,
-                                int j, enum qstate q);
-char                        *expand_all(t_minishell *minishell,
-                                const char *str);
+/*
+** 函数作用：只展开一个 CMD 节点（argv + 重定向链表）。
+** 参数：msh(全局上下文), node(CMD 节点)
+*/
+int							expander_expand_cmd_node(t_minishell *msh,
+								ast *node);
 
-int                         is_name_start(int c);
-int                         is_name_char(int c);
-int                         var_len(const char *s);
-char                        *env_value_dup(t_minishell *minishell,
-                                const char *name, int len);
+/*
+** 函数作用：展开一个字符串（$ 展开 + 去引号），并释放传入的旧字符串。
+** 参数：minishell(全局上下文), str(会被 free)
+*/
+char						*expander_str(t_minishell *minishell, char *str);
 
-char                        *str_join_free(char *a, const char *b);
-size_t                      equal_sign(char *str);
+int							scan_expand_one(t_exp_data *data, const char *s,
+								int j, enum qstate q);
+char						*expand_all(t_minishell *minishell,
+								const char *str);
+
+int							is_name_start(int c);
+int							is_name_char(int c);
+int							var_len(const char *s);
+char						*env_value_dup(t_minishell *minishell,
+								const char *name, int len);
+
+char						*str_join_free(char *a, const char *b);
+size_t						equal_sign(char *str);
 
 #endif

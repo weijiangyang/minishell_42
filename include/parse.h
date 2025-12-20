@@ -3,20 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:30:29 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/15 23:24:06 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/11/11 17:30:32 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSE_H
 #define PARSE_H
 
-# include <stdbool.h>
-# include "../../libft/libft.h"
-# include "lexer.h"
-# include <signal.h>
+#include "../../libft/libft.h"
 
 #define BUFFER_SIZE 42
 
