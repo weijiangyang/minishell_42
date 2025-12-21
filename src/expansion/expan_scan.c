@@ -6,19 +6,31 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:32:58 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/11/12 19:09:34 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/21 22:39:38 by yzhang2          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expan_scan.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   Updated: 2025/12/21 18:30:00 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expander.h"
 #include "minishell.h"
 
-// 做什么：res = a + b，并 free(a)；若 a==NULL 则相当于 strdup(b)。
-// 谁调：append_char、scan_expand_one、handle_*_exp。
+/*
+** 函数作用：把 b 拼到 a 后面，并 free(a)。
+** 参数：a(会被 free), b(只读)
+** 返回：新字符串；失败返回 NULL
+*/
 char	*str_join_free(char *a, const char *b)
 {
 	char	*res;
 
+	res = NULL;
 	if (!a && !b)
 		return (NULL);
 	if (!a)
@@ -30,18 +42,23 @@ char	*str_join_free(char *a, const char *b)
 	return (res);
 }
 
-// 做什么：处理特殊 $：
-// $? → 追加 itoa(last_exit_status)，返回消费 2；
-// $<digit> → 空展开（什么也不追加），返回消费 2；
-// 其他情况返回 0（表示“我没处理，你去走正常变量路径”）。
-// 谁调：scan_expand_one 的第一步。
+/*
+** 函数作用：处理特殊变量：$? 和 $数字。
+** 参数：data(上下文), s(源串), j(当前位置)
+** 返回：消费的字符数（0 表示没处理）
+*/
 static int	handle_special_exp(t_exp_data *data, const char *s, int j)
 {
 	char	*tmp;
+	int		status;
 
+	tmp = NULL;
+	status = 0;
 	if (s[j + 1] == '?')
 	{
-		tmp = ft_itoa(data->minishell->last_exit_status);
+		if (data->minishell)
+			status = data->minishell->last_exit_status;
+		tmp = ft_itoa(status);
 		if (!tmp)
 			return (2);
 		*data->out = str_join_free(*data->out, tmp);
@@ -53,16 +70,18 @@ static int	handle_special_exp(t_exp_data *data, const char *s, int j)
 	return (0);
 }
 
-// 做什么：处理 $VAR：
-// 计算变量名长度 len = var_len(&s[j+1])；
-// 若 len>0：取值 tmp = env_value_dup(...) 并追加；返回消费 1+len；
-// 否则：把 $ 当普通字符追加，返回消费 1。
-// 谁调：scan_expand_one 的第二步（当特殊路径没命中时）。
+/*
+** 函数作用：处理普通变量 $VAR。
+** 参数：data(上下文), s(源串), j(当前位置)
+** 返回：消费的字符数
+*/
 static int	handle_var_exp(t_exp_data *data, const char *s, int j)
 {
 	int		len;
 	char	*tmp;
 
+	len = 0;
+	tmp = NULL;
 	len = var_len(&s[j + 1]);
 	if (len > 0)
 	{
@@ -75,17 +94,16 @@ static int	handle_var_exp(t_exp_data *data, const char *s, int j)
 	return (1);
 }
 
-// 做什么：展开一次从 s[j] 开始的 $...：
-// 若在单引号 Q_SQ：不展开，直接追加 $，返回 1；
-// 否则先试特殊规则 → 若命中返回消费数；
-// 否则走变量规则 → 返回消费数。
-// 输入：上下文 data、源串 s、位置 j、引号状态 q。
-// 输出：消费的字符数（供 expand_all 前进用）。
-// 谁调：expand_all。
+/*
+** 函数作用：展开一次从 s[j] 开始的 $...（考虑引号状态）。
+** 参数：data(上下文), s(源串), j(当前位置), q(引号状态)
+** 返回：消费的字符数
+*/
 int	scan_expand_one(t_exp_data *data, const char *s, int j, enum qstate q)
 {
 	int	res;
 
+	res = 0;
 	if (q == Q_SQ)
 	{
 		*data->out = str_join_free(*data->out, "$");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstdelone_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weijiangyang <weijiangyang@laposte.net>    +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/18 21:09:32 by weijiangyang      #+#    #+#             */
-/*   Updated: 2025/05/18 21:10:27 by weijiangyang     ###   ########.fr       */
+/*   Created: 2025/05/08 15:46:25 by yzhang2           #+#    #+#             */
+/*   Updated: 2025/05/08 15:46:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -6,16 +6,17 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:32:30 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/11/12 19:09:34 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/21 22:40:33 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "expander.h"
 #include "minishell.h"
 
-// 做什么：遇到 ' 或 " 时在 Q_NONE/Q_SQ/Q_DQ 之间切换（禁止嵌套另一种）。
-// 谁调：expand_all 每读一个字符就可能调用。
+/*
+** 函数作用：遇到 ' 或 " 时切换引号状态（单引号里不进入双引号，反过来也一样）。
+** 参数：c(当前字符), q(引号状态指针)
+*/
 static void	toggle_quote_state(const char c, enum qstate *q)
 {
 	if (c == '\'' && *q != Q_DQ)
@@ -23,9 +24,12 @@ static void	toggle_quote_state(const char c, enum qstate *q)
 	else if (c == '\"' && *q != Q_SQ)
 		*q = (*q == Q_DQ) ? Q_NONE : Q_DQ;
 }
-// 做什么：把单字符 c 追加到 *out（用 str_join_free）。
-// 输出：固定 1（表示“我消费了 1 个字符”）。
-// 谁调：expand_all 遇到普通字符时。
+
+/*
+** 函数作用：把一个普通字符追加到输出字符串里。
+** 参数：c(字符), out(输出字符串指针)
+** 返回：固定 1（表示消费 1 个字符）
+*/
 static int	append_char(const char c, char **out)
 {
 	char	buf[2];
@@ -36,16 +40,11 @@ static int	append_char(const char c, char **out)
 	return (1);
 }
 
-// 做什么：整串展开（保留引号字符）
-// 初始化 out=""、q=Q_NONE；
-// 遍历 str[i]：
-// 先 toggle_quote_state(str[i])；
-// 若 str[i] == '$' → i += scan_expand_one(&data, str, i, q)；
-// 否则 → i += append_char(str[i], &out)；
-// 返回 out（堆串）。
-// 输入：minishell（为了 $?/env）、str 原始片段（最好是 raw）。
-// 输出：新堆串（只做 $ 展开，不去引号）。
-// 谁调：expand_token、expander_str、测试。
+/*
+** 函数作用：整串做 $ 展开（保留引号字符本身，不在这里去引号）。
+** 参数：minishell(全局上下文), str(输入字符串)
+** 返回：新字符串；失败返回 NULL
+*/
 char	*expand_all(t_minishell *minishell, const char *str)
 {
 	int			i;
@@ -53,10 +52,11 @@ char	*expand_all(t_minishell *minishell, const char *str)
 	enum qstate	q;
 	t_exp_data	data;
 
+	i = 0;
+	out = NULL;
+	q = Q_NONE;
 	if (!str)
 		return (NULL);
-	i = 0;
-	q = Q_NONE;
 	out = ft_strdup("");
 	if (!out)
 		return (NULL);
@@ -66,9 +66,9 @@ char	*expand_all(t_minishell *minishell, const char *str)
 	{
 		toggle_quote_state(str[i], &q);
 		if (str[i] == '$')
-			i += scan_expand_one(&data, str, i, q);
+			i = i + scan_expand_one(&data, str, i, q);
 		else
-			i += append_char(str[i], &out);
+			i = i + append_char(str[i], &out);
 	}
 	return (out);
 }

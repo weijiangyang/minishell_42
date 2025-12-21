@@ -6,65 +6,79 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:34:06 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/11/12 19:09:34 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/21 22:38:12 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "expander.h"
 #include "minishell.h"
 
-// 做什么：判定是否是变量名首字符（字母或 _）。
-// 谁调：var_len。
+/*
+** 函数作用：判断变量名首字符是否合法（字母或 _）。
+** 参数：c(一个字符)
+** 返回：是 1，不是 0
+*/
 int	is_name_start(int c)
 {
 	return (ft_isalpha(c) || c == '_');
 }
 
-// 做什么：判定是否是变量名后续字符（字母/数字/_）。
-// 谁调：var_len。
+/*
+** 函数作用：判断变量名后续字符是否合法（字母/数字/_）。
+** 参数：c(一个字符)
+** 返回：是 1，不是 0
+*/
 int	is_name_char(int c)
 {
 	return (ft_isalnum(c) || c == '_');
 }
 
-// 做什么：从 s 开始（即 $ 后第一个字符），算出合法变量名的长度。
-// 谁调：handle_var_exp → scan_expand_one。
+/*
+** 函数作用：从 s 开始计算合法变量名长度（s 指向 $ 后第一个字符）。
+** 参数：s(指向变量名开头)
+** 返回：变量名长度（可能为 0）
+*/
 int	var_len(const char *s)
 {
 	int	i;
 
 	i = 0;
+	if (!s)
+		return (0);
 	if (!is_name_start((unsigned char)s[i]))
 		return (0);
 	while (s[i] && is_name_char((unsigned char)s[i]))
-		i++;
+		i = i + 1;
 	return (i);
 }
 
-// 做什么：在 minishell->envp 中找 name[0..len-1] 的环境变量，返回值的 ft_strdup；找不到返回 ft_strdup("")。
-// 实现细节：用 equal_sign(entry) 找 = 的位置，兼容不同返回语义；比较 key 后，值从 keylen+1（若 entry[keylen]=='='）或 keylen 开始。
-// 谁调：handle_var_exp → scan_expand_one。
+/*
+** 函数作用：在 minishell->envp 里找变量 name[0..len-1]，并复制它的值。
+** 参数：minishell(全局上下文), name(变量名起点), len(变量名长度)
+** 返回：找到则返回值的 strdup；找不到返回 strdup("")；失败返回 NULL
+*/
 char	*env_value_dup(t_minishell *minishell, const char *name, int len)
 {
 	int		k;
 	int		keylen;
 	char	*entry;
 
-	if (!minishell || !minishell->envp)
-		return (ft_strdup(""));
 	k = 0;
+	keylen = 0;
+	entry = NULL;
+	if (!minishell || !minishell->envp || !name)
+		return (ft_strdup(""));
 	while (minishell->envp[k])
 	{
 		entry = minishell->envp[k];
-		keylen = equal_sign(entry);
+		keylen = (int)equal_sign(entry);
 		if (keylen == len && ft_strncmp(name, entry, len) == 0)
 		{
 			if (entry[keylen] == '=')
 				return (ft_strdup(entry + keylen + 1));
 			return (ft_strdup(entry + keylen));
 		}
-		k++;
+		k = k + 1;
 	}
 	return (ft_strdup(""));
 }

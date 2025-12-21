@@ -3,54 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/28 07:47:45 by weiyang           #+#    #+#             */
-/*   Updated: 2025/05/05 17:16:27 by weijiangyang     ###   ########.fr       */
+/*   Created: 2025/04/28 14:16:47 by yzhang2           #+#    #+#             */
+/*   Updated: 2025/06/04 15:29:34 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+static void	memmove_copy(unsigned char *d, const unsigned char *s, size_t len)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < len)
+	{
+		d[i] = s[i];
+		i++;
+	}
+}
+
 void	*ft_memmove(void *dst, const void *src, size_t len)
 {
+	size_t				i;
 	unsigned char		*d;
 	const unsigned char	*s;
 
-	if (!dst && !src)
+	if (len == 0 && !dst && !src)
+		return (dst);
+	if (!dst || !src)
 		return (NULL);
 	d = (unsigned char *)dst;
 	s = (const unsigned char *)src;
-	if (d < s)
+	if (s < d && s + len > d)
 	{
-		while (len--)
-			*d++ = *s++;
+		i = len;
+		while (i > 0)
+		{
+			i--;
+			d[i] = s[i];
+		}
 	}
 	else
-	{
-		d += len;
-		s += len;
-		while (len--)
-			*--d = *--s;
-	}
+		memmove_copy(d, s, len);
 	return (dst);
 }
-/*int main(void)
-{
-    char str[] = "abcdef";
-
-    printf("Before: %s\n", str);
-
-    // Example 1: no overlap
-    ft_memmove(str + 2, str, 4);  // Move "1234" into str[2]
-    printf("After (overlap forward): %s\n", str);
-
-    // Reset str
-    strcpy(str, "abcdef");
-
-    // Example 2: overlap backward
-    ft_memmove(str, str + 2, 4);  // Move "34" into str[0]
-    printf("After (overlap backward): %s\n", str);
-
-    return 0;
-}*/

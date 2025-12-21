@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstsize_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weijiangyang <weijiangyang@laposte.net>    +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/18 21:06:17 by weijiangyang      #+#    #+#             */
-/*   Updated: 2025/05/18 21:07:00 by weijiangyang     ###   ########.fr       */
+/*   Created: 2025/05/08 15:47:29 by yzhang2           #+#    #+#             */
+/*   Updated: 2025/06/04 13:38:12 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 
 int	ft_lstsize(t_list *lst)
 {
-	int	count;
+	t_list	*tmp;
+	int		count;
 
+	if (!lst)
+		return (0);
 	count = 0;
-	while (lst)
+	tmp = lst;
+	while (tmp)
 	{
 		count++;
-		lst = lst->next;
+		tmp = tmp->next;
 	}
 	return (count);
 }

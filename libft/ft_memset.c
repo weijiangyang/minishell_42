@@ -3,47 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/25 10:42:15 by weiyang           #+#    #+#             */
-/*   Updated: 2025/05/02 10:39:22 by weiyang          ###   ########.fr       */
+/*   Created: 2025/04/28 13:38:08 by yzhang2           #+#    #+#             */
+/*   Updated: 2025/06/04 15:32:29 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h" 
+#include "libft.h"
 
-void	*ft_memset(void *s, int c, size_t n)
+void	*ft_memset(void *b, int c, size_t len)
 {
-	unsigned char	*mem;
 	size_t			i;
+	unsigned char	*str;
 
 	i = 0;
-	mem = (unsigned char *)s;
-	while (i < n)
+	if (!b)
+		return (NULL);
+	str = (unsigned char *)b;
+	while (i < len)
 	{
-		mem[i] = (unsigned char)c;
+		str[i] = (unsigned char)c;
 		i++;
 	}
-	return (s);
+	return (b);
 }
-
-/*#include <stdio.h>
-
-int	main(void)
-{
-	char	arr[10];
-	int		c;
-	size_t		n;
-	size_t		i;
-
-	i = 1;
-	c = 67;
-	n = 9;
-	memset(arr, c,n);
-	while (i < n)
-	{
-		printf("%c", arr[i]);
-		i++;
-	}
-	return (0);
-}*/	

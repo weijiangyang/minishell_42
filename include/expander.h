@@ -6,17 +6,17 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by ***********       #+#    #+#             */
-/*   Updated: 2025/12/21 18:21:01 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/21 22:36:06 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXPANDER_H
 # define EXPANDER_H
 
-
 # include <stddef.h>
 # include <stdlib.h>
-typedef struct s_ast ast;
+
+typedef struct s_ast		ast;
 typedef struct s_minishell	t_minishell;
 
 enum						qstate
@@ -64,5 +64,12 @@ char						*env_value_dup(t_minishell *minishell,
 
 char						*str_join_free(char *a, const char *b);
 size_t						equal_sign(char *str);
+
+/*
+** 由 lexer 模块提供：去引号并同时告诉你有没有引号。
+** 这里声明一下，避免 expander 依赖 lexer.h 的结构体。
+*/
+char						*remove_quotes_flag(const char *s, int *had_q,
+								int *q_s, int *q_d);
 
 #endif
