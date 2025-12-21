@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:40:59 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/11/10 19:09:17 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/21 17:55:08 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,8 @@
 
 # define LEX_OK 1
 # define LEX_ERR 0
-# define LEX_NEED_MORE 2         /* 词法发现未闭合引号，需上层继续读行 */
-# define LEX_UNCLOSED_QUOTE -2   /* 内部返回值：match_quotes/word 发现未闭合 */
-
-
-
-
+# define LEX_NEED_MORE 2       /* 词法发现未闭合引号，需上层继续读行 */
+# define LEX_UNCLOSED_QUOTE -2 /* 内部返回值：match_quotes/word 发现未闭合 */
 
 // 前置声明：t_minishell 是程序的总上下文结构，此处不展开定义。
 typedef struct s_minishell	t_minishell;
@@ -113,8 +109,9 @@ int							match_quotes(int i, char *str, char quote);
 char						*remove_quotes_flag(const char *s, int *had_q,
 								int *q_single, int *q_double);
 
- /* 修改 handle_word 的声明：增加 out_unclosed 参数用于通知是哪种引号未闭合 */
-int	handle_word(char *str, int i, t_lexer **list, char *out_unclosed);
+/* 修改 handle_word 的声明：增加 out_unclosed 参数用于通知是哪种引号未闭合 */
+int							handle_word(char *str, int i, t_lexer **list,
+								char *out_unclosed);
 int							skip_spaces(char *str, int i);
 int							handle_lexer(t_minishell *minishell);
 int							is_space(char c);

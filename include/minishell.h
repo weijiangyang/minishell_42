@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 15:21:40 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/18 15:57:30 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/21 18:09:54 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "lexer.h"
 # include "parse.h"
 # include "signals.h"
+# include "build_in.h"
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>

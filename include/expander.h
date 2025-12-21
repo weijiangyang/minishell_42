@@ -6,18 +6,17 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by ***********       #+#    #+#             */
-/*   Updated: 2025/12/20 17:03:16 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/21 18:21:01 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXPANDER_H
 # define EXPANDER_H
 
-# include "../../libft/libft.h"
-# include "parse.h"
+
 # include <stddef.h>
 # include <stdlib.h>
-
+typedef struct s_ast ast;
 typedef struct s_minishell	t_minishell;
 
 enum						qstate
