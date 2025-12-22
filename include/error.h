@@ -13,22 +13,8 @@
 #ifndef ERROR_H
 # define ERROR_H
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include <errno.h>
 #include <string.h>
-#include <ctype.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <signal.h>
-#include <limits.h>
-#include <termios.h>
 
 void	ms_err_cmd_not_found(const char *cmd);
 void	ms_err_exec(const char *name, int err);

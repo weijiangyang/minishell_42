@@ -15,28 +15,7 @@
 #ifndef BUILD_IN_H
 # define BUILD_IN_H
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <string.h>
-#include <ctype.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <signal.h>
-#include <limits.h>
-#include <termios.h>
-
 #include "parse.h"
-#include "build_in.h"
-
-
-
 typedef struct s_env
 {
 	char			*key;
