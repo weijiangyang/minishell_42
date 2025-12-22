@@ -13,11 +13,25 @@
 #ifndef EXPANDER_H
 # define EXPANDER_H
 
-# include <stddef.h>
-# include <stdlib.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <string.h>
+#include <ctype.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdbool.h>
+#include <signal.h>
+#include <limits.h>
+#include <termios.h>
 
-typedef struct s_ast		ast;
-typedef struct s_minishell	t_minishell;
+#include "parse.h"
+
 
 enum						qstate
 {

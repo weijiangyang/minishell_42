@@ -1,5 +1,5 @@
-#include "../../../include/minishell.h"
-#include "../../../libft//libft.h"
+#include "../../include/minishell.h"
+#include "../../include/build_in.h"
 
 // 核心 echo 命令处理函数
 int ft_echo(char **argv)

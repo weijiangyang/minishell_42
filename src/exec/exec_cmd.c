@@ -12,6 +12,7 @@
 
 #include "../../include/exec.h"
 #include "../../include/minishell.h"
+#include "error.h"
 
 /*
 ** 函数作用：

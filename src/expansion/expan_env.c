@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "expander.h"
-#include "minishell.h"
-
+#include "../../include/minishell.h"
+#include "../../include/expander.h"
+#include "../../libft/libft.h"
 /*
 ** 函数作用：判断变量名首字符是否合法（字母或 _）。
 ** 参数：c(一个字符)
@@ -49,6 +49,31 @@ int	var_len(const char *s)
 		return (0);
 	while (s[i] && is_name_char((unsigned char)s[i]))
 		i = i + 1;
+	return (i);
+}
+
+/*
+** 做什么：
+**   返回 entry 中第一个 '=' 的索引位置。
+**   若没找到 '='，则返回字符串长度（即 '\0' 的位置）。
+**
+** 举例：
+**   "PATH=/usr/bin" → 4
+**   "HOME=/home/user" → 4
+**   "SHELL" → 5（即 strlen("SHELL")）
+**
+** 谁调：
+**   env_value_dup()（在解析环境变量名时）
+*/
+size_t	equal_sign(char *entry)
+{
+	int	i;
+
+	if (!entry)
+		return (0);
+	i = 0;
+	while (entry[i] && entry[i] != '=')
+		i++;
 	return (i);
 }
 

@@ -1,5 +1,7 @@
-#include "../../../include/minishell.h"
-#include "../../../libft//libft.h"
+#include "../../include/minishell.h"
+#include "../../include/error.h"
+#include "../../libft/libft.h"
+#include "../../include/build_in.h"
 
 /**
  * change_envp - 将链表中的环境变量转换为一个数组，并更新 envp 指针。

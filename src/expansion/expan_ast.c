@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "expander.h"
-#include "minishell.h"
-#include "parse.h"
+#include "../../include/minishell.h"
+#include "../../include/expander.h"
 
 /*
 ** 函数作用：递归走完整棵 AST，遇到 CMD 节点就展开它。

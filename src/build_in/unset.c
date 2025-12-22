@@ -1,6 +1,6 @@
-#include "../../../include/minishell.h"
-#include "../../../libft//libft.h"
-
+#include "../../include/minishell.h"
+#include "../../include/build_in.h"
+#include "../../libft/libft.h"
 
 // 删除指定的环境变量
 static void delete_env_var(t_env **env, const char *key)

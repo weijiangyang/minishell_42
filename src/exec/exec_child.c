@@ -23,6 +23,8 @@
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include "../../include/exec.h"
+#include "error.h"
 #include <errno.h>
 
 static int	has_bad_heredoc(t_redir *r)

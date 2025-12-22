@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include "../../include/parse.h"
 
 int	end_line(char *str)
 {

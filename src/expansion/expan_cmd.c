@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "expander.h"
-#include "minishell.h"
-#include "parse.h"
-
+#include "../../include/minishell.h"
+#include "../../include/expander.h"
+#include "../../libft/libft.h"
 /*
 ** 函数作用：只去掉 *s 里的引号（不做 $ 展开），并替换原指针。
 ** 参数：s(指向字符串指针，函数内会 free 原串并换成新串)

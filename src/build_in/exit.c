@@ -1,5 +1,5 @@
-#include "../../../include/minishell.h"
-#include "../../../libft//libft.h"
+#include "../../include/minishell.h"
+#include "../../include/build_in.h"
 
 
 static int is_numeric(const char *s)

@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include "../../include/exec.h"
+#include "../../libft/libft.h"
 
 static char	*join_dir_cmd(const char *dir, const char *cmd)
 {

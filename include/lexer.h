@@ -14,7 +14,22 @@
 #ifndef LEXER_H
 # define LEXER_H
 
-# include <stddef.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <string.h>
+#include <ctype.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdbool.h>
+#include <signal.h>
+#include <limits.h>
+#include <termios.h>
 
 /* === 在 include/lexer.h 中添加 / 替换（放在头文件顶部其它定义附近） === */
 
@@ -80,6 +95,8 @@ typedef struct s_lexer
 	int						idx;
 	int						had_quotes;
 	int						quoted_by;
+	
+	
 	char					*raw;
 	struct s_lexer			*prev;
 	struct s_lexer			*next;

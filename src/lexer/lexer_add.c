@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../include/minishell.h"
+#include "../../include/lexer.h"
+#include "../../libft/libft.h"
 
 // 改了什么
 // switch 改 if/else if

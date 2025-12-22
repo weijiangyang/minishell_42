@@ -22,6 +22,8 @@
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include "../../include/exec.h"
+#include "../../libft/libft.h"
 
 /*
 ** 函数作用：

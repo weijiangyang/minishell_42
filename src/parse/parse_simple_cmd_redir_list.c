@@ -1,5 +1,6 @@
 #include "../../include/minishell.h"
-
+#include "../../include/parse.h"
+#include "../../libft/libft.h"
 /**
  * create_argv
  * ------------------------------------------------------------
@@ -145,7 +146,7 @@ static ast *parse_normal_cmd_redir_list(t_lexer **cur, ast *node, t_minishell *m
         }
 
         else if (pt->tokentype == TOK_WORD)
-            ft_lstadd_back(&argv_cmd, create_argv(consume_token(cur)->str));
+            ft_lstadd_back(&argv_cmd, create_argv(consume_token(cur)->raw));
         else
             break;
     }

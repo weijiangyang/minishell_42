@@ -24,7 +24,8 @@
 
 #include "../../include/minishell.h"
 #include <errno.h>
-
+#include "../../include/error.h"
+#include "../../libft/libft.h"
 /*
 ** 函数作用：
 ** 向标准错误输出依次打印 3 段字符串（任意一段为 NULL 就跳过）。

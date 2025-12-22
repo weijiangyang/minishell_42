@@ -1,5 +1,5 @@
-#include "../../../include/minishell.h"
-#include "../../../libft//libft.h"
+#include "../../include/minishell.h"
+#include "../../include/build_in.h"
 
 void    print_env(t_env *env)
 {

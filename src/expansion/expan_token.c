@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "expander.h"
-#include "minishell.h"
-
+#include "../../include/minishell.h"
+#include "../../include/expander.h"
+#include "../../libft/libft.h"
 /*
 ** 函数作用：去掉字符串 s 里的引号；如果没有引号，就返回 s 的副本。
 ** 参数：s(输入字符串), had_q/q_s/q_d(输出：有没有引号、单引号、双引号)

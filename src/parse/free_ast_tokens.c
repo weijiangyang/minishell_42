@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include "../../include/parse.h"
 
 /**
  * free_ast_partial
@@ -148,7 +149,8 @@ void free_tokens(t_lexer *tok)
 
         if (tok->str)
             free(tok->str);
-
+        if (tok->raw)
+            free(tok->raw);
         free(tok);
         tok = nx;
     }

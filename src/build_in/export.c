@@ -1,5 +1,5 @@
-#include "../../../include/minishell.h"
-#include "../../../libft//libft.h"
+#include "../../include/minishell.h"
+#include "../../include/build_in.h"
 
 t_env *find_env_var(t_env *env, const char *key)
 {

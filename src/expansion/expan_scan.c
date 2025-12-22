@@ -18,9 +18,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "expander.h"
-#include "minishell.h"
-
+#include "../../include/minishell.h"
+#include "../../include/expander.h"
+#include "../../libft/libft.h"
 /*
 ** 函数作用：把 b 拼到 a 后面，并 free(a)。
 ** 参数：a(会被 free), b(只读)

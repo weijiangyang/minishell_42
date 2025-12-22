@@ -22,7 +22,8 @@
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-#include <errno.h>
+#include "../../include/exec.h"
+
 
 static void	close_keep_std(int *fd)
 {
@@ -79,7 +80,7 @@ static void	set_redir_fd(t_redir *r, int fd, int *in_fd, int *out_fd)
 ** 函数作用：
 ** 按链表顺序应用所有重定向，得到最终要接到 stdin/stdout 的 fd。
 ** 关键修复：
-** - 如果中途某一步打开失败：打印错误，并关闭之前已打开的 *in_fd/*out_fd
+** - 如果中途某一步打开失败：打印错误，并关闭之前已打开的 *in_fd *out_fd
 **  （非标准 fd），避免父进程 fd 泄露。
 */
 int	apply_redir_list(t_redir *r, int *in_fd, int *out_fd)

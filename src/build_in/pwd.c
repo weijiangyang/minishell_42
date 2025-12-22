@@ -1,5 +1,5 @@
-#include "../../../include/minishell.h"
-#include "../../../libft//libft.h"
+#include "../../include/minishell.h"
+#include "../../include/build_in.h"
 
 int builtin_pwd()
 {

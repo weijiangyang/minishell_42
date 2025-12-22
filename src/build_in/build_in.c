@@ -1,4 +1,6 @@
-#include "../../../include/minishell.h"
+#include "../../include/minishell.h"
+#include "../../include/build_in.h"
+#include "../../libft/libft.h"
 
 // 检测命令是否为内置命令，返回 1 如果是，否则 0
 int is_builtin(const char *cmd)

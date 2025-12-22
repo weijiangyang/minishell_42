@@ -6,37 +6,39 @@
 #    By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/24 15:45:56 by yzhang2           #+#    #+#              #
-#    Updated: 2025/12/18 18:45:12 by yzhang2          ###   ########.fr        #
+#    Updated: 2025/12/22 19:00:00 by yzhang2          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME         := minishell
-CC           := gcc
-CFLAGS       := -Wall -Wextra -Werror -g -fno-pie
-LDFLAGS      := -no-pie
-INCLUDE_DIR  := include
-LIBFT_DIR    := libft
-LIBFT        := $(LIBFT_DIR)/libft.a
-LDLIBS		 := -lreadline -lhistory
+NAME        := minishell
+CC          := gcc
+CFLAGS      := -Wall -Wextra -Werror -g -fno-pie
+LDFLAGS     := -no-pie
+CPPFLAGS    := -Iinclude
+LDLIBS      := -lreadline -lhistory
 
+LIBFT_DIR   := libft
+LIBFT       := $(LIBFT_DIR)/libft.a
 
-SRC_DIRS     := src \
-                src/lexer \
-                src/parse \
-				src/exec \
-				src/expansion \
-				src/signal \
-                src/error \
-                src/cmds \
-                src/loop
+# 所有源文件目录
+SRC_DIRS    := src \
+               src/lexer \
+               src/parse \
+               src/exec \
+               src/expansion \
+               src/signal \
+               src/error \
+               src/cmds \
+               src/loop \
+               src/env \
+               src/build_in \
 
-SRCS         := $(foreach d,$(SRC_DIRS),$(wildcard $(d)/*.c))
+# 自动扫描所有源文件
+SRCS        := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
+OBJS        := $(patsubst src/%.c,obj/%.o,$(SRCS))
+OBJDIRS     := $(sort $(dir $(OBJS)))
 
-OBJS         := $(patsubst src/%.c,obj/%.o,$(SRCS))
-
-OBJDIRS      := $(sort $(dir $(OBJS)))
-
-CPPFLAGS     := -I$(INCLUDE_DIR)
+# =========================== Targets ============================
 
 all: $(NAME)
 
@@ -46,57 +48,20 @@ $(NAME): $(LIBFT) $(OBJS)
 	@echo "Built $(NAME)"
 
 $(LIBFT):
-	@echo "Building libft in $(LIBFT_DIR) ..."
-	$(MAKE) -C $(LIBFT_DIR) CFLAGS="$(CFLAGS)" || (echo "libft build failed" && false)
+	@echo "Building libft with bonus..."
+	$(MAKE) -C $(LIBFT_DIR) bonus CFLAGS="$(CFLAGS)" || (echo "libft build failed" && false)
 
-obj/%.o: src/%.c
+# ==================== Compile Rules =============================
+
+obj/%.o: src/%.c | $(OBJDIRS)
 	@echo "CC $<"
-	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
-obj/lexer/%.o: src/lexer/%.c
-	@echo "CC $<"
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-obj/parser/%.o: src/parser/%.c
-	@echo "CC $<"
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-obj/exec/%.o: src/exec/%.c
-	@echo "CC $<"
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-obj/expansion/%.o: src/expansion/%.c
-	@echo "CC $<"
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-obj/signal/%.o: src/signal/%.c
-	@echo "CC $<"
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-obj/error/%.o: src/error/%.c
-	@echo "CC $<"
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-obj/build_in/%.o: src/cmds/%.c
-	@echo "CC $<"
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-obj/loop/%.o: src/loop/%.c
-	@echo "CC $<"
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
-
-
+# 自动创建 obj 目录
 $(OBJDIRS):
 	@mkdir -p $@
+
+# ========================== Clean ==============================
 
 clean:
 	@echo "Cleaning object files..."
@@ -117,4 +82,4 @@ show:
 	@echo "OBJS ="
 	@printf "  %s\n" $(OBJS)
 
-.PHONY: all bonus clean fclean re show
+.PHONY: all clean fclean re show

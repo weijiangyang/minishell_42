@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "expander.h"
-#include "minishell.h"
+#include "../../include/minishell.h"
+#include "../../include/expander.h"
+#include "../../libft/libft.h"
 
 /*
 ** 函数作用：遇到 ' 或 " 时切换引号状态（单引号里不进入双引号，反过来也一样）。

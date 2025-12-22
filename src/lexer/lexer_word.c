@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../include/minishell.h"
+#include "../../include/lexer.h"
+#include "../../libft/libft.h"
 
 // 作用：是否为空白字符。
 // 参数：`c`。

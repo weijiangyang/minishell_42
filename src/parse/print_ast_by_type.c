@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include "../../include/parse.h"
 
 /**
  * print_ast_cmd

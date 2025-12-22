@@ -1,5 +1,6 @@
 #include "../../include/minishell.h"
-
+#include "../../include/parse.h"
+#include "../../libft/libft.h"
 volatile sig_atomic_t g_signal; // 唯一全局变量
 
 /* SIGINT handler */

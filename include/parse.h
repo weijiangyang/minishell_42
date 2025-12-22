@@ -13,12 +13,26 @@
 #ifndef PARSE_H
 # define PARSE_H
 
-# include <sys/wait.h>
-# include "build_in.h"
-# include "lexer.h"
-# include <stdbool.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <string.h>
+#include <ctype.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdbool.h>
+#include <signal.h>
+#include <limits.h>
+#include <termios.h>
 
+#include "lexer.h"
 typedef struct s_list t_list;
+
 # define BUFFER_SIZE 42
 
 typedef enum

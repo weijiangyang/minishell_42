@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 
-#include "minishell.h"
+#include "../../include/minishell.h"
+#include "../../include/lexer.h"
 
 
 // 改了什么
