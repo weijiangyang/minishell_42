@@ -52,9 +52,9 @@ char	*gnl_strjoin(char const *s1, char const *s2)
 	if (!s1 && !s2)
 		return (NULL);
 	if (!s1)
-		return (gnl_strdup(s2)));
+		return (gnl_strdup(s2));
 	if (!s2)
-		return (gnl_strdup(s1)));
+		return (gnl_strdup(s1));
 	len1 = gnl_strlen(s1);
 	len2 = gnl_strlen(s2);
 	str = malloc(len1 + len2 + 1);
