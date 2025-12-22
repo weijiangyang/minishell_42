@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 07:53:56 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/20 16:55:56 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/22 16:49:21 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 // 作用：是否为空白字符。
 // 参数：`c`。
 // 逻辑：对照空格/制表符等返回 1/0。
-int	is_space(char c)
+int	check_space(char c)
 {
 	return (c == ' ' || (c >= 9 && c <= 13));
 }
@@ -55,7 +55,7 @@ static int	calc_word_len(char *str, int start_i, char *out_unclosed)
 			return (LEX_UNCLOSED_QUOTE);
 		}
 		j += q_len;
-		if (!str[start_i + j] || is_space(str[start_i + j]))
+		if (!str[start_i + j] || check_space(str[start_i + j]))
 			break ;
 		else if (str[start_i + j] == 34 || str[start_i + j] == 39)
 			continue ; /* 修改：引号后紧跟引号，不要 j++，让下一轮去 match_quotes 吃掉它 */

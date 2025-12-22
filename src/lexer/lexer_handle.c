@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 07:53:04 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/11/10 19:09:17 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/22 16:48:55 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	skip_spaces(char *str, int i)
 	int	j;
 
 	j = 0;
-	while (is_space(str[i + j]))
+	while (check_space(str[i + j]))
 		j++;
 	return (j);
 }

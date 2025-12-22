@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:40:59 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/21 17:55:08 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/22 16:48:46 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,6 @@ int							handle_word(char *str, int i, t_lexer **list,
 								char *out_unclosed);
 int							skip_spaces(char *str, int i);
 int							handle_lexer(t_minishell *minishell);
-int							is_space(char c);
+int							check_space(char c);
 
 #endif
