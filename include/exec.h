@@ -48,5 +48,6 @@ int		wait_pair_set_right(t_minishell *msh, pid_t left, pid_t right);
 int		is_builtin(const char *cmd);
 int		exec_builtin(ast *node, t_env **env);
 void	change_envp(t_env *env, char ***envp);
+int		run_builtin_parent(t_minishell *msh, ast *node, int in_fd, int out_fd);
 
 #endif

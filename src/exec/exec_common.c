@@ -55,7 +55,6 @@ int	save_std_fds(t_fd_save *save)
 		return (1);
 	return (0);
 }
-
 /*
 ** 函数作用：
 ** 恢复之前保存的标准输入输出。
