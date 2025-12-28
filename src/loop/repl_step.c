@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:19:45 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/22 15:20:47 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 02:38:02 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@
 ** 返回：
 **   1 表示退出
 */
+
 static int	step_eof_main(void)
 {
-	printf("exit\n");
+	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
+		printf("exit\n");
 	return (1);
 }
 

@@ -6,17 +6,13 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:16:20 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/22 17:10:38 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 02:37:18 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REPL_H
 # define REPL_H
 
-# include <readline/history.h>
-# include <readline/readline.h>
-# include <stdio.h>
-# include <stdlib.h>
 # include "../libft/libft.h"
 # include "build_in.h"
 # include "error.h"
@@ -25,6 +21,11 @@
 # include "lexer.h"
 # include "parse.h"
 # include "signals.h"
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
 
 typedef struct s_ast		ast;
 typedef struct s_minishell	t_minishell;

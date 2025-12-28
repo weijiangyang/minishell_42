@@ -6,13 +6,12 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/22 15:18:58 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 02:39:27 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include "repl.h"
-
 
 /*
 ** 函数作用：
@@ -79,6 +78,7 @@ static void	run_drop_acc(t_minishell *ms, char **acc, int code)
 **   - LEX_NEED_MORE：保留 acc 等待续行
 **   - LEX_OK：add_history + parse/expand/exec + 清理
 **   - LEX_ERR：丢弃 acc，设置状态码
+- 非交互不 add_history
 ** 参数：
 **   ms：全局上下文
 **   acc：累计输入（函数可能 free 并置 NULL）
@@ -96,7 +96,7 @@ void	repl_run_acc(t_minishell *ms, char **acc)
 		return (ms->raw_line = NULL, (void)0);
 	if (lex_ret != LEX_OK)
 		return (run_drop_acc(ms, acc, 2));
-	if (repl_has_text(*acc))
+	if (repl_has_text(*acc) && isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
 		add_history(*acc);
 	run_parse_exec(ms);
 	run_clear_lexer(ms);

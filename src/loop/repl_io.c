@@ -6,45 +6,61 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:17:36 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/22 17:29:40 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 02:37:02 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include "repl.h"
 
+
+
+/* 作用：判断当前是否交互模式（stdin/stdout 都是 tty）。 */
+static int	repl_is_interactive(void)
+{
+	int	ok;
+
+	ok = 0;
+	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
+		ok = 1;
+	return (ok);
+}
+
 /*
 ** 函数作用：
-**   读一行输入：如果 acc 为空用主提示符，否则用续行提示符。
+**   读一行输入：
+**   - 交互模式：readline + prompt
+**   - 非交互模式（管道/文件喂给 stdin）：get_next_line，不输出 prompt
 ** 参数：
 **   acc：已累计的输入（NULL 表示第一行）
 ** 返回：
-**   readline 返回的堆字符串；Ctrl-D 时返回 NULL
+**   堆字符串；EOF 时返回 NULL
 */
 char	*repl_read(char *acc)
 {
 	char	*line;
 	char	*prompt;
+	size_t	len;
 
 	line = NULL;
 	prompt = "minishell$ ";
-	if (acc)
-		prompt = "> ";
-	line = readline(prompt);
+	len = 0;
+	if (repl_is_interactive())
+	{
+		if (acc)
+			prompt = "> ";
+		line = readline(prompt);
+		return (line);
+	}
+	line = get_next_line(STDIN_FILENO);
+	if (!line)
+		return (NULL);
+	len = ft_strlen(line);
+	if (len > 0 && line[len - 1] == '\n')
+		line[len - 1] = '\0';
 	return (line);
 }
 
-/*
-** 函数作用：
-**   把 line 拼接进 acc：
-**   - acc 为 NULL：acc = strdup(line)
-**   - acc 非 NULL：acc = acc + "\n" + line
-** 参数：
-**   acc：指向累计字符串的指针
-**   line：新读入的一行（函数内部会 free(line)）
-** 返回：
-**   1 成功，0 失败（malloc 失败）
-*/
 int	repl_join(char **acc, char *line)
 {
 	char	*tmp;
@@ -80,14 +96,6 @@ int	repl_join(char **acc, char *line)
 	return (1);
 }
 
-/*
-** 函数作用：
-**   判断 s 是否含有非空白字符（用于决定是否 add_history）。
-** 参数：
-**   s：字符串
-** 返回：
-**   1 表示有内容，0 表示全是空白或为空
-*/
 int	repl_has_text(const char *s)
 {
 	int	i;

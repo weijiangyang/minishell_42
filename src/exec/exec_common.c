@@ -6,17 +6,22 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 19:07:52 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/18 18:37:44 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/27 19:14:01 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
 #include "../../include/exec.h"
+#include "../../include/minishell.h"
 
 /*
 ** 函数作用：
 ** 把 in_fd 接到标准输入，把 out_fd 接到标准输出。
 ** 如果传进来的 fd 不是标准 fd，就 dup2 后把原 fd 关闭，防止泄漏。
+** 参数：
+** in_fd：要作为 stdin 的 fd（>=0 才处理）
+** out_fd：要作为 stdout 的 fd（>=0 才处理）
+** 返回：
+** 成功返回 0；失败返回 -1
 */
 int	dup_in_out_or_close(int in_fd, int out_fd)
 {
@@ -25,6 +30,8 @@ int	dup_in_out_or_close(int in_fd, int out_fd)
 		if (dup2(in_fd, STDIN_FILENO) < 0)
 		{
 			close(in_fd);
+			if (out_fd >= 0 && out_fd != STDOUT_FILENO)
+				close(out_fd); /* 修改：避免 out_fd 泄漏 */
 			return (-1);
 		}
 		close(in_fd);
