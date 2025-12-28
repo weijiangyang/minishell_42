@@ -168,7 +168,7 @@ void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	if (has_bad_heredoc(node->redir))
 		_exit(1);
 	close_heredoc_fds(node->redir);
-	if (dup_in_out_or_close(in_fd, out_fd) <= 0)
+	if (dup_in_out_or_close(in_fd, out_fd) < 0)
 		_exit(1);
 	if (node->argv && node->argv[0] && is_builtin(node->argv[0]))
 		_exit(exec_builtin(node, &msh->env));
