@@ -56,11 +56,11 @@ static int run_builtin_child_logic(t_minishell *msh, ast *node, int in_fd, int o
 }
 
 /*
-*判断内置命令是否需要在父进程中执行
-*需要在父进程中执行的内置命令（例如 cd, export, exit 等）
-*对于不需要在父进程中执行的内置命令，创建子进程->在子进程中执行的逻辑->子进程退出时返回结果->父进程中等待子进程结束->获取子进程的退出状态
-*返回退出码
-*/
+ *判断内置命令是否需要在父进程中执行
+ *需要在父进程中执行的内置命令（例如 cd, export, exit 等）
+ *对于不需要在父进程中执行的内置命令，创建子进程->在子进程中执行的逻辑->子进程退出时返回结果->父进程中等待子进程结束->获取子进程的退出状态
+ *返回退出码
+ */
 int run_builtin_parent(t_minishell *msh, ast *node, int in_fd, int out_fd)
 {
     pid_t pid;
@@ -84,11 +84,8 @@ int run_builtin_parent(t_minishell *msh, ast *node, int in_fd, int out_fd)
         else
         {
             int status;
-            waitpid(pid, &status, 0);
-            if (WIFEXITED(status))
-                ret = WEXITSTATUS(status); 
-            else
-                ret = 1;
+            if (waitpid(pid, &status, 0) > 0)
+                set_status_from_wait(msh, status);
         }
     }
     return ret;
