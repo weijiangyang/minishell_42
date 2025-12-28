@@ -6,133 +6,117 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:27:46 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/18 18:19:24 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 13:10:27 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec_pipe.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/15 19:27:46 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/18 18:00:00 by yzhang2          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../../include/minishell.h"
 #include "../../include/exec.h"
+#include "../../include/minishell.h"
 
 
 /*
-** 函数作用：
-** 子进程执行一个子节点（CMD 或 PIPE），并用 exit 结束进程。
-** 这样管道里每一段都会在自己的进程里跑。
+** 函数作用：等待所有子进程结束，并把“最后一个命令”的退出码写回 msh。
+** 解释（初中生版）：
+** 一条管道 a | b | c 会 fork 出 3 个子进程。
+** bash 默认把“最后一个命令 c”的退出码当作整条管道的退出码。
 */
-static void	child_run_node(t_minishell *msh, ast *sub, int in_fd, int out_fd)
+static void	wait_all_and_set_last(t_minishell *msh, pid_t *pids, int n)
 {
-	int	ret;
+	int	i;
+	int	st;
 
-	ret = 0;
-	if (dup_in_out_or_close(in_fd, out_fd) < 0)
-		_exit(1);
-	if (!sub)
-		_exit(0);
-	if (sub->type == NODE_CMD)
-		child_exec_one(msh, sub, -1, -1);
-	if (sub->type == NODE_PIPE)
+	i = 0;
+	st = 0;
+	while (i < n)
 	{
-		ret = exec_pipe_node(msh, sub, -1, -1);
-		_exit(ret);
+		if (waitpid(pids[i], &st, 0) == pids[n - 1])
+			set_status_from_wait(msh, st);
+		i = i + 1;
 	}
-	_exit(0);
 }
 
 /*
-** 函数作用：
-** fork 出左边子进程：左边把输出写到管道写端。
+** 函数作用：执行 pipeline 的第 i 段（第 i 个命令）。
+** 做的事（初中生版）：
+** 1) 如果后面还有命令，就创建一个管道 pipe()
+** 2) fork 一个子进程，让子进程跑 child_exec_one()
+** 3) 父进程把不需要的 fd 关掉，并把“下一段要读的 fd”保存起来
+** 返回值：成功 1，失败 0
 */
-static pid_t	fork_left(t_minishell *msh, ast *node, int in_fd, int pfd[2])
+static int	pipe_run_step(t_minishell *msh, ast **arr, pid_t *pids,
+		int *in_fd, int out_fd, int i, int n)
 {
+	int		pfd[2];
+	int		child_out;
 	pid_t	pid;
 
-	pid = fork();
-	if (pid < 0)
-		return (ms_perror("fork"), msh->last_exit_status = 1, -1);
-	if (pid == 0)
+	pfd[0] = -1;
+	pfd[1] = -1;
+	if (i < n - 1)
 	{
-		close(pfd[0]);
-		child_run_node(msh, node, in_fd, pfd[1]);
+		if (pipe(pfd) < 0)
+			return (0);
+		child_out = pfd[1];
 	}
-	return (pid);
-}
-
-/*
-** 函数作用：
-** fork 出右边子进程：右边从管道读端读取输入。
-*/
-static pid_t	fork_right(t_minishell *msh, ast *node, int out_fd, int pfd[2])
-{
-	pid_t	pid;
-
+	else
+		child_out = out_fd;
 	pid = fork();
 	if (pid < 0)
-		return (ms_perror("fork"), msh->last_exit_status = 1, -1);
-	if (pid == 0)
 	{
+		if (pfd[0] != -1)
+			close(pfd[0]);
+		if (pfd[1] != -1)
+			close(pfd[1]);
+		return (0);
+	}
+	if (pid == 0)
+		child_exec_one(msh, arr[i], *in_fd, child_out);
+	pids[i] = pid;
+	if (*in_fd > STDERR_FILENO)
+		close(*in_fd);
+	if (pfd[1] != -1)
 		close(pfd[1]);
-		child_run_node(msh, node, pfd[0], out_fd);
-	}
-	return (pid);
+	*in_fd = pfd[0];
+	return (1);
 }
 
 /*
-** 函数作用：
-** 父进程关闭自己不再使用的 fd，防止 fd 泄漏。
-*/
-static void	close_parent_fds(int in_fd, int out_fd, int pfd[2])
-{
-	close(pfd[0]);
-	close(pfd[1]);
-	if (in_fd > STDERR_FILENO)
-		close(in_fd);
-	if (out_fd > STDERR_FILENO)
-		close(out_fd);
-}
-
-/*
-** 函数作用：
-** 执行管道节点：左边写管道，右边读管道。
-** 最终返回右边命令的退出码，和 bash 一样。
-** 关键修复：
-** - pipe() 失败时，关闭传进来的 in_fd/out_fd（非 STD），避免父进程泄露。
+** 函数作用：执行“任意长度”的 pipeline：a|b|c|...
+** 参数：
+** - node：PIPE 根节点
+** - in_fd/out_fd：本条 pipeline 的输入输出（一般就是 STDIN/STDOUT）
+** 返回值：成功 1，失败 0
+**
+** 重点行为（贴 bash）：
+** - 即使前面命令不存在（exit 127），后面的命令也照样会 fork 执行
+** - 整条管道的退出码 = 最后一个命令的退出码（bash 默认 pipefail 关闭）
 */
 int	exec_pipe_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 {
-	int		pfd[2];
-	pid_t	left;
-	pid_t	right;
+	ast		**arr;
+	pid_t	*pids;
+	int		n;
+	int		i;
+	int		ok;
 
-	if (!node || !node->left || !node->right)
+	arr = NULL;
+	n = 0;
+	ok = pipe_collect(node, &arr, &n);
+	if (!ok)
 		return (0);
-	if (pipe(pfd) < 0)
+	pids = (pid_t *)malloc(sizeof(*pids) * n);
+	if (!pids)
+		return (free(arr), 0);
+	i = 0;
+	while (i < n && ok)
 	{
-		ms_perror("pipe");
-		if (in_fd > STDERR_FILENO)
-			close(in_fd);
-		if (out_fd > STDERR_FILENO)
-			close(out_fd);
-		msh->last_exit_status = 1;
-		return (1);
+		ok = pipe_run_step(msh, arr, pids, &in_fd, out_fd, i, n);
+		i = i + 1;
 	}
-	left = fork_left(msh, node->left, in_fd, pfd);
-	if (left < 0)
-		return (close_parent_fds(in_fd, out_fd, pfd), 1);
-	right = fork_right(msh, node->right, out_fd, pfd);
-	if (right < 0)
-		return (close_parent_fds(in_fd, out_fd, pfd), waitpid(left, NULL, 0),
-			1);
-	close_parent_fds(in_fd, out_fd, pfd);
-	return (wait_pair_set_right(msh, left, right));
+	if (in_fd > STDERR_FILENO)
+		close(in_fd);
+	wait_all_and_set_last(msh, pids, i);
+	free(pids);
+	free(arr);
+	return (ok);
 }
