@@ -1,5 +1,6 @@
 #include "../../include/exec.h"
 #include "../../include/minishell.h"
+#include "../../libft/libft.h"
 #include "error.h"
 
 // 判断命令是否需要在父进程中执行,一些改变进程状态的命令，如 cd, export, unset, exit 等，通常在父进程执行
@@ -65,42 +66,29 @@ int run_builtin_parent(t_minishell *msh, ast *node, int in_fd, int out_fd)
     pid_t pid;
     int ret = 1;
 
-    // 
     if (is_builtin_parent(node->argv[0]))
-    {
-        // 
         ret = run_builtin_parent_logic(msh, node, in_fd, out_fd);
-    }
     else
     {
-        // 
         pid = fork();
         if (pid == -1)
         {
-            // fork 出错，返回失败
             perror("fork failed");
             return 1;
         }
-
         if (pid == 0)
-        { // 子进程中执行
-            // 
+        {
             ret = run_builtin_child_logic(msh, node, in_fd, out_fd);
-            exit(ret); // 
+            exit(ret);
         }
         else
-        { // 
+        {
             int status;
-            waitpid(pid, &status, 0); // 
-
+            waitpid(pid, &status, 0);
             if (WIFEXITED(status))
-            {
-                ret = WEXITSTATUS(status); // 获取子进程的退出状态
-            }
+                ret = WEXITSTATUS(status); 
             else
-            {
                 ret = 1;
-            }
         }
     }
     return ret;
