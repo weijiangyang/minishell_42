@@ -6,35 +6,21 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:27:46 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/27 16:51:19 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 13:10:27 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/exec.h"
 #include "../../include/minishell.h"
 
-/*
-** 函数作用：把 PIPE 树摊平成数组 [a,b,c]（在新文件里实现）
-** 参数含义：root(PIPE 根), out_arr(输出数组), out_n(输出段数)
-** 返回值：成功 1，失败 0
-*/
-
-typedef struct s_pipe_run
-{
-	ast		**arr;
-	pid_t	*pids;
-	int		n;
-	int		i;
-	int		in;
-	int		out_fd;
-	int		pfd[2];
-}			t_pipe_run;
 
 /*
-** 函数作用：等所有子进程结束，并把“最后一个命令”的退出码写回 msh
-** 参数含义：msh(全局上下文), pids(pid 数组), n(进程数)
+** 函数作用：等待所有子进程结束，并把“最后一个命令”的退出码写回 msh。
+** 解释（初中生版）：
+** 一条管道 a | b | c 会 fork 出 3 个子进程。
+** bash 默认把“最后一个命令 c”的退出码当作整条管道的退出码。
 */
-static void	pipe_wait_last(t_minishell *msh, pid_t *pids, int n)
+static void	wait_all_and_set_last(t_minishell *msh, pid_t *pids, int n)
 {
 	int	i;
 	int	st;
@@ -50,64 +36,87 @@ static void	pipe_wait_last(t_minishell *msh, pid_t *pids, int n)
 }
 
 /*
-** 函数作用：执行 pipeline 的“第 i 段”，并在父进程更新下一段的输入 fd
-** 参数含义：msh(全局上下文), st(管道运行状态，包含第几段/哪些fd)
+** 函数作用：执行 pipeline 的第 i 段（第 i 个命令）。
+** 做的事（初中生版）：
+** 1) 如果后面还有命令，就创建一个管道 pipe()
+** 2) fork 一个子进程，让子进程跑 child_exec_one()
+** 3) 父进程把不需要的 fd 关掉，并把“下一段要读的 fd”保存起来
 ** 返回值：成功 1，失败 0
 */
-static int	pipe_step(t_minishell *msh, t_pipe_run *st)
+static int	pipe_run_step(t_minishell *msh, ast **arr, pid_t *pids,
+		int *in_fd, int out_fd, int i, int n)
 {
+	int		pfd[2];
+	int		child_out;
 	pid_t	pid;
-	int		out;
 
-	st->pfd[0] = -1;
-	st->pfd[1] = -1;
-	if (st->i < st->n - 1 && pipe(st->pfd) < 0)
-		return (0);
-	out = st->out_fd;
-	if (st->i < st->n - 1)
-		out = st->pfd[1];
+	pfd[0] = -1;
+	pfd[1] = -1;
+	if (i < n - 1)
+	{
+		if (pipe(pfd) < 0)
+			return (0);
+		child_out = pfd[1];
+	}
+	else
+		child_out = out_fd;
 	pid = fork();
 	if (pid < 0)
-		return (close(st->pfd[0]), close(st->pfd[1]), 0);
+	{
+		if (pfd[0] != -1)
+			close(pfd[0]);
+		if (pfd[1] != -1)
+			close(pfd[1]);
+		return (0);
+	}
 	if (pid == 0)
-		child_exec_one(msh, st->arr[st->i], st->in, out);
-	st->pids[st->i] = pid;
-	if (st->in != -1)
-		close(st->in);
-	if (st->pfd[1] != -1)
-		close(st->pfd[1]);
-	st->in = st->pfd[0];
-	st->i = st->i + 1;
+		child_exec_one(msh, arr[i], *in_fd, child_out);
+	pids[i] = pid;
+	if (*in_fd > STDERR_FILENO)
+		close(*in_fd);
+	if (pfd[1] != -1)
+		close(pfd[1]);
+	*in_fd = pfd[0];
 	return (1);
 }
 
 /*
 ** 函数作用：执行“任意长度”的 pipeline：a|b|c|...
-** 参数含义：msh(全局上下文), node(PIPE 根), in_fd(输入fd), out_fd(输出fd)
+** 参数：
+** - node：PIPE 根节点
+** - in_fd/out_fd：本条 pipeline 的输入输出（一般就是 STDIN/STDOUT）
 ** 返回值：成功 1，失败 0
+**
+** 重点行为（贴 bash）：
+** - 即使前面命令不存在（exit 127），后面的命令也照样会 fork 执行
+** - 整条管道的退出码 = 最后一个命令的退出码（bash 默认 pipefail 关闭）
 */
 int	exec_pipe_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 {
-	t_pipe_run	st;
-	int			ok;
+	ast		**arr;
+	pid_t	*pids;
+	int		n;
+	int		i;
+	int		ok;
 
-	st.arr = NULL;
-	st.n = 0;
-	ok = pipe_collect(node, &st.arr, &st.n);
-	if (ok == 0)
+	arr = NULL;
+	n = 0;
+	ok = pipe_collect(node, &arr, &n);
+	if (!ok)
 		return (0);
-	st.pids = (pid_t *)malloc(sizeof(*st.pids) * st.n);
-	if (st.pids == NULL)
-		return (free(st.arr), 0);
-	st.i = 0;
-	st.in = in_fd;
-	st.out_fd = out_fd;
-	while (st.i < st.n && ok == 1)
-		ok = pipe_step(msh, &st);
-	if (st.in != -1)
-		close(st.in);
-	pipe_wait_last(msh, st.pids, st.i);
-	free(st.pids);
-	free(st.arr);
+	pids = (pid_t *)malloc(sizeof(*pids) * n);
+	if (!pids)
+		return (free(arr), 0);
+	i = 0;
+	while (i < n && ok)
+	{
+		ok = pipe_run_step(msh, arr, pids, &in_fd, out_fd, i, n);
+		i = i + 1;
+	}
+	if (in_fd > STDERR_FILENO)
+		close(in_fd);
+	wait_all_and_set_last(msh, pids, i);
+	free(pids);
+	free(arr);
 	return (ok);
 }

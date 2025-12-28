@@ -6,20 +6,25 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:03:49 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/27 16:51:09 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 04:53:30 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXEC_H
 # define EXEC_H
 
+# include "../libft/libft.h"
 # include "build_in.h"
 # include "error.h"
 # include "parse.h"
 # include "signals.h"
+# include <errno.h>
+# include <fcntl.h>
 # include <stdlib.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+#include <string.h>
 
 typedef struct s_fd_save
 {

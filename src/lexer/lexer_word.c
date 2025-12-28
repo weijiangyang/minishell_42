@@ -6,12 +6,27 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 07:53:56 by yzhang2           #+#    #+#             */
+/*   Updated: 2025/12/28 03:20:20 by yzhang2          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/lexer.h"
+#include "../../include/minishell.h"
+#include "../../libft/libft.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_word.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 07:53:56 by yzhang2           #+#    #+#             */
 /*   Updated: 2025/12/22 16:49:21 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
 #include "../../include/lexer.h"
+#include "../../include/minishell.h"
 #include "../../libft/libft.h"
 
 // 作用：是否为空白字符。
@@ -28,7 +43,6 @@ int	check_space(char c)
  *  - LEX_UNCLOSED_QUOTE (-2) : 发现未闭合引号，并设置 *out_unclosed 为 '\'' 或 '"'
  *  - <0 且 != LEX_UNCLOSED_QUOTE : 其它错误（保持原有 -1 语义用于内存/异常）
  */
-
 static int	calc_word_len(char *str, int start_i, char *out_unclosed)
 {
 	int	j;
@@ -58,17 +72,26 @@ static int	calc_word_len(char *str, int start_i, char *out_unclosed)
 		if (!str[start_i + j] || check_space(str[start_i + j]))
 			break ;
 		else if (str[start_i + j] == 34 || str[start_i + j] == 39)
-			continue ; /* 修改：引号后紧跟引号，不要 j++，让下一轮去 match_quotes 吃掉它 */
+			continue ; /* 引号后紧跟引号，不要 j++，让下一轮去 match_quotes 吃掉它 */
 		else
 			j++;
 	}
 	return (j);
 }
 
-// 作用：对提取出的原始子串做**引号处理与属性标记**，并填入 `info`。
-// 参数：`substr` 截取的原文；`info` 临时节点信息。
-// 逻辑：调用 `remove_quotes_flag`，拿到去壳文本与“出现过单/双引号”的标志，记录到 `info`；
-// 失败时清理并返回负值。
+// 作用：对截取出的 word 子串做“去引号 + 记录引号属性”，写进 info。
+// 重点：你项目 parser 用 token->raw 来建 argv，所以 raw 必须永远有效。
+/*
+** 关键修复：
+** remove_quotes_flag() 在“没有任何引号”时会返回 NULL。
+** 这不是错误，只代表：不需要去引号。
+**
+** parser 目前用 token->raw 来构建 argv。
+** 所以让 raw 永远是“最终该交给执行器的字符串”：
+**   - 无引号：raw = substr
+**   - 有引号：raw = clean（去掉包裹引号）
+** 这样就不会出现：echo 被丢掉、把第二个参数当命令、参数还带着引号等问题。
+*/
 static int	process_word_data(char *substr, t_token_info *info)
 {
 	char	*clean;
@@ -78,7 +101,7 @@ static int	process_word_data(char *substr, t_token_info *info)
 			&info->quoted_double);
 	if (!clean)
 	{
-		info->raw = NULL;
+		info->raw = substr;
 		info->clean = substr;
 		info->had_quotes = 0;
 		info->quoted_single = 0;
@@ -86,20 +109,30 @@ static int	process_word_data(char *substr, t_token_info *info)
 	}
 	else
 	{
-		info->raw = substr;
+		free(substr);
+		info->raw = clean;
 		info->clean = clean;
 	}
 	return (1);
 }
 
-// 作用：根据 `info` 构造 `WORD` 节点并追加到链表。
-// 参数：`info`、链表头地址。
-// 逻辑：调用 `add_node(info, WORD, list)`；根据返回值判断是否成功，失败回滚需要的内存。
+// 作用：把 info 变成一个 WORD token 节点，追加进 lexer 链表。
+// 如果 add_node 失败，要把本次创建的内存释放掉（避免泄漏）。
 static int	finalize_word_node(t_token_info *info, t_lexer **list)
 {
 	if (!add_node(info, TOK_WORD, list))
 	{
-		if (info->raw)
+		/*
+		** 失败回滚：raw/clean 可能是同一块内存，也可能是两块。
+		** - 无引号：raw == clean（同一块）→ 只 free 一次
+		** - 有引号：raw(含引号) != clean(去引号后) → 两块都要 free
+		*/
+		if (info->raw && info->clean && info->raw != info->clean)
+		{
+			free(info->raw);
+			free(info->clean);
+		}
+		else if (info->raw)
 			free(info->raw);
 		else if (info->clean)
 			free(info->clean);
@@ -108,10 +141,12 @@ static int	finalize_word_node(t_token_info *info, t_lexer **list)
 	return (1);
 }
 
-/* handle_word: 新签名，见 lexer.h
- * 当发现未闭合引号时返回 LEX_UNCLOSED_QUOTE，并不做打印或 readline；
- * 其余行为保持原逻辑：成功返回消费长度 j；出错返回 -1。
- */
+/*
+** handle_word：
+** - 成功：返回本次吃掉的字符数 j
+** - 未闭合引号：返回 LEX_UNCLOSED_QUOTE（不在 lexer 内部 readline）
+** - 失败：返回 -1
+*/
 int	handle_word(char *str, int i, t_lexer **list, char *out_unclosed)
 {
 	int				j;
@@ -120,7 +155,6 @@ int	handle_word(char *str, int i, t_lexer **list, char *out_unclosed)
 
 	j = 0;
 	substr = NULL;
-	/* 调用改造后的 calc_word_len，获取是否有未闭合引号 */
 	j = calc_word_len(str, i, out_unclosed);
 	if (j == LEX_UNCLOSED_QUOTE)
 		return (LEX_UNCLOSED_QUOTE);
