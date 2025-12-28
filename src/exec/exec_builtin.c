@@ -28,7 +28,7 @@ static int run_builtin_parent_logic(t_minishell *msh, ast *node, int in_fd, int 
         restore_std_fds(&save);
         return 1;
     }
-    ret = exec_builtin(node, &msh->env);
+    ret = exec_builtin(node, &msh->env, msh);
     change_envp(msh->env, &msh->envp);
     exec_refresh_paths(msh);
     restore_std_fds(&save);
@@ -50,7 +50,7 @@ static int run_builtin_child_logic(t_minishell *msh, ast *node, int in_fd, int o
         restore_std_fds(&save);
         return 1;
     }
-    ret = exec_builtin(node, &msh->env);
+    ret = exec_builtin(node, &msh->env, msh);
     restore_std_fds(&save);
     return ret;
 }
