@@ -6,108 +6,96 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:17:36 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/28 02:37:02 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 17:22:33 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include "repl.h"
 
-
-
-/* 作用：判断当前是否交互模式（stdin/stdout 都是 tty）。 */
-static int	repl_is_interactive(void)
+/*
+** 函数作用：
+**   读取用户一行输入（readline）。
+** 提示符规则：
+**   - acc 有内容：说明在续行 → "> "
+**   - acc 为空：主提示符 → "minishell$ "
+** 非交互模式（stdin 不是 tty）：
+**   - 不打印提示符（prompt 传空串）。
+*/
+char	*repl_read(char *acc)
 {
-	int	ok;
+	char	*prompt;
 
-	ok = 0;
-	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
-		ok = 1;
-	return (ok);
+	prompt = "minishell$ ";
+	if (acc)
+		prompt = "> ";
+	if (!isatty(STDIN_FILENO))
+		prompt = "";
+	return (readline(prompt));
 }
 
 /*
 ** 函数作用：
-**   读一行输入：
-**   - 交互模式：readline + prompt
-**   - 非交互模式（管道/文件喂给 stdin）：get_next_line，不输出 prompt
-** 参数：
-**   acc：已累计的输入（NULL 表示第一行）
-** 返回：
-**   堆字符串；EOF 时返回 NULL
+**   判断字符串里是否有非空白字符。
+** 说明：
+**   用户只输入空格/Tab/回车时，不应该当作一条命令。
 */
-char	*repl_read(char *acc)
-{
-	char	*line;
-	char	*prompt;
-	size_t	len;
-
-	line = NULL;
-	prompt = "minishell$ ";
-	len = 0;
-	if (repl_is_interactive())
-	{
-		if (acc)
-			prompt = "> ";
-		line = readline(prompt);
-		return (line);
-	}
-	line = get_next_line(STDIN_FILENO);
-	if (!line)
-		return (NULL);
-	len = ft_strlen(line);
-	if (len > 0 && line[len - 1] == '\n')
-		line[len - 1] = '\0';
-	return (line);
-}
-
-int	repl_join(char **acc, char *line)
-{
-	char	*tmp;
-	size_t	a;
-	size_t	b;
-
-	tmp = NULL;
-	a = 0;
-	b = 0;
-	if (!acc || !line)
-		return (0);
-	if (*acc == NULL)
-	{
-		tmp = ft_strdup(line);
-		free(line);
-		if (!tmp)
-			return (0);
-		*acc = tmp;
-		return (1);
-	}
-	a = ft_strlen(*acc);
-	b = ft_strlen(line);
-	tmp = malloc(a + 1 + b + 1);
-	if (!tmp)
-		return (free(line), 0);
-	ft_memcpy(tmp, *acc, a);
-	tmp[a] = '\n';
-	ft_memcpy(tmp + a + 1, line, b);
-	tmp[a + 1 + b] = '\0';
-	free(*acc);
-	free(line);
-	*acc = tmp;
-	return (1);
-}
-
 int	repl_has_text(const char *s)
 {
 	int	i;
 
-	i = 0;
 	if (!s)
 		return (0);
+	i = 0;
 	while (s[i])
 	{
-		if (check_space(s[i]) == 0)
+		if (!check_space((unsigned char)s[i]))
 			return (1);
-		i = i + 1;
+		i++;
 	}
 	return (0);
+}
+
+/*
+** 函数作用：
+**   把 line 拼到 acc 后面。
+** 规则：
+**   - acc 为空：acc = strdup(line)
+**   - acc 非空：acc = acc + "\n" + line
+*/
+int	repl_join(char **acc, char *line)
+{
+	char	*tmp;
+
+	if (!acc || !line)
+		return (0);
+	if (!*acc)
+	{
+		*acc = ft_strdup(line);
+		return (*acc != NULL);
+	}
+	tmp = ft_strjoin(*acc, "\n");
+	free(*acc);
+	*acc = tmp;
+	if (!*acc)
+		return (0);
+	tmp = ft_strjoin(*acc, line);
+	free(*acc);
+	*acc = tmp;
+	return (*acc != NULL);
+}
+
+/*
+** 函数作用：
+**   释放 acc（累计输入缓冲区），并把指针置为 NULL。
+** 为什么要这样写：
+**   - 置 NULL 可以防止“二次 free”这种常见 bug。
+*/
+void	repl_free_acc(char **acc)
+{
+	if (!acc)
+		return ;
+	if (*acc)
+		free(*acc);
+	*acc = NULL;
 }

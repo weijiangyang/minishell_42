@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/28 02:39:27 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 17:47:45 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,90 +15,69 @@
 
 /*
 ** 函数作用：
-**   清理 lexer 生成的 token 链表，避免内存泄漏。
-** 参数：
-**   ms：全局上下文
+**   命令执行完之后，清理当前 acc（累计输入），并重置 lexer 状态。
+** err_code：
+**   - 0：正常清空
+**   - 2：语法/词法错误（和 bash 一样返回 2）
 */
-static void	run_clear_lexer(t_minishell *ms)
+static void	run_drop_acc(t_minishell *ms, char **acc, int err_code)
 {
-	if (!ms)
-		return ;
-	if (ms->lexer)
-		clear_list(&ms->lexer);
+	if (err_code != 0)
+		ms->last_exit_status = err_code;
+	repl_free_acc(acc);
+	ms->raw_line = NULL;
+	ms->lexer_need_more = 0;
+	ms->lexer_unclosed_quote = 0;
 }
 
 /*
 ** 函数作用：
-**   parse + expand + exec 一条完整命令。
-** 参数：
-**   ms：全局上下文（ms->lexer 里是 token 链表）
+**   真正执行一条“已经完成”的命令：
+**   lexer -> parser -> expander -> exec -> free
 */
-static void	run_parse_exec(t_minishell *ms)
+static void	run_one_cmd(t_minishell *ms)
 {
 	ast		*root;
-	t_lexer	*cur;
+	t_lexer	*tmp;
 
-	root = NULL;
-	cur = NULL;
-	if (!ms)
-		return ;
-	cur = ms->lexer;
-	root = parse_cmdline(&cur, ms);
-	if (root)
+	tmp = ms->lexer;
+	root = parse_cmdline(&tmp, ms);
+	if (!root)
 	{
-		expander_ast(ms, root);
-		exec_ast(ms, root);
-		free_ast(root);
+		ms->last_exit_status = 2;
+		clear_list(&ms->lexer);
+		return ;
 	}
+	expander_ast(ms, root);
+	exec_ast(ms, root);
+	free_ast(root);
+	clear_list(&ms->lexer);
 }
 
 /*
 ** 函数作用：
-**   执行结束或报错时，释放 acc 并重置 raw_line。
-** 参数：
-**   ms：全局上下文
-**   acc：累计输入
-**   code：要写入的退出码（你们字段名若不同，请改这里）
-*/
-static void	run_drop_acc(t_minishell *ms, char **acc, int code)
-{
-	if (ms)
-		ms->last_exit_status = code;
-	if (acc && *acc)
-		free(*acc);
-	if (acc)
-		*acc = NULL;
-	if (ms)
-		ms->raw_line = NULL;
-}
-
-/*
-** 函数作用：
-**   把 acc 交给 lexer：
-**   - LEX_NEED_MORE：保留 acc 等待续行
-**   - LEX_OK：add_history + parse/expand/exec + 清理
-**   - LEX_ERR：丢弃 acc，设置状态码
-- 非交互不 add_history
-** 参数：
-**   ms：全局上下文
-**   acc：累计输入（函数可能 free 并置 NULL）
+**   拿着 acc 去做 lexer/parse/exec。
+** 注意：
+**   - 如果 lexer 发现“引号没闭合”，会返回 LEX_NEED_MORE；
+**     这时不执行，只保留 acc，下一轮用 \"> \" 继续读。
 */
 void	repl_run_acc(t_minishell *ms, char **acc)
 {
 	int	lex_ret;
 
-	lex_ret = 0;
-	if (!ms || !acc || !*acc)
-		return ;
+	if (!repl_has_text(*acc))
+		return (run_drop_acc(ms, acc, 0));
 	ms->raw_line = *acc;
 	lex_ret = handle_lexer(ms);
 	if (lex_ret == LEX_NEED_MORE)
-		return (ms->raw_line = NULL, (void)0);
+	{
+		ms->raw_line = NULL;
+		return ;
+	}
 	if (lex_ret != LEX_OK)
 		return (run_drop_acc(ms, acc, 2));
-	if (repl_has_text(*acc) && isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
+	if (isatty(STDIN_FILENO) && repl_has_text(*acc))
 		add_history(*acc);
-	run_parse_exec(ms);
-	run_clear_lexer(ms);
-	run_drop_acc(ms, acc, ms->last_exit_status);
+	run_one_cmd(ms);
+	run_drop_acc(ms, acc, 0);
 }

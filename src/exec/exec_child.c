@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 00:15:10 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/28 12:50:05 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/28 16:13:25 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	if (has_bad_heredoc(node->redir))
 		_exit(1);
 	close_heredoc_fds(node->redir);
-	if (dup_in_out_or_close(in_fd, out_fd) <= 0)
+	if (dup_in_out_or_close(in_fd, out_fd) < 0)
 		_exit(1);
 	if (node->argv && node->argv[0] && is_builtin(node->argv[0]))
 		_exit(exec_builtin(node, &msh->env));
