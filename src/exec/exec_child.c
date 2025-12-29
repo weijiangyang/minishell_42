@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 00:15:10 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/28 16:13:25 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/29 02:54:38 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,57 +121,55 @@ static void	child_exec_external(t_minishell *msh, ast *node)
 
 	argv = node->argv;
 	if (!argv || !argv[0])
-		_exit(0);
+		exit(0);
 	change_envp(msh->env, &msh->envp);
 	path = find_cmd_path(msh, argv[0]);
 	if (!path)
 	{
 		ms_err_cmd_not_found(argv[0]);
-		_exit(127);
+		exit(127);
 	}
 	if (path_is_dir(path))
 	{
 		ms_err_exec(argv[0], EISDIR);
 		free(path);
-		_exit(126);
+		exit(126);
 	}
 	execve(path, argv, msh->envp);
 	err = errno;
 	if (try_print_bad_interpreter(argv[0], path, err))
 	{
 		free(path);
-		_exit(126);
+		exit(126);
 	}
 	ms_err_exec(argv[0], err);
 	code = 127;
 	if (err == EACCES || err == EISDIR)
 		code = 126;
 	free(path);
-	_exit(code);
+	exit(code);
 }
 
-/*
-** 函数作用：子进程执行一个命令节点（包含 builtin / external）。
-** 参数：
-** - in_fd/out_fd：上层（管道/重定向）算好的输入输出 fd。
-** 做的事：
-** 1) heredoc 失败就不执行命令
-** 2) 关闭 heredoc fd
-** 3) dup2 把 in/out 接到标准输入输出
-** 4) builtin：执行并用返回码退出
-** 5) external：execve
-*/
+
+// ** 函数作用：子进程执行一个命令节点（包含 builtin / external）。
 void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd)
 {
+	int	new_in;
+	int	new_out;
+
 	if (!msh || !node || node->type != NODE_CMD)
-		_exit(1);
+		exit(1);
 	if (has_bad_heredoc(node->redir))
-		_exit(1);
+		exit(1);
+	new_in = in_fd;
+	new_out = out_fd;
+	if (apply_redir_list(node->redir, &new_in, &new_out) < 0)
+		exit(1);
 	close_heredoc_fds(node->redir);
-	if (dup_in_out_or_close(in_fd, out_fd) < 0)
-		_exit(1);
+	if (dup_in_out_or_close(new_in, new_out) < 0)
+		exit(1);
 	if (node->argv && node->argv[0] && is_builtin(node->argv[0]))
-		_exit(exec_builtin(node, &msh->env));
+		exit(exec_builtin(node, &msh->env));
 	child_exec_external(msh, node);
-	_exit(1);
+	exit(1);
 }
