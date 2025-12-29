@@ -6,16 +6,46 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:17:36 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/28 17:22:33 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/29 18:10:57 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include "repl.h"
 
+static void	chomp_newline(char *s)
+{
+	int	i;
+
+	if (!s)
+		return ;
+	i = 0;
+	while (s[i])
+		i = i + 1;
+	if (i > 0 && s[i - 1] == '\n')
+		s[i - 1] = '\0';
+}
+
+static char	*ms_read_line(const char *prompt)
+{
+	char	*line;
+
+	line = NULL;
+	if (isatty(STDIN_FILENO))
+		line = readline(prompt);
+	else
+	{
+		/* 非交互：必须用 get_next_line，避免 readline 回显输入 */
+		line = get_next_line(STDIN_FILENO);
+		if (line)
+			chomp_newline(line);
+	}
+	return (line);
+}
+
 /*
 ** 函数作用：
-**   读取用户一行输入（readline）。
+**   读取用户一行输入。
 ** 提示符规则：
 **   - acc 有内容：说明在续行 → "> "
 **   - acc 为空：主提示符 → "minishell$ "
@@ -26,12 +56,15 @@ char	*repl_read(char *acc)
 {
 	char	*prompt;
 
-	prompt = "minishell$ ";
-	if (acc)
-		prompt = "> ";
-	if (!isatty(STDIN_FILENO))
-		prompt = "";
-	return (readline(prompt));
+	prompt = "";
+	if (isatty(STDIN_FILENO))
+	{
+		if (acc && acc[0] != '\0')
+			prompt = "> ";
+		else
+			prompt = "minishell$ ";
+	}
+	return (ms_read_line(prompt));
 }
 
 /*
@@ -83,19 +116,4 @@ int	repl_join(char **acc, char *line)
 	free(*acc);
 	*acc = tmp;
 	return (*acc != NULL);
-}
-
-/*
-** 函数作用：
-**   释放 acc（累计输入缓冲区），并把指针置为 NULL。
-** 为什么要这样写：
-**   - 置 NULL 可以防止“二次 free”这种常见 bug。
-*/
-void	repl_free_acc(char **acc)
-{
-	if (!acc)
-		return ;
-	if (*acc)
-		free(*acc);
-	*acc = NULL;
 }

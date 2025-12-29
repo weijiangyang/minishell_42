@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/18 17:30:03 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 17:54:27 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/29 18:04:12 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 ** 你们的 libft 里 ft_putstr_fd 参数是 char*，但我们手里是 const char*。
 ** 这里强转 (char *) 是为了通过编译（我们不会改动字符串内容）。
 */
-static void	ms_put3(const char *a, const char *b, const char *c)
+void	ms_put3(const char *a, const char *b, const char *c)
 {
 	if (a)
 		ft_putstr_fd((char *)a, STDERR_FILENO);

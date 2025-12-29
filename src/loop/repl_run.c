@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/28 17:47:45 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/29 18:02:28 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,22 @@ static void	run_one_cmd(t_minishell *ms)
 	free_ast(root);
 	clear_list(&ms->lexer);
 }
+
+/*
+** 函数作用：
+**   释放 acc（累计输入缓冲区），并把指针置为 NULL。
+** 为什么要这样写：
+**   - 置 NULL 可以防止“二次 free”这种常见 bug。
+*/
+void	repl_free_acc(char **acc)
+{
+	if (!acc)
+		return ;
+	if (*acc)
+		free(*acc);
+	*acc = NULL;
+}
+
 
 /*
 ** 函数作用：
