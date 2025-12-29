@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_pipeline.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:29:31 by weiyang           #+#    #+#             */
-/*   Updated: 2025/11/11 17:29:33 by weiyang          ###   ########.fr       */
+/*   Updated: 2025/12/29 17:05:44 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes, t_minishel
         right = parse_simple_cmd_redir_list(cur, minishell);
 
         // 如果右侧命令为空，提示用户继续输入
-        while (!right) // 如果没有右侧命令，继续等待输入
+        if (!right) // 如果没有右侧命令，继续等待输入
         {
             //ft_putstr_fd("Error: expected command after pipe. Waiting for input...\n", STDERR_FILENO);
             

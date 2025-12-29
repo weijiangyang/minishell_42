@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 19:07:52 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/27 19:14:01 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/29 16:35:46 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ void	restore_std_fds(t_fd_save *save)
 ** 把 waitpid 的返回状态 st 转换成 shell 退出码：
 ** 正常 exit -> 取 exit code；被信号杀死 -> 128 + 信号号。
 */
+#include <sys/wait.h>
+
 void	set_status_from_wait(t_minishell *msh, int st)
 {
 	if (!msh)
@@ -99,6 +101,7 @@ void	set_status_from_wait(t_minishell *msh, int st)
 	else
 		msh->last_exit_status = 1;
 }
+
 
 /*
 ** 函数作用：
