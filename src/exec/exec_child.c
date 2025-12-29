@@ -169,7 +169,7 @@ void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	if (dup_in_out_or_close(new_in, new_out) < 0)
 		exit(1);
 	if (node->argv && node->argv[0] && is_builtin(node->argv[0]))
-		exit(exec_builtin(node, &msh->env));
+		exit(exec_builtin(node, &msh->env, msh));
 	child_exec_external(msh, node);
 	exit(1);
 }
