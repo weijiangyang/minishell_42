@@ -60,35 +60,9 @@ static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes, t_minishel
         // 如果右侧命令为空，提示用户继续输入
         if (!right) // 如果没有右侧命令，继续等待输入
         {
-            
-            char *buf = readline("> ");
-            if (!buf)  // 如果用户按下 Ctrl+D 退出
-            {
-                printf("bash: syntax error: unexpected end of file\n");
-
-                printf("exit\n");
-                exit(2);
-            }
-            
-            t_minishell *test = calloc(1, sizeof(t_minishell));
-            if (!test) {
-                free(buf);
-                return (free_ast(*left), NULL);  // 内存分配失败，释放内存并返回
-            }
-            test->raw_line = buf;
-            handle_lexer(test);
-
-            
-            right = parse_simple_cmd_redir_list(&(test->lexer), minishell);
-            if (!right) {
-                free(buf);
-                free(test);
-                continue;  
-            }
-
-            free(test); 
+            ft_putstr_fd("bash: syntax error newline", STDERR_FILENO);
+            return (NULL);
         }
-
         // 创建管道节点并连接左/右命令
         ast *node = ft_calloc(1, sizeof(ast));
         if (!node) {
@@ -102,7 +76,6 @@ static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes, t_minishel
         (*n_pipes)++;
         *left = node;
     }
-
     return (*left);
 }
 

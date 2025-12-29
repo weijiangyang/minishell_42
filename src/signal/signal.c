@@ -13,8 +13,6 @@
 #include "../../include/minishell.h"
 #include "../../include/signals.h"
 
-
-
 void sigint_prompt(int sig)
 {
     (void)sig;
