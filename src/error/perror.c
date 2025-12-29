@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.h                                            :+:      :+:    :+:   */
+/*   perror.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/18 17:29:14 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 17:26:16 by yzhang2          ###   ########.fr       */
+/*   Created: 2025/12/29 17:22:21 by yzhang2           #+#    #+#             */
+/*   Updated: 2025/12/29 17:35:00 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ERROR_H
-# define ERROR_H
 
+#include "../../include/error.h"
+#include "../../include/minishell.h"
+#include "../../libft/libft.h"
 #include <errno.h>
-#include <string.h>
-
-void	ms_err_cmd_not_found(const char *cmd);
-void	ms_err_exec(const char *name, int err);
-void	ms_err_redir(const char *name, int err);
-void	ms_perror(const char *ctx);
-void    ms_err_bad_interpreter(const char *cmd, const char *interp);
-
-
-#endif
+#include <unistd.h>
+#include <stdio.h>
+/*
+** 函数作用：
+** 打印系统调用失败的错误（带 minishell 前缀），格式尽量贴近 bash。
+** 例：minishell: line 1: fork: Resource temporarily unavailable
+*/
+void    ms_perror(const char *msg)
+{
+    ms_put3("minishell: ", NULL, NULL);
+    perror(msg);
+}
