@@ -27,7 +27,7 @@
 ** 你们的 libft 里 ft_putstr_fd 参数是 char*，但我们手里是 const char*。
 ** 这里强转 (char *) 是为了通过编译（我们不会改动字符串内容）。
 */
-static void	ms_put3(const char *a, const char *b, const char *c)
+void	ms_put3(const char *a, const char *b, const char *c)
 {
 	if (a)
 		ft_putstr_fd((char *)a, STDERR_FILENO);
