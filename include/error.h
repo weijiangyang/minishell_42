@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/18 17:29:14 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 17:54:46 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/29 18:04:27 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <string.h>
 
+void	ms_put3(const char *a, const char *b, const char *c);
 void	ms_err_cmd_not_found(const char *cmd);
 void	ms_err_exec(const char *name, int err);
 void	ms_err_redir(const char *name, int err);
