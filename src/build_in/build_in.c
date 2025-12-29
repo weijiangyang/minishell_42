@@ -29,7 +29,7 @@ int is_builtin(const char *cmd)
 }
 
 // 执行内置命令，返回退出码
-int exec_builtin(ast *node, t_env **env)
+int exec_builtin(ast *node, t_env **env, t_minishell *msh)
 {
     if (!node || !node->argv || !node->argv[0])
         return 1;
@@ -47,7 +47,7 @@ int exec_builtin(ast *node, t_env **env)
     else if (strcmp(node->argv[0], "env") == 0)
         return builtin_env(node->argv, *env);
     else if (strcmp(node->argv[0], "exit") == 0)
-        return builtin_exit(node->argv);
+        return builtin_exit(node->argv, msh);
     else if (strcmp(node->argv[0], "unset") == 0)
         builtin_unset(node->argv, env);
     // 其它内置命令类似处理
