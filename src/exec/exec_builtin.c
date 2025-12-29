@@ -79,6 +79,7 @@ int run_builtin_parent(t_minishell *msh, ast *node, int in_fd, int out_fd)
         if (pid == 0)
         {
             ret = run_builtin_child_logic(msh, node, in_fd, out_fd);
+            //printf("ret = %d\n", ret);
             exit(ret);
         }
         else
@@ -86,6 +87,7 @@ int run_builtin_parent(t_minishell *msh, ast *node, int in_fd, int out_fd)
             int status;
             if (waitpid(pid, &status, 0) > 0)
                 set_status_from_wait(msh, status);
+            return msh->last_exit_status;
         }
     }
     return ret;

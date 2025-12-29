@@ -27,6 +27,7 @@ int ft_echo(char **argv)
         i++;               // 移动到下一个参数
     }
 
+    i = 1;
     // 2. 打印参数
     while (argv[i])
     {

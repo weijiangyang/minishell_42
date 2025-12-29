@@ -58,11 +58,9 @@ static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes, t_minishel
         right = parse_simple_cmd_redir_list(cur, minishell);
 
         // 如果右侧命令为空，提示用户继续输入
-        while (!right) // 如果没有右侧命令，继续等待输入
+        if (!right) // 如果没有右侧命令，继续等待输入
         {
-            //ft_putstr_fd("Error: expected command after pipe. Waiting for input...\n", STDERR_FILENO);
             
-            // 提示用户输入右侧命令
             char *buf = readline("> ");
             if (!buf)  // 如果用户按下 Ctrl+D 退出
             {
@@ -71,25 +69,24 @@ static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes, t_minishel
                 printf("exit\n");
                 exit(2);
             }
-
-            // 创建新的 t_minishell 结构体并解析输入
+            
             t_minishell *test = calloc(1, sizeof(t_minishell));
             if (!test) {
                 free(buf);
                 return (free_ast(*left), NULL);  // 内存分配失败，释放内存并返回
             }
             test->raw_line = buf;
-            handle_lexer(test);  // 处理 lexer
+            handle_lexer(test);
 
-            // 继续解析右侧命令
+            
             right = parse_simple_cmd_redir_list(&(test->lexer), minishell);
             if (!right) {
                 free(buf);
                 free(test);
-                continue;  // 如果右侧命令还是为空，继续提示用户输入
+                continue;  
             }
 
-            free(test);  // 使用完后释放
+            free(test); 
         }
 
         // 创建管道节点并连接左/右命令
