@@ -1,0 +1,55 @@
+########################################
+# Minishell / 42 C Project .gitignore
+########################################
+
+# ---- binaries / final output ----
+minishell
+a.out
+
+# ---- build artifacts ----
+*.o
+*.out
+*.a
+*.so
+*.dylib
+*.exe
+
+# ---- build folders ----
+obj/
+bin/
+build/
+
+# ---- libft artifacts ----
+libft/*.o
+libft/*.a
+libft/ft_printf/*.o
+libft/get_next_line/*.o
+
+# 如果 libft 是 submodule, 不要 ignore libft/ itself:
+# libft/
+
+# ---- temp / cache ----
+*.tmp
+*.swp
+*.swo
+*.cache
+*.pid
+*.log
+
+# ---- readline or other third-party libs (if locally compiled) ----
+readline/
+readline-*/
+libreadline.a
+libhistory.a
+
+# ---- OS / editor trash ----
+.DS_Store
+Thumbs.db
+
+# ---- IDE / editor ----
+.vscode/
+.idea/
+*.code-workspace
+
+# ---- Makefile backup ----
+Makefile~
