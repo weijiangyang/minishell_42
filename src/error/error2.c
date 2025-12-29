@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   perror.c                                           :+:      :+:    :+:   */
+/*   error2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 17:22:21 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 17:35:00 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/29 17:54:34 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,11 @@ void    ms_perror(const char *msg)
 {
     ms_put3("minishell: ", NULL, NULL);
     perror(msg);
+}
+
+
+void    ms_err_syntax_unexpected(const char *tok)
+{
+    ms_put3("minishell: syntax error near unexpected token `", NULL, NULL);
+    ms_put3(tok, "'\n", NULL);
 }
