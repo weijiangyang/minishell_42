@@ -20,7 +20,7 @@
 ** 如果 heredoc 在解析阶段被 Ctrl+C 打断，fd 会变成 -1。
 ** 这种情况下执行器不要再跑命令，直接当作被中断。
 */
-static int	has_bad_heredoc(t_redir *r)
+static int has_bad_heredoc(t_redir *r)
 {
 	while (r)
 	{
@@ -38,12 +38,12 @@ static int	has_bad_heredoc(t_redir *r)
 ** - 不执行任何命令；成功返回 0，失败返回 1（更贴近 bash 行为）。
 ** - 同时把传进来的 in_fd/out_fd（若非标准 fd）关闭，避免父进程泄露。
 */
-static int	run_redir_only_parent(t_minishell *msh, ast *node, int in_fd,
-		int out_fd)
+static int run_redir_only_parent(t_minishell *msh, ast *node, int in_fd,
+								 int out_fd)
 {
-	int	new_in;
-	int	new_out;
-	int	ret;
+	int new_in;
+	int new_out;
+	int ret;
 
 	new_in = STDIN_FILENO;
 	new_out = STDOUT_FILENO;
@@ -68,13 +68,13 @@ static int	run_redir_only_parent(t_minishell *msh, ast *node, int in_fd,
 ** 同时支持重定向：先保存标准输入输出 -> 应用重定向 -> 跑 builtin -> 恢复。
 ** 跑完后同步 envp 和 PATH 缓存，保证后续外部命令能用新环境。
 */
-static int	run_builtin_parent(t_minishell *msh, ast *node, int in_fd,
-		int out_fd)
+/*static int run_builtin_parent(t_minishell *msh, ast *node, int in_fd,
+							  int out_fd)
 {
-	t_fd_save	save;
-	int			new_in;
-	int			new_out;
-	int			ret;
+	t_fd_save save;
+	int new_in;
+	int new_out;
+	int ret;
 
 	new_in = STDIN_FILENO;
 	new_out = STDOUT_FILENO;
@@ -98,7 +98,7 @@ static int	run_builtin_parent(t_minishell *msh, ast *node, int in_fd,
 	exec_refresh_paths(msh);
 	restore_std_fds(&save);
 	return (ret);
-}
+}*/
 
 /*
 ** 函数作用：
@@ -107,11 +107,11 @@ static int	run_builtin_parent(t_minishell *msh, ast *node, int in_fd,
 ** 关键修复：
 ** - fork() 失败时，关闭传进来的 in_fd/out_fd（非 STD），避免父进程泄露。
 */
-static int	run_external_wait(t_minishell *msh, ast *node, int in_fd,
-		int out_fd)
+static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
+							 int out_fd)
 {
-	pid_t	pid;
-	int		st;
+	pid_t pid;
+	int st;
 
 	st = 0;
 	pid = fork();
@@ -144,9 +144,9 @@ static int	run_external_wait(t_minishell *msh, ast *node, int in_fd,
 ** 3) builtin 在父进程执行
 ** 4) 外部命令 fork+wait
 */
-int	exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
+int exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 {
-	int	ret;
+	int ret;
 
 	ret = 0;
 	if (!node)
@@ -154,9 +154,6 @@ int	exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	if (has_bad_heredoc(node->redir))
 	{
 		ret = msh->last_exit_status;
-		if (ret == 0)
-			ret = 130;
-		msh->last_exit_status = ret;
 		return (ret);
 	}
 	if (!node->argv || !node->argv[0])

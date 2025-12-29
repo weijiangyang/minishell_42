@@ -13,7 +13,6 @@
 #include "../../include/minishell.h"
 #include "../../include/build_in.h"
 
-
 static int is_numeric(const char *s)
 {
     if (!s || !*s)
@@ -31,9 +30,9 @@ static int is_numeric(const char *s)
     return 1;
 }
 
-int builtin_exit(char **argv)
+int builtin_exit(char **argv, t_minishell *msh)
 {
-    //增加long_min, long_max 整数溢出的检测
+    // 增加long_min, long_max 整数溢出的检测
     long status = 0;
 
     if (argv[1])
@@ -51,10 +50,9 @@ int builtin_exit(char **argv)
             // Bash: 多参数时报错，但不退出 shell
             return (1);
         }
+        // exit code 只保留 0~255
+        exit((unsigned char)status);
     }
 
-    // exit code 只保留 0~255
-    exit((unsigned char)status);
-    return (0);
+    exit (msh->last_exit_status);
 }
-
