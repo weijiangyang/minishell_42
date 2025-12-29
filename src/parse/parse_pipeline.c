@@ -52,20 +52,20 @@ static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes, t_minishel
             return (free_ast(*left), NULL);
         }
 
-        consume_token(cur);  // 消耗管道符号
+        consume_token(cur); // 消耗管道符号
 
         // 解析管道右侧的命令
         right = parse_simple_cmd_redir_list(cur, minishell);
-
-        // 如果右侧命令为空，提示用户继续输入
-        if (!right) // 如果没有右侧命令，继续等待输入
+        if (!right) // 如果没有右侧命令，打印错误信息， 清理左侧命令，退出码为2
         {
-            ft_putstr_fd("bash: syntax error newline", STDERR_FILENO);
-            return (NULL);
+            ms_err_syntax_unexpected("newline");
+            minishell->last_exit_status = 2;
+            return (free_ast(*left), NULL);
         }
         // 创建管道节点并连接左/右命令
         ast *node = ft_calloc(1, sizeof(ast));
-        if (!node) {
+        if (!node)
+        {
             free_ast(*left);
             free_ast(right);
             return NULL;
@@ -78,10 +78,6 @@ static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes, t_minishel
     }
     return (*left);
 }
-
-
-
-
 
 /**
  * parse_pipeline
@@ -113,14 +109,13 @@ ast *parse_pipeline(t_lexer **cur, t_minishell *minishell)
     {
         ft_putstr_fd(
             "bash: syntax error near unexpected token `|'\n",
-            STDERR_FILENO
-        );
+            STDERR_FILENO);
         return NULL;
     }
 
     left = parse_simple_cmd_redir_list(cur, minishell);
     if (!left)
-        return NULL;  // 其他语法错误，不是 PIPE
+        return NULL; // 其他语法错误，不是 PIPE
 
     n_pipes = 0;
     ast *result = parse_pipeline_1(cur, &left, &n_pipes, minishell);
