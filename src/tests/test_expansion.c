@@ -290,7 +290,7 @@ static int run_self_under_valgrind(char *progpath, char **argv)
     {
         execvp(vg, vg_args);
         perror("execvp valgrind");
-        _exit(127);
+        exit(127);
     }
     if (waitpid(pid, &status, 0) < 0)
     {
