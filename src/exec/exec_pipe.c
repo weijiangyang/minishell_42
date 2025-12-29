@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:27:46 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/28 13:10:27 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/29 16:36:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,18 @@
 */
 static void	wait_all_and_set_last(t_minishell *msh, pid_t *pids, int n)
 {
-	int	i;
-	int	st;
+	int		i;
+	int		st;
+	pid_t	pid;
+	pid_t	last_pid;
 
 	i = 0;
 	st = 0;
+	last_pid = pids[n - 1];
 	while (i < n)
 	{
-		if (waitpid(pids[i], &st, 0) == pids[n - 1])
+		pid = waitpid(pids[i], &st, 0);
+		if (pid == last_pid)
 			set_status_from_wait(msh, st);
 		i = i + 1;
 	}
