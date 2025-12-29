@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 00:15:10 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 02:54:38 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/29 17:21:28 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,7 @@ static int	try_print_bad_interpreter(const char *cmd, const char *path, int err)
 	if (j == i)
 		return (0);
 	buf[j] = '\0';
-	ft_putstr_fd("minishell: ", 2);
-	if (!isatty(STDIN_FILENO))
-		ft_putstr_fd("line 1: ", 2);
-	ft_putstr_fd((char *)cmd, 2);
-	ft_putstr_fd(": ", 2);
-	ft_putstr_fd(&buf[i], 2);
-	ft_putstr_fd(": bad interpreter: Permission denied\n", 2);
+	ms_err_bad_interpreter(cmd, &buf[i]);
 	return (1);
 }
 
