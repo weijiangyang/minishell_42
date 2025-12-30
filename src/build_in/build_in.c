@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:15:50 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/22 15:15:56 by weiyang          ###   ########.fr       */
+/*   Updated: 2025/12/30 03:05:01 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,9 @@ int exec_builtin(ast *node, t_env **env, t_minishell *msh)
         return builtin_env(node->argv, *env);
     else if (strcmp(node->argv[0], "exit") == 0)
         return builtin_exit(node->argv, msh);
-    else if (strcmp(node->argv[0], "unset") == 0)
-        builtin_unset(node->argv, env);
+    else if (ft_strncmp(node->argv[0], "unset", 6) == 0)
+    return (builtin_unset(node->argv, env));
+
     // 其它内置命令类似处理
     return 1; // 未知内置
 }

@@ -17,20 +17,12 @@ static void	close_keep_std(int fd)
 */
 static int	is_builtin_parent(char *cmd)
 {
-	int	ok;
-
-	ok = 0;
 	if (!cmd)
 		return (0);
-	if (ft_strncmp(cmd, "cd", 3) == 0)
-		ok = 1;
-	else if (ft_strncmp(cmd, "export", 7) == 0)
-		ok = 1;
-	else if (ft_strncmp(cmd, "unset", 6) == 0)
-		ok = 1;
-	else if (ft_strncmp(cmd, "exit", 5) == 0)
-		ok = 1;
-	return (ok);
+	if (ft_strncmp(cmd, "cd", 3) == 0 || ft_strncmp(cmd, "export", 7) == 0
+		|| ft_strncmp(cmd, "unset", 6) == 0 || ft_strncmp(cmd, "exit", 5) == 0)
+		return (1);
+	return (0);
 }
 
 /*

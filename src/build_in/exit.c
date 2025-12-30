@@ -3,56 +3,63 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:16:57 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/22 15:16:59 by weiyang          ###   ########.fr       */
+/*   Updated: 2025/12/30 03:20:03 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
 #include "../../include/build_in.h"
+#include "../../include/minishell.h"
 
-static int is_numeric(const char *s)
+/*
+** 函数作用：判断字符串是不是合法数字（可带 + 或 -）。
+*/
+static int	is_numeric(const char *s)
 {
-    if (!s || !*s)
-        return 0;
+	int	i;
 
-    int i = 0;
-    if (s[0] == '+' || s[0] == '-')
-        i++;
-
-    for (; s[i]; i++)
-    {
-        if (!isdigit(s[i]))
-            return 0;
-    }
-    return 1;
+	if (!s || !s[0])
+		return (0);
+	i = 0;
+	if (s[i] == '+' || s[i] == '-')
+		i = i + 1;
+	if (!s[i])
+		return (0);
+	while (s[i])
+	{
+		if (!ft_isdigit((unsigned char)s[i]))
+			return (0);
+		i = i + 1;
+	}
+	return (1);
 }
 
-int builtin_exit(char **argv, t_minishell *msh)
+int	builtin_exit(char **argv, t_minishell *msh)
 {
-    // 增加long_min, long_max 整数溢出的检测
-    long status = 0;
+	long	status;
 
-    if (argv[1])
-    {
-        if (!is_numeric(argv[1]))
-        {
-            fprintf(stderr, "exit: %s: numeric argument required\n", argv[1]);
-            exit(255);
-        }
+	// 增加long_min, long_max 整数溢出的检测
+	status = 0;
+	if (argv[1])
+	{
+		if (!is_numeric(argv[1]))
+		{
+			ms_put3("minishell: exit: ", argv[1],
+				": numeric argument required\n");
+			exit(2);
+		}
+		status = atol(argv[1]); // 支持大数字
+		if (argv[2])
+		{
+			ms_put3("minishell: exit: ", "too many arguments", "\n");
 
-        status = atol(argv[1]); // 支持大数字
-        if (argv[2])
-        {
-            fprintf(stderr, "exit: too many arguments\n");
-            // Bash: 多参数时报错，但不退出 shell
-            return (1);
-        }
-        // exit code 只保留 0~255
-        exit((unsigned char)status);
-    }
-
-    exit (msh->last_exit_status);
+			// Bash: 多参数时报错，但不退出 shell
+			return (1);
+		}
+		// exit code 只保留 0~255
+		exit((unsigned char)status);
+	}
+	exit(msh->last_exit_status);
 }
