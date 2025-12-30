@@ -6,13 +6,14 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/18 21:03:52 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/21 22:37:40 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/30 04:21:43 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
 #include "../../include/expander.h"
+#include "../../include/minishell.h"
 #include "../../libft/libft.h"
+
 /*
 ** 函数作用：只去掉 *s 里的引号（不做 $ 展开），并替换原指针。
 ** 参数：s(指向字符串指针，函数内会 free 原串并换成新串)
@@ -42,23 +43,56 @@ static int	strip_quotes_inplace(char **s)
 }
 
 /*
-** 函数作用：展开 argv（统一规则：$ 展开 + 去引号）。
-** 参数：msh(全局上下文), node(CMD 节点)
-** 返回：成功 1，失败 0
+** 函数作用：判断一个词的原始字符串里是否出现过引号字符。
+** 解释：未引号的 $EMPTY 展开成空时，bash 会把这个词直接删掉；
+**      但带引号的 "$EMPTY" 展开为空时，要保留成空字符串参数。
+*/
+static int	word_has_quotes(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s && s[i])
+	{
+		if (s[i] == '\'' || s[i] == '"')
+			return (1);
+		i = i + 1;
+	}
+	return (0);
+}
+
+/*
+** 函数作用：展开 argv（$ 展开 + 去引号），并按 bash 规则删除“未引号展开为空”的词。
 */
 static int	expand_argv_inplace(t_minishell *msh, ast *node)
 {
 	int		i;
+	int		j;
+	int		had_q;
 	char	*tmp;
 
 	i = 0;
 	while (node->argv && node->argv[i])
 	{
+		had_q = word_has_quotes(node->argv[i]);
 		tmp = expander_str(msh, node->argv[i]);
 		if (!tmp)
 			return (0);
-		node->argv[i] = tmp;
-		i = i + 1;
+		if (tmp[0] == '\0' && had_q == 0)
+		{
+			free(tmp);
+			j = i;
+			while (node->argv[j])
+			{
+				node->argv[j] = node->argv[j + 1];
+				j = j + 1;
+			}
+		}
+		else
+		{
+			node->argv[i] = tmp;
+			i = i + 1;
+		}
 	}
 	return (1);
 }

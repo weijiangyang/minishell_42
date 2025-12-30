@@ -3,19 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   build_in.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:21:37 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/22 15:21:39 by weiyang          ###   ########.fr       */
+/*   Updated: 2025/12/30 03:46:00 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 
 #ifndef BUILD_IN_H
 # define BUILD_IN_H
 
-#include "parse.h"
+# include "../libft/libft.h"
+# include "error.h"
+# include "parse.h"
+#include <limits.h>
+
 typedef struct s_env
 {
 	char			*key;

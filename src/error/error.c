@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/18 17:30:03 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 18:04:12 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/30 03:20:55 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ void	ms_put3(const char *a, const char *b, const char *c)
 
 /*
 ** 函数作用：打印 “command not found” 错误，并尽量贴近 bash 输出格式。
-*/void    ms_err_cmd_not_found(const char *cmd)
+*/
+void    ms_err_cmd_not_found(const char *cmd)
 {
     ms_put3("minishell: ", NULL, NULL);
     ms_put3(cmd, ": command not found\n", NULL);
@@ -47,7 +48,8 @@ void	ms_put3(const char *a, const char *b, const char *c)
 
 /*
 ** 函数作用：打印 execve 相关错误，例如 Permission denied / Is a directory 等。
-*/void    ms_err_exec(const char *cmd, int err)
+*/
+void    ms_err_exec(const char *cmd, int err)
 {
     ms_put3("minishell: ", NULL, NULL);
     ms_put3(cmd, ": ", strerror(err));

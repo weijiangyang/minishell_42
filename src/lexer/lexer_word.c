@@ -6,22 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 07:53:56 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/28 03:20:20 by yzhang2          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../../include/lexer.h"
-#include "../../include/minishell.h"
-#include "../../libft/libft.h"
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer_word.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/27 07:53:56 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/22 16:49:21 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/30 01:15:00 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,39 +65,27 @@ static int	calc_word_len(char *str, int start_i, char *out_unclosed)
 }
 
 // 作用：对截取出的 word 子串做“去引号 + 记录引号属性”，写进 info。
-// 重点：你项目 parser 用 token->raw 来建 argv，所以 raw 必须永远有效。
-/*
-** 关键修复：
-** remove_quotes_flag() 在“没有任何引号”时会返回 NULL。
-** 这不是错误，只代表：不需要去引号。
-**
-** parser 目前用 token->raw 来构建 argv。
-** 所以让 raw 永远是“最终该交给执行器的字符串”：
-**   - 无引号：raw = substr
-**   - 有引号：raw = clean（去掉包裹引号）
-** 这样就不会出现：echo 被丢掉、把第二个参数当命令、参数还带着引号等问题。
-*/
+// 重点：parser 会把 token->raw 复制进 AST->argv，后续 expander 依赖 raw 里的引号
+// 来判断“是否允许 $ 展开”，所以 raw 必须保留原始引号。
 static int	process_word_data(char *substr, t_token_info *info)
 {
 	char	*clean;
 
 	clean = NULL;
+	if (!info)
+		return (0);
 	clean = remove_quotes_flag(substr, &info->had_quotes, &info->quoted_single,
 			&info->quoted_double);
+	info->raw = substr;
 	if (!clean)
 	{
-		info->raw = substr;
 		info->clean = substr;
 		info->had_quotes = 0;
 		info->quoted_single = 0;
 		info->quoted_double = 0;
+		return (1);
 	}
-	else
-	{
-		free(substr);
-		info->raw = clean;
-		info->clean = clean;
-	}
+	info->clean = clean;
 	return (1);
 }
 
