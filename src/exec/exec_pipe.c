@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:27:46 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/30 01:42:03 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/30 02:36:31 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,28 @@
 
 /*
 ** 函数作用：等待所有子进程结束，并把“最后一个命令”的退出码写回 msh。
-** 解释：a | b | c 的退出码默认等于 c 的退出码（bash 默认 pipefail 关闭）。
+** 额外行为：如果有非最后一个命令因为 SIGPIPE 结束，打印 "Broken pipe"（贴近 bash）。
 */
-static void	wait_all_and_set_last(t_minishell *msh, pid_t *pids, int count)
+static void	wait_all_and_set_last(t_minishell *msh, pid_t *pids, int n)
 {
 	int		i;
 	int		st;
+	int		saw_pipe;
 	pid_t	pid;
 	pid_t	last_pid;
 
-	if (!msh || !pids || count <= 0)
-		return ;
 	i = 0;
 	st = 0;
-	last_pid = pids[count - 1];
-	while (i < count)
+	saw_pipe = 0;
+	last_pid = pids[n - 1];
+	while (i < n)
 	{
 		pid = waitpid(pids[i], &st, 0);
+		if (pid > 0 && pid != last_pid && saw_pipe == 0)
+		{
+			if (WIFSIGNALED(st) && WTERMSIG(st) == SIGPIPE)
+				(write(2, "Broken pipe\n", 12), saw_pipe = 1);
+		}
 		if (pid == last_pid)
 			set_status_from_wait(msh, st);
 		i = i + 1;
@@ -84,7 +89,11 @@ static int	pipe_step(t_pipe_ctx *ctx, int i)
 		return (0);
 	}
 	if (pid == 0)
+	{
+		if (pfd[0] != -1)
+			close(pfd[0]);
 		child_exec_one(ctx->msh, ctx->arr[i], ctx->in_fd, child_out);
+	}
 	ctx->pids[i] = pid;
 	if (ctx->in_fd > STDERR_FILENO)
 		close(ctx->in_fd);
