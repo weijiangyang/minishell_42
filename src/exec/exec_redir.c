@@ -6,24 +6,12 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:25:55 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/18 18:19:02 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/30 06:41:55 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec_redir.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/15 19:25:55 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/18 18:00:00 by yzhang2          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../../include/minishell.h"
 #include "../../include/exec.h"
-
+#include "../../include/minishell.h"
 
 static void	close_keep_std(int *fd)
 {
@@ -59,25 +47,6 @@ static int	open_redir_fd(t_redir *r)
 
 /*
 ** 函数作用：
-** 输入类重定向放到 in_fd，输出类重定向放到 out_fd。
-** 后面的重定向会覆盖前面的，所以要先关掉旧的 fd。
-*/
-static void	set_redir_fd(t_redir *r, int fd, int *in_fd, int *out_fd)
-{
-	if (r->type == REDIR_INPUT || r->type == HEREDOC)
-	{
-		close_keep_std(in_fd);
-		*in_fd = fd;
-	}
-	else
-	{
-		close_keep_std(out_fd);
-		*out_fd = fd;
-	}
-}
-
-/*
-** 函数作用：
 ** 按链表顺序应用所有重定向，得到最终要接到 stdin/stdout 的 fd。
 ** 关键修复：
 ** - 如果中途某一步打开失败：打印错误，并关闭之前已打开的 *in_fd *out_fd
@@ -86,23 +55,21 @@ static void	set_redir_fd(t_redir *r, int fd, int *in_fd, int *out_fd)
 int	apply_redir_list(t_redir *r, int *in_fd, int *out_fd)
 {
 	int	fd;
-	int	err;
 
 	while (r)
 	{
+		if (r->type == REDIR_INPUT || r->type == HEREDOC)
+			close_keep_std(in_fd);
+		else
+			close_keep_std(out_fd);
 		fd = open_redir_fd(r);
 		if (fd < 0)
-		{
-			err = errno;
-			if (r->filename)
-				ms_err_redir(r->filename, err);
-			else
-				ms_err_redir("redir", err);
-			close_keep_std(in_fd);
-			close_keep_std(out_fd);
-			return (-1);
-		}
-		set_redir_fd(r, fd, in_fd, out_fd);
+			return (ms_err_redir(r->filename ? r->filename : "redir", errno),
+				close_keep_std(in_fd), close_keep_std(out_fd), -1);
+		if (r->type == REDIR_INPUT || r->type == HEREDOC)
+			*in_fd = fd;
+		else
+			*out_fd = fd;
 		r = r->next;
 	}
 	return (0);

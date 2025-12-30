@@ -6,13 +6,12 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 00:15:10 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 17:21:28 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/30 06:42:26 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/exec.h"
 #include "../../include/minishell.h"
-
 
 /*
 ** 函数作用：判断 path 是否是目录。
@@ -37,7 +36,8 @@ static int	path_is_dir(const char *path)
 ** 只在脚本文件以 "#!" 开头时才打印。
 ** 返回：1 表示已经打印了；0 表示不适用。
 */
-static int	try_print_bad_interpreter(const char *cmd, const char *path, int err)
+static int	try_print_bad_interpreter(const char *cmd, const char *path,
+		int err)
 {
 	int		fd;
 	ssize_t	n;
@@ -144,7 +144,6 @@ static void	child_exec_external(t_minishell *msh, ast *node)
 	exit(code);
 }
 
-
 // ** 函数作用：子进程执行一个命令节点（包含 builtin / external）。
 void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd)
 {
@@ -157,6 +156,12 @@ void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd)
 		exit(1);
 	new_in = in_fd;
 	new_out = out_fd;
+	if (new_in > STDERR_FILENO && node->argv && node->argv[0]
+		&& is_builtin(node->argv[0]))
+	{
+		close(new_in);
+		new_in = -1;
+	}
 	if (apply_redir_list(node->redir, &new_in, &new_out) < 0)
 		exit(1);
 	close_heredoc_fds(node->redir);
