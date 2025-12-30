@@ -19,8 +19,13 @@ static int	is_builtin_parent(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	if (ft_strncmp(cmd, "cd", 3) == 0 || ft_strncmp(cmd, "export", 7) == 0
-		|| ft_strncmp(cmd, "unset", 6) == 0 || ft_strncmp(cmd, "exit", 5) == 0)
+	if (ft_strncmp(cmd, "cd", 3) == 0)
+		return (1);
+	if (ft_strncmp(cmd, "export", 7) == 0)
+		return (1);
+	if (ft_strncmp(cmd, "unset", 6) == 0)
+		return (1);
+	if (ft_strncmp(cmd, "exit", 5) == 0)
 		return (1);
 	return (0);
 }

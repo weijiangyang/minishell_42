@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:21:37 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/30 03:31:22 by yzhang2          ###   ########.fr       */
+/*   Updated: 2025/12/30 03:46:00 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../libft/libft.h"
 # include "error.h"
 # include "parse.h"
+#include <limits.h>
 
 typedef struct s_env
 {
