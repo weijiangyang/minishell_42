@@ -1,96 +1,90 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/22 15:16:57 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/30 03:48:32 by yzhang2          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "../../include/minishell.h" // 你的 t_minishell 定义
+#include "../../libft/libft.h"
+#include "../../include/error.h"
 
-#include "../../include/build_in.h"
-#include "../../include/minishell.h"
-
-/*
-** 函数作用：判断字符串是否为合法数字（允许 + 或 -）。
-*/
-static int	is_numeric(const char *s)
+// 判断字符串是否为合法数字
+static int is_numeric(const char *s)
 {
-	int	i;
+    int i = 0;
 
-	if (!s || !s[0])
-		return (0);
-	i = 0;
-	if (s[i] == '+' || s[i] == '-')
-		i = i + 1;
-	if (!s[i])
-		return (0);
-	while (s[i])
-	{
-		if (!ft_isdigit((unsigned char)s[i]))
-			return (0);
-		i = i + 1;
-	}
-	return (1);
+    if (!s || !s[0])
+        return 0;
+    if (s[i] == '+' || s[i] == '-')
+        i++;
+    if (!s[i])
+        return 0;
+    while (s[i])
+    {
+        if (!ft_isdigit((unsigned char)s[i]))
+            return 0;
+        i++;
+    }
+    return 1;
 }
-/*
-** 函数作用：把数字字符串转成 long（假设已通过 is_numeric）。
-*/
-static long	to_long(const char *s)
-{
-	int		i;
-	int		sign;
-	long	val;
 
-	i = 0;
-	sign = 1;
-	val = 0;
-	if (s[i] == '+' || s[i] == '-')
-	{
-		if (s[i] == '-')
-			sign = -1;
-		i = i + 1;
-	}
-	while (s[i])
-	{
-		val = val * 10 + (s[i] - '0');
-		i = i + 1;
-	}
-	return (val * sign);
+// 把数字字符串转成 long（假设已通过 is_numeric）
+static long to_long(const char *s)
+{
+    int i = 0;
+    int sign = 1;
+    long val = 0;
+
+    if (s[i] == '+' || s[i] == '-')
+    {
+        if (s[i] == '-')
+            sign = -1;
+        i++;
+    }
+    while (s[i])
+    {
+        val = val * 10 + (s[i] - '0');
+        i++;
+    }
+    return val * sign;
 }
 
 /*
-** 函数作用：实现 exit 内置命令。
-** 规则：
-** - exit 无参数：退出码 = msh->last_exit_status
-** - exit 参数不是数字：打印错误并 exit(2)
-** - exit 参数过多：打印错误，返回 1（不退出 shell）
-** - 数字参数：退出码取 unsigned char（0~255）
+** builtin_exit 改进版
+** in_child = 1: 当前在子进程里（不要直接 exit）
+** in_child = 0: 父进程（交互 shell）执行，可以直接 exit
 */
-int	builtin_exit(char **argv, t_minishell *msh)
+int builtin_exit(char **argv, t_minishell *msh, int in_child)
 {
-	long	code;
+    long code = 0;
 
-	code = 0;
-	if (argv && argv[1])
-	{
-		if (!is_numeric(argv[1]))
-		{
-			ms_put3("minishell: exit: ", argv[1],
-				": numeric argument required\n");
-			exit(2);
-		}
-		if (argv[2])
-		{
-			ms_put3("minishell: exit: ", "too many arguments", "\n");
-			return (1);
-		}
-		code = to_long(argv[1]);
-		exit((unsigned char)code);
-	}
-	if (msh)
-		exit(msh->last_exit_status);
-	exit(0);
+    if (isatty(STDIN_FILENO))
+        printf("exit\n");
+
+    if (argv && argv[1])
+    {
+        if (!is_numeric(argv[1]))
+        {
+            ms_put3("minishell: exit: ", argv[1],
+                    ": numeric argument required\n");
+            return in_child ? 2 : (exit(2), 0);
+        }
+
+        if (argv[2])
+        {
+            ms_put3("minishell: exit: ", "too many arguments\n", "");
+            return 1;  // 不退出 shell
+        }
+
+        code = to_long(argv[1]);
+        if (in_child)
+            return (unsigned char)code;  // 子进程返回退出码
+        exit((unsigned char)code);      // 父进程直接 exit
+    }
+
+    if (msh)
+    {
+        if (in_child)
+            return msh->last_exit_status;
+        exit(msh->last_exit_status);
+    }
+
+    return in_child ? 0 : (exit(0), 0);
 }

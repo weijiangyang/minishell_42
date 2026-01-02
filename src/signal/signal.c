@@ -67,7 +67,7 @@ void setup_signals(void)
 
     // 3. 设置标志位
     // SA_RESTART: 让被信号中断的系统调用（如 read）自动重启，避免 readline 异常退出
-    sa.sa_flags = SA_RESTART;
+    sa.sa_flags = 0;
 
     // 4. 应用配置
     // 绑定 Ctrl+C (SIGINT)
