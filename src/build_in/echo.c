@@ -13,34 +13,43 @@
 #include "../../include/minishell.h"
 #include "../../include/build_in.h"
 
-// 核心 echo 命令处理函数
 int ft_echo(char **argv)
 {
-    //处理 echo -nnnnnn  hello 的情况
-    int i = 1;
-    int print_newline = 1; // 默认打印换行符
-
-    // 1. 解析 -n 选项（只处理独立的 "-n"）
-    while (argv[i] && strcmp(argv[i], "-n") == 0)
-    {
-        print_newline = 0; // 禁止打印换行
-        i++;               // 移动到下一个参数
-    }
+    int i;
+    int print_newline;
+    int j;
 
     i = 1;
-    // 2. 打印参数
+    print_newline = 1;
+    // 1. 解析选项：处理 -n, -nnnn, -n -n 等情况
+    while (argv[i] && argv[i][0] == '-')
+    {
+        j = 1;
+        // 检查是否全是 'n'，例如 "-nnnn"
+        if (argv[i][j] == '\0') // 只有一个 "-" 则不是选项
+            break;
+        while (argv[i][j] == 'n')
+            j++;
+        // 如果遇到了非 'n' 字符且不是结尾，说明不是合法选项（例如 -nx）
+        if (argv[i][j] != '\0')
+            break;
+
+        // 如果走到这里，说明是合法的 -n(nnn) 选项
+        print_newline = 0;
+        i++;
+    }
+
+    // 2. 打印剩余参数
     while (argv[i])
     {
         printf("%s", argv[i]);
         if (argv[i + 1])
-            printf(" "); // 参数之间加空格
+            printf(" ");
         i++;
     }
 
-    // 3. 打印换行符（如果没有 -n）
+    // 3. 打印换行符
     if (print_newline)
         printf("\n");
-
-    return 0; // 成功返回 0
+    return (0);
 }
-

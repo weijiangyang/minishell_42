@@ -20,7 +20,7 @@
 **   1 表示退出
 */
 
-static int	step_eof_main(void)
+static int step_eof_main(void)
 {
 	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
 		printf("exit\n");
@@ -36,15 +36,15 @@ static int	step_eof_main(void)
 ** 返回：
 **   0 表示继续循环
 */
-static int	step_eof_more(t_minishell *ms, char **acc)
+static int step_eof_more(t_minishell *ms, char **acc)
 {
-	char	q;
+	char q;
 
 	q = '"';
 	if (ms && ms->lexer_unclosed_quote)
 		q = ms->lexer_unclosed_quote;
 	fprintf(stderr, "bash: unexpected EOF while looking for matching `%c'\n",
-		q);
+			q);
 	fprintf(stderr, "bash: syntax error: unexpected end of file\n");
 	if (ms)
 		ms->last_exit_status = 258;
@@ -66,7 +66,7 @@ static int	step_eof_more(t_minishell *ms, char **acc)
 ** 返回：
 **   1 退出；0 继续
 */
-static int	step_handle_eof(t_minishell *ms, char **acc)
+static int step_handle_eof(t_minishell *ms, char **acc)
 {
 	if (!acc || *acc == NULL)
 		return (step_eof_main());
@@ -82,19 +82,39 @@ static int	step_handle_eof(t_minishell *ms, char **acc)
 ** 返回：
 **   1 表示退出；0 表示继续
 */
-int	repl_step(t_minishell *ms, char **acc)
+int repl_step(t_minishell *ms, char **acc)
 {
-	char	*line;
-	int		ok;
+	char *line;
 
-	line = NULL;
-	ok = 0;
+	// 在读取前，如果 g_status 是 130，说明是上一行刚按了 Ctrl+C
+	// 但通常我们关心的是“当前这一行”按下的 Ctrl+C
 	line = repl_read(*acc);
+
+	// 重点：readline 返回后立即检查全局变量
+	// --- 修复逻辑开始 ---
+	if (g_signal == SIGINT)
+	{
+		ms->last_exit_status = 130;
+		g_signal = 0; // 重置全局变量
+		if (line)
+			free(line);
+		// 如果在续行模式被中断，也要清理 acc
+		if (acc && *acc)
+		{
+			free(*acc);
+			*acc = NULL;
+		}
+		return (0); // 重新开始循环，此时状态码已经是 130
+	}
+
 	if (!line)
 		return (step_handle_eof(ms, acc));
+	
+	int ok;
 	ok = repl_join(acc, line);
 	if (ok == 0)
 		return (step_eof_more(ms, acc));
 	repl_run_acc(ms, acc);
+	fflush(stdout);
 	return (0);
 }

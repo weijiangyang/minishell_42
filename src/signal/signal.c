@@ -20,6 +20,8 @@ void sigint_prompt(int sig)
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
+    g_signal = SIGINT;
+    rl_done = 1;
 }
 
 void setup_prompt_signals(void)
@@ -51,4 +53,31 @@ void sigint_heredoc_handler(int sig)
     // 设置全局标志，表示收到 SIGINT 信号
     g_signal = 1;
     write(STDOUT_FILENO, "\n", 1); // 输出换行符，以便用户看到新的提示符
+}
+
+void setup_signals(void)
+{
+    struct sigaction sa;
+
+    // 1. 指定处理函数
+    sa.sa_handler = sigint_prompt;
+
+    // 2. 初始化信号集，确保在处理 SIGINT 时不会被其他信号干扰
+    sigemptyset(&sa.sa_mask);
+
+    // 3. 设置标志位
+    // SA_RESTART: 让被信号中断的系统调用（如 read）自动重启，避免 readline 异常退出
+    sa.sa_flags = 0;
+
+    // 4. 应用配置
+    // 绑定 Ctrl+C (SIGINT)
+    sigaction(SIGINT, &sa, NULL);
+
+    // 5. 忽略 Ctrl+\ (SIGQUIT)
+    // 这是 Shell 的标准行为：在主提示符下按下 Ctrl+\ 不应有任何反应
+    struct sigaction sa_ignore;
+    sa_ignore.sa_handler = SIG_IGN;
+    sigemptyset(&sa_ignore.sa_mask);
+    sa_ignore.sa_flags = 0;
+    sigaction(SIGQUIT, &sa_ignore, NULL);
 }
