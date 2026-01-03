@@ -26,6 +26,7 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
+#include "parse.h"
 typedef struct s_fd_save
 {
 	int			in;
@@ -70,5 +71,7 @@ int				wait_pair_set_right(t_minishell *msh, pid_t left, pid_t right);
 
 int				run_builtin_parent(t_minishell *msh, ast *node, int in_fd,
 					int out_fd);
+
+int 			prepare_heredocs(ast *node, t_minishell *ms);
 
 #endif

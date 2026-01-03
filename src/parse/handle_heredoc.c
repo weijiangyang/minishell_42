@@ -13,6 +13,8 @@
 #include "../../include/minishell.h"
 #include "../../include/parse.h"
 #include "../../libft/libft.h"
+#include "../../include/expander.h"
+
 volatile sig_atomic_t g_signal; // 唯一全局变量
 
 /* SIGINT handler */
@@ -23,7 +25,7 @@ void sigint_heredoc(int sig)
 }
 
 /* heredoc_loop: canonical 模式，和 bash 行为一致 */
-int heredoc_loop(int write_fd, const char *delimiter)
+static int heredoc_loop(int write_fd, const char *delimiter, t_minishell *msh, int quoted)
 {
     char *line;
     char *full_line = NULL; // 用于拼接没有换行符的片段
@@ -79,6 +81,8 @@ int heredoc_loop(int write_fd, const char *delimiter)
                 free(line);
                 break;
             }
+            if (!quoted)
+                line = expand_heredoc_vars(msh, line);
             write(write_fd, line, strlen(line));
             write(write_fd, "\n", 1);
             free(line);
@@ -99,6 +103,7 @@ int handle_heredoc(t_redir *new_redir, t_minishell *shell)
     int pipefd[2];
     pid_t pid;
     int status;
+    int result;
 
     if (pipe(pipefd) < 0)
         return -1;
@@ -110,18 +115,20 @@ int handle_heredoc(t_redir *new_redir, t_minishell *shell)
     if (pid == 0)
     {
         close(pipefd[0]);
-        if (heredoc_loop(pipefd[1], new_redir->filename) < 0)
+
+        if (new_redir->quoted)
+            result = heredoc_loop(pipefd[1], new_redir->filename, shell, 1);
+        else
+            result = heredoc_loop(pipefd[1], new_redir->filename, shell, 0);
+        if (result < 0)
             exit(130);
         close(pipefd[1]);
         exit(0);
     }
-
     close(pipefd[1]);
     signal(SIGINT, SIG_IGN);
     signal(SIGQUIT, SIG_IGN);
-
     waitpid(pid, &status, 0);
-
     if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
     {
         close(pipefd[0]);
@@ -129,7 +136,6 @@ int handle_heredoc(t_redir *new_redir, t_minishell *shell)
         shell->last_exit_status = 130;
         return -1;
     }
-
     new_redir->heredoc_fd = pipefd[0];
     return 0;
 }
