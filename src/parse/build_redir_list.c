@@ -44,9 +44,9 @@
  *   4. heredoc_fd 初始化为 -1，表示暂未创建管道。
  *   5. 返回配置完成的节点。
  */
-static t_redir	*create_redir(tok_type type, char *content)
+static t_redir *create_redir(tok_type type, char *content)
 {
-	t_redir	*new_node;
+	t_redir *new_node;
 
 	new_node = ft_calloc(1, sizeof(t_redir));
 	if (!new_node)
@@ -96,17 +96,17 @@ static t_redir	*create_redir(tok_type type, char *content)
  *   3. 若链表非空，则遍历至尾节点，并将 new_node 挂在末尾。
  */
 
-static void	redirlst_add_back(t_redir **lst, t_redir *new_node)
+static void redirlst_add_back(t_redir **lst, t_redir *new_node)
 {
-	t_redir	*tmp;
+	t_redir *tmp;
 
 	tmp = NULL;
 	if (!lst || !new_node)
-		return ;
+		return;
 	if (!*lst)
 	{
 		*lst = new_node;
-		return ;
+		return;
 	}
 	tmp = *lst;
 	while (tmp->next)
@@ -116,8 +116,8 @@ static void	redirlst_add_back(t_redir **lst, t_redir *new_node)
 
 // 作用：从 token 流里消费 "重定向符号 + 后面的 WORD"。
 // 失败时：打印 bash 同款语法错误，并把 exit status 置为 2。
-static int	consume_redir_pair(t_lexer **cur, t_lexer **op, t_lexer **filetok,
-		t_minishell *ms)
+static int consume_redir_pair(t_lexer **cur, t_lexer **op, t_lexer **filetok,
+							  t_minishell *ms)
 {
 	*op = consume_token(cur);
 	if (!*op)
@@ -133,28 +133,16 @@ static int	consume_redir_pair(t_lexer **cur, t_lexer **op, t_lexer **filetok,
 	return (1);
 }
 
-// 作用：执行 heredoc 读取；失败时释放本次 new_redir，避免泄漏。
-static int	heredoc_make(t_redir *new_redir, t_minishell *ms)
-{
-	if (handle_heredoc(new_redir, ms) == -1)
-	{
-		free(new_redir->filename);
-		free(new_redir);
-		return (0);
-	}
-	return (1);
-}
-
 // 作用：构建一个 redir 节点并追加到 redir_list。
 // 关键点：
 // - 普通重定向：用 filetok->raw（保留引号），交给 expander 决定是否展开 $。
 // - heredoc：用 filetok->str（已去包裹引号），保证 delimiter 能正确匹配输入。
-int	build_redir(t_lexer **cur, t_redir **redir_list, t_minishell *ms)
+int build_redir(t_lexer **cur, t_redir **redir_list, t_minishell *ms)
 {
-	t_lexer	*op;
-	t_lexer	*filetok;
-	t_redir	*new_redir;
-	char	*text;
+	t_lexer *op;
+	t_lexer *filetok;
+	t_redir *new_redir;
+	char *text;
 
 	op = NULL;
 	filetok = NULL;
@@ -168,8 +156,9 @@ int	build_redir(t_lexer **cur, t_redir **redir_list, t_minishell *ms)
 	new_redir = create_redir(op->tokentype, text);
 	if (!new_redir)
 		return (0);
-	if (op->tokentype == TOK_HEREDOC && !heredoc_make(new_redir, ms))
-		return (0);
+
+	if (op->tokentype == TOK_HEREDOC)
+		new_redir->quoted = filetok->had_quotes;
 	redirlst_add_back(redir_list, new_redir);
 	return (1);
 }

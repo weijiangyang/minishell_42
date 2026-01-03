@@ -70,4 +70,5 @@ size_t						equal_sign(char *str);
 char						*remove_quotes_flag(const char *s, int *had_q,
 								int *q_s, int *q_d);
 
+char						*expand_heredoc_vars(t_minishell *ms, char *line);
 #endif

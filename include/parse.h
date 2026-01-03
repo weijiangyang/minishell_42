@@ -48,6 +48,7 @@ typedef struct s_redir
 	int				heredoc_fd;
 	bool			is_expanded;
 	t_redir_type	type;
+	int				quoted;
 
 }					t_redir;
 /**
@@ -119,7 +120,7 @@ char				*safe_strdup(const char *s);
 ast					*parse_simple_cmd_redir_list(t_lexer **cur,
 						t_minishell *minishell);
 void				free_t_cmd_node(t_cmd *argv_cmd);
-int					heredoc_loop(int write_fd, const char *delimiter);
+
 int					handle_heredoc(t_redir *new_redir, t_minishell *minishell);
 int					build_redir(t_lexer **cur, t_redir **redir_list, t_minishell *minishell);
 char				*get_next_line(int fd);

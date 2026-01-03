@@ -114,6 +114,7 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 	int st;
 
 	st = 0;
+	setup_parent_exec_signals();
 	pid = fork();
 	if (pid < 0)
 	{
@@ -126,7 +127,11 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 		return (1);
 	}
 	if (pid == 0)
+	{
+		setup_child_signals();
 		child_exec_one(msh, node, in_fd, out_fd);
+	}
+		
 	if (in_fd > STDERR_FILENO)
 		close(in_fd);
 	if (out_fd > STDERR_FILENO)
