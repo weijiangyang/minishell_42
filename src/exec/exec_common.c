@@ -97,7 +97,10 @@ void	set_status_from_wait(t_minishell *msh, int st)
 	if (WIFEXITED(st))
 		msh->last_exit_status = WEXITSTATUS(st);
 	else if (WIFSIGNALED(st))
+	{
+		write(1, "\n", 1);
 		msh->last_exit_status = 128 + WTERMSIG(st);
+	}
 	else
 		msh->last_exit_status = 1;
 }
