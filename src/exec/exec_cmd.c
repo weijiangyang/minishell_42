@@ -131,7 +131,7 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 		setup_child_signals();
 		child_exec_one(msh, node, in_fd, out_fd);
 	}
-		
+
 	if (in_fd > STDERR_FILENO)
 		close(in_fd);
 	if (out_fd > STDERR_FILENO)
@@ -163,9 +163,9 @@ int exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	}
 	if (!node->argv || !node->argv[0])
 		return (run_redir_only_parent(msh, node, in_fd, out_fd));
-	if (is_builtin(node->argv[0]))
+	if (is_builtin_parent(node->argv[0]) && !msh->n_pipes)
 	{
-		ret = run_builtin_parent(msh, node, in_fd, out_fd);
+		ret = run_builtin_parent_logic(msh, node, in_fd, out_fd);
 		msh->last_exit_status = ret;
 		return (ret);
 	}

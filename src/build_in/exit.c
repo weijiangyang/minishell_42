@@ -51,11 +51,12 @@ static long to_long(const char *s)
 ** in_child = 1: 当前在子进程里（不要直接 exit）
 ** in_child = 0: 父进程（交互 shell）执行，可以直接 exit
 */
-int builtin_exit(char **argv, t_minishell *msh, int in_child)
+int builtin_exit(char **argv, t_minishell *msh)
 {
     long code = 0;
 
-    if (isatty(STDIN_FILENO))
+    int in_child = msh->n_pipes;
+    if (isatty(STDIN_FILENO) && !msh->n_pipes)
         printf("exit\n");
 
     if (argv && argv[1])
@@ -85,6 +86,5 @@ int builtin_exit(char **argv, t_minishell *msh, int in_child)
             return msh->last_exit_status;
         exit(msh->last_exit_status);
     }
-
     return in_child ? 0 : (exit(0), 0);
 }

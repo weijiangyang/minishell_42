@@ -123,6 +123,6 @@ ast *parse_pipeline(t_lexer **cur, t_minishell *minishell)
     if (!result)
         return NULL;
 
-    left->n_pipes = n_pipes;
+    minishell->n_pipes = n_pipes;
     return result;
 }

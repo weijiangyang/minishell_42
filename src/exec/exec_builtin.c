@@ -15,7 +15,7 @@ static void	close_keep_std(int fd)
 /*
 ** 函数作用：判断是否必须在父进程执行（会改变父进程状态的 builtin）。
 */
-static int	is_builtin_parent(char *cmd)
+int	is_builtin_parent(char *cmd)
 {
 	if (!cmd)
 		return (0);
@@ -37,7 +37,7 @@ static int	is_builtin_parent(char *cmd)
 ** 3) dup2 到 stdin/stdout，执行 builtin
 ** 4) 恢复标准输入输出
 */
-static int	run_builtin_parent_logic(t_minishell *msh, ast *node, int in_fd,
+int	run_builtin_parent_logic(t_minishell *msh, ast *node, int in_fd,
 		int out_fd)
 {
 	t_fd_save	save;
@@ -65,7 +65,7 @@ static int	run_builtin_parent_logic(t_minishell *msh, ast *node, int in_fd,
 ** 函数作用：在子进程执行 builtin（echo/pwd/env 等），并正确支持重定向。
 ** 子进程执行完就 exit，所以不需要保存/恢复标准输入输出。
 */
-static int	run_builtin_child_logic(t_minishell *msh, ast *node, int in_fd,
+int	run_builtin_child_logic(t_minishell *msh, ast *node, int in_fd,
 		int out_fd)
 {
 	int	new_in;
@@ -95,7 +95,7 @@ int	run_builtin_parent(t_minishell *msh, ast *node, int in_fd, int out_fd)
 
 	status = 0;
 	ret = 1;
-	if (is_builtin_parent(node->argv[0]))
+	if (is_builtin_parent(node->argv[0]) && !msh->n_pipes)
 		return (run_builtin_parent_logic(msh, node, in_fd, out_fd));
 	pid = fork();
 	if (pid < 0)
