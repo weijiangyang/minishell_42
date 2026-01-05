@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/05 13:24:07 by weiyang           #+#    #+#             */
+/*   Updated: 2026/01/05 13:24:10 by weiyang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -49,38 +61,28 @@ static long to_long(const char *s)
 
 int builtin_exit(char **argv, t_minishell *msh)
 {
-    long code = 0;
+    long code;
 
-    
+    code = 0;
     if (isatty(STDIN_FILENO) && !msh->n_pipes)
         printf("exit\n");
-
     if (argv && argv[1])
     {
         if (!is_numeric(argv[1]))
         {
             ms_put3("minishell: exit: ", argv[1],
-                    ": numeric argument required\n");
-           
+                    ": numeric argument required\n");   
             exit(2);
         }
-
         if (argv[2])
         {
             ms_put3("minishell: exit: ", "too many arguments\n", "");
-            return 1;  // 不退出 shell
+            return 1;
         }
-
-        code = to_long(argv[1]);
-        
-        exit((unsigned char)code);      // 父进程直接 exit
+        code = to_long(argv[1]);      
+        exit((unsigned char)code); 
     }
-
     if (msh)
-    {
-        
         exit(msh->last_exit_status);
-    }
-    
     return 0;
 }

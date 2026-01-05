@@ -13,18 +13,6 @@
 #include "../../include/minishell.h"
 #include "../../include/build_in.h"
 
-void    print_env(t_env *env)
-{
-    while (env)
-    {
-        if (env->value)  // n'afficher que KEY=VALUE
-        {
-            printf("%s=%s\n", env->key, env->value);
-        }
-        env = env->next;
-    }
-}
-
 t_env	*env_new(char *key, char *value)
 {
 	t_env	*new_env;
@@ -54,20 +42,6 @@ void	env_add_back(t_env **env, t_env *new_env)
 		last = last->next;
 	last->next = new_env;
 }
-
-void free_env(t_env *env)
-{
-    t_env *tmp;
-    while (env)
-    {
-        tmp = env;
-        env = env->next;
-        free(tmp->key);
-        free(tmp->value);
-        free(tmp);
-    }
-}
-
 
 t_env *init_env(char **envp)
 {

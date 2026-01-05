@@ -20,36 +20,23 @@ static void delete_env_var(t_env **env, const char *key)
     t_env *temp = *env;
     t_env *prev = NULL;
 
-    // 如果链表为空
     if (!temp)
-    {
-        return;
-    }
-
-    // 如果要删除的是头节点
+        return ;
     if (strcmp(temp->key, key) == 0)
     {
-        *env = temp->next; // 让头节点指向下一个节点
+        *env = temp->next; 
         free(temp->key);
         free(temp->value);
         free(temp);
-        return;
+        return ;
     }
-
-    // 否则遍历链表找到需要删除的节点
     while (temp != NULL && strcmp(temp->key, key) != 0)
     {
         prev = temp;
         temp = temp->next;
     }
-
-    // 如果未找到该环境变量
     if (temp == NULL)
-    {
-        return;
-    }
-
-    // 删除该节点
+        return ;
     prev->next = temp->next;
     free(temp->key);
     free(temp->value);
@@ -76,13 +63,14 @@ int is_valid_identifier(const char *s)
     return 1;
 }
 
-
 int builtin_unset(char **argv, t_env **env)
 {
-    int status = 0;
+    int status;
+    int i;
 
-    // ⚠️ unset 无参数是合法的
-    for (int i = 1; argv[i]; i++)
+    i = 0;
+    status = 0;
+    while (argv[i])
     {
         if (!is_valid_identifier(argv[i]))
         {
@@ -92,10 +80,8 @@ int builtin_unset(char **argv, t_env **env)
             status = 1;
         }
         else
-        {
-            // 找不到变量也没关系
             delete_env_var(env, argv[i]);
-        }
+        i++;
     }
     return status;
 }

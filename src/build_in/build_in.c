@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   build_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/22 15:15:50 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/30 06:43:26 by yzhang2          ###   ########.fr       */
+/*   Created: 2026/01/05 13:23:18 by weiyang           #+#    #+#             */
+/*   Updated: 2026/01/05 13:23:22 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #include "../../include/build_in.h"
 #include "../../include/minishell.h"

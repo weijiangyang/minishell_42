@@ -1,10 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc_signal.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/05 13:19:41 by weiyang           #+#    #+#             */
+/*   Updated: 2026/01/05 13:19:43 by weiyang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "../../include/minishell.h"
 #include "../../include/signals.h"
 
 volatile sig_atomic_t g_signal; // 唯一全局变量
-
-
 
 void save_signals(t_saved_signals *old)
 {

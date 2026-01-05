@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   build_in.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/22 15:21:37 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/30 03:46:00 by yzhang2          ###   ########.fr       */
+/*   Created: 2026/01/05 13:25:53 by weiyang           #+#    #+#             */
+/*   Updated: 2026/01/05 13:25:55 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #ifndef BUILD_IN_H
 # define BUILD_IN_H
@@ -42,5 +44,10 @@ int					is_valid_identifier(const char *s);
 void				free_env(t_env *env);
 int					builtin_exit(char **argv, t_minishell *msh);
 int					builtin_pwd(void);
+void 				env_set(t_env **env, const char *key, const char *value);
+void    			print_env(t_env *env);
+void 				free_env(t_env *env);
+t_env 				*find_env_var(t_env *env, const char *key);
+void 				free_char_matrix(char **matrix);
 
 #endif
