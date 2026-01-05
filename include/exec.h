@@ -69,15 +69,8 @@ void			restore_std_fds(t_fd_save *save);
 void			set_status_from_wait(t_minishell *msh, int st);
 int				wait_pair_set_right(t_minishell *msh, pid_t left, pid_t right);
 
-int				run_builtin_parent(t_minishell *msh, ast *node, int in_fd,
-					int out_fd);
-
 int 			prepare_heredocs(ast *node, t_minishell *ms);
-
-int				is_builtin_parent(char *cmd);
 int				run_builtin_parent_logic(t_minishell *msh, ast *node, int in_fd,
-					int out_fd);
-int				run_builtin_child_logic(t_minishell *msh, ast *node, int in_fd,
 					int out_fd);
 
 #endif

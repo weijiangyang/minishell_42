@@ -58,7 +58,19 @@ static long to_long(const char *s)
     return val * sign;
 }
 
-
+/**
+ * @brief exit 内置命令的完整实现。
+ * * 行为逻辑：
+ * 1. 终端提示：如果是在交互式终端且没有管道，打印 "exit"。
+ * 2. 参数校验：
+ * - 非数字参数：如果第一个参数不是数字，报错并以状态码 2 退出。
+ * - 参数过多：如果有超过一个参数，报错并不退出（保持 Shell 运行）。
+ * 3. 状态码转换：将字符串参数转换为 long，并截断为 unsigned char (0-255)。
+ * 4. 默认行为：若无参数，则以最近一次命令的退出状态 (last_exit_status) 退出。
+ * * @param argv 命令参数数组。
+ * @param msh  全局上下文，用于获取最后的退出状态。
+ * @return int 仅在参数过多不退出时返回 1。
+ */
 int builtin_exit(char **argv, t_minishell *msh)
 {
     long code;

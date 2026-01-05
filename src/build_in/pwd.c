@@ -13,6 +13,18 @@
 #include "../../include/minishell.h"
 #include "../../include/build_in.h"
 
+/**
+ * @brief pwd 内置命令的实现。
+ * * 行为逻辑：
+ * 1. 路径获取：调用 getcwd 系统函数。该函数会将当前工作目录的绝对路径
+ * 复制到提供的缓冲区中。
+ * 2. 缓冲区设计：使用 PATH_MAX（通常为 4096 字节）来确保缓冲区足够大，
+ * 能够容纳大多数深度的目录结构。
+ * 3. 错误处理：如果获取失败（例如当前目录已被删除或权限被撤销），
+ * 使用 perror 打印系统错误原因。
+ * 4. 状态返回：成功打印返回 0，失败返回 1。
+ * * @return int 退出状态码。
+ */
 int builtin_pwd()
 {
     char cwd[PATH_MAX];
