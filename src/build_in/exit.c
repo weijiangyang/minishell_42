@@ -46,16 +46,12 @@ static long to_long(const char *s)
     return val * sign;
 }
 
-/*
-** builtin_exit 改进版
-** in_child = 1: 当前在子进程里（不要直接 exit）
-** in_child = 0: 父进程（交互 shell）执行，可以直接 exit
-*/
+
 int builtin_exit(char **argv, t_minishell *msh)
 {
     long code = 0;
 
-    int in_child = msh->n_pipes;
+    
     if (isatty(STDIN_FILENO) && !msh->n_pipes)
         printf("exit\n");
 
@@ -65,7 +61,8 @@ int builtin_exit(char **argv, t_minishell *msh)
         {
             ms_put3("minishell: exit: ", argv[1],
                     ": numeric argument required\n");
-            return in_child ? 2 : (exit(2), 0);
+           
+            exit(2);
         }
 
         if (argv[2])
@@ -75,16 +72,15 @@ int builtin_exit(char **argv, t_minishell *msh)
         }
 
         code = to_long(argv[1]);
-        if (in_child)
-            return (unsigned char)code;  // 子进程返回退出码
+        
         exit((unsigned char)code);      // 父进程直接 exit
     }
 
     if (msh)
     {
-        if (in_child)
-            return msh->last_exit_status;
+        
         exit(msh->last_exit_status);
     }
-    return in_child ? 0 : (exit(0), 0);
+    
+    return 0;
 }

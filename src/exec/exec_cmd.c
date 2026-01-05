@@ -163,7 +163,7 @@ int exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	}
 	if (!node->argv || !node->argv[0])
 		return (run_redir_only_parent(msh, node, in_fd, out_fd));
-	if (is_builtin_parent(node->argv[0]) && !msh->n_pipes)
+	if (is_builtin_parent(node->argv[0]))
 	{
 		ret = run_builtin_parent_logic(msh, node, in_fd, out_fd);
 		msh->last_exit_status = ret;

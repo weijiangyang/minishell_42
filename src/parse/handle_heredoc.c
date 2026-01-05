@@ -14,8 +14,42 @@
 #include "../../include/parse.h"
 #include "../../libft/libft.h"
 #include "../../include/expander.h"
+#include "../../include/error.h"
+#include <termios.h>
 
 volatile sig_atomic_t g_signal; // 唯一全局变量
+
+typedef struct s_saved_signals
+{
+    struct sigaction sigint;
+    struct sigaction sigquit;
+    struct sigaction sigtstp;
+} t_saved_signals;
+
+static void save_signals(t_saved_signals *old)
+{
+    sigaction(SIGINT, NULL, &old->sigint);
+    sigaction(SIGQUIT, NULL, &old->sigquit);
+    sigaction(SIGTSTP, NULL, &old->sigtstp);
+}
+
+static void ignore_heredoc_signals(void)
+{
+    struct sigaction sa_ignore;
+    sa_ignore.sa_handler = SIG_IGN;
+    sigemptyset(&sa_ignore.sa_mask);
+    sa_ignore.sa_flags = 0;
+
+    sigaction(SIGINT, &sa_ignore, NULL);
+    sigaction(SIGQUIT, &sa_ignore, NULL);
+    sigaction(SIGTSTP, &sa_ignore, NULL);
+}
+static void restore_signals(t_saved_signals *old)
+{
+    sigaction(SIGINT, &old->sigint, NULL);
+    sigaction(SIGQUIT, &old->sigquit, NULL);
+    sigaction(SIGTSTP, &old->sigtstp, NULL);
+}
 
 /* SIGINT handler */
 void sigint_heredoc(int sig)
@@ -24,15 +58,30 @@ void sigint_heredoc(int sig)
     g_signal = SIGINT;
 }
 
+static void setup_heredoc_signals(void)
+{
+    struct sigaction sa;
+
+    // SIGINT
+    sa.sa_handler = sigint_heredoc;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+
+    // SIGTSTP
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGTSTP, &sa, NULL);
+
+    // SIGQUIT
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGQUIT, &sa, NULL);
+}
+
 /* heredoc_loop: canonical 模式，和 bash 行为一致 */
 static int heredoc_loop(int write_fd, const char *delimiter, t_minishell *msh, int quoted)
 {
     char *line;
     char *full_line = NULL; // 用于拼接没有换行符的片段
-
-    struct sigaction sa = {.sa_handler = sigint_heredoc, .sa_flags = 0};
-    sigaction(SIGINT, &sa, NULL);
-
     while (1)
     {
         // 只有当缓冲区为空时，才打印提示符
@@ -105,17 +154,26 @@ int handle_heredoc(t_redir *new_redir, t_minishell *shell)
     int status;
     int result;
 
+    t_saved_signals saved;
+
+    save_signals(&saved);
+
     if (pipe(pipefd) < 0)
+    {
+        restore_signals(&saved);
         return -1;
+    }
 
     pid = fork();
     if (pid < 0)
+    {
+        restore_signals(&saved);
         return -1;
-
+    }
     if (pid == 0)
     {
+        setup_heredoc_signals();
         close(pipefd[0]);
-
         if (new_redir->quoted)
             result = heredoc_loop(pipefd[1], new_redir->filename, shell, 1);
         else
@@ -125,17 +183,46 @@ int handle_heredoc(t_redir *new_redir, t_minishell *shell)
         close(pipefd[1]);
         exit(0);
     }
-    close(pipefd[1]);
-    signal(SIGINT, SIG_IGN);
-    signal(SIGQUIT, SIG_IGN);
-    waitpid(pid, &status, 0);
-    if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+    else
     {
-        close(pipefd[0]);
-        new_redir->heredoc_fd = -1;
-        shell->last_exit_status = 130;
-        return -1;
+        close(pipefd[1]);
+        ignore_heredoc_signals();
+        while (waitpid(pid, &status, 0) == -1)
+        {
+            if (errno != EINTR)
+            {
+                restore_signals(&saved);
+                return -1; // 等待失败
+            }
+        }
+        restore_signals(&saved);
+        if (WIFEXITED(status))
+        {
+            int code = WEXITSTATUS(status);
+
+            if (code == 0)
+            {
+                // heredoc 正常完成
+                new_redir->heredoc_fd = pipefd[0];
+                return 0;
+            }
+            else
+            {
+                // Ctrl+C (130) 或其他 exit
+                close(pipefd[0]);
+                new_redir->heredoc_fd = -1;
+                shell->last_exit_status = code;
+                return -1;
+            }
+        }
+        else if (WIFSIGNALED(status))
+        {
+            close(pipefd[0]);
+            new_redir->heredoc_fd = -1;
+            shell->last_exit_status = 128 + WTERMSIG(status);
+            return -1;
+        }
+        new_redir->heredoc_fd = pipefd[0];
+        return 0;
     }
-    new_redir->heredoc_fd = pipefd[0];
-    return 0;
 }
