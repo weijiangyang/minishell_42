@@ -64,44 +64,6 @@ static int run_redir_only_parent(t_minishell *msh, ast *node, int in_fd,
 
 /*
 ** 函数作用：
-** 让父进程执行 builtin（比如 cd/export/unset/exit 才会真正生效）。
-** 同时支持重定向：先保存标准输入输出 -> 应用重定向 -> 跑 builtin -> 恢复。
-** 跑完后同步 envp 和 PATH 缓存，保证后续外部命令能用新环境。
-*/
-/*static int run_builtin_parent(t_minishell *msh, ast *node, int in_fd,
-							  int out_fd)
-{
-	t_fd_save save;
-	int new_in;
-	int new_out;
-	int ret;
-
-	new_in = STDIN_FILENO;
-	new_out = STDOUT_FILENO;
-	ret = 1;
-	if (save_std_fds(&save) != 0)
-	{
-		if (in_fd >= 0 && in_fd != STDIN_FILENO)
-			close(in_fd);
-		if (out_fd >= 0 && out_fd != STDOUT_FILENO)
-			close(out_fd);
-		return (1);
-	}
-	if (dup_in_out_or_close(in_fd, out_fd) < 0)
-		return (restore_std_fds(&save), 1);
-	if (apply_redir_list(node->redir, &new_in, &new_out) < 0)
-		return (restore_std_fds(&save), 1);
-	if (dup_in_out_or_close(new_in, new_out) < 0)
-		return (restore_std_fds(&save), 1);
-	ret = exec_builtin(node, &msh->env);
-	change_envp(msh->env, &msh->envp);
-	exec_refresh_paths(msh);
-	restore_std_fds(&save);
-	return (ret);
-}*/
-
-/*
-** 函数作用：
 ** 执行外部命令：fork 出子进程去 execve，父进程负责关闭 fd 和 wait。
 ** wait 结束后，把子进程的退出码写回 msh->last_exit_status。
 ** 关键修复：
@@ -142,6 +104,24 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 }
 
 /*
+** 函数作用：判断是否必须在父进程执行（会改变父进程状态的 builtin）。
+*/
+/*static int	is_builtin_parent(char *cmd)
+{
+	if (!cmd)
+		return (0);
+	if (ft_strncmp(cmd, "cd", 3) == 0)
+		return (1);
+	if (ft_strncmp(cmd, "export", 7) == 0)
+		return (1);
+	if (ft_strncmp(cmd, "unset", 6) == 0)
+		return (1);
+	if (ft_strncmp(cmd, "exit", 5) == 0)
+		return (1);
+	return (0);
+}*/
+
+/*
 ** 函数作用：
 ** 执行一个 CMD 节点：
 ** 1) heredoc 被 Ctrl+C 打断就直接返回 130，不执行命令
@@ -163,12 +143,12 @@ int exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	}
 	if (!node->argv || !node->argv[0])
 		return (run_redir_only_parent(msh, node, in_fd, out_fd));
-	if (is_builtin_parent(node->argv[0]))
+	/*if (is_builtin_parent(node->argv[0]))
 	{
 		ret = run_builtin_parent_logic(msh, node, in_fd, out_fd);
 		msh->last_exit_status = ret;
 		return (ret);
-	}
+	}*/
 	ensure_paths_ready(msh);
 	return (run_external_wait(msh, node, in_fd, out_fd));
 }

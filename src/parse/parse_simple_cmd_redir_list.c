@@ -15,27 +15,15 @@
 #include "../../libft/libft.h"
 
 /**
- * parse_simple_cmd_redir_list
- * ------------------------------------------------------------
- * 目的：
- *   解析一个简单命令（可能带重定向或子 shell），构建对应的 AST 节点。
- *   - 如果是子 shell（以 '(' 开始） → 调用 parse_subshell
- *   - 否则 → 调用 parse_normal_cmd_redir_list 解析普通命令及重定向
- *
- * 参数：
- *   @cur — 指向当前 token 的指针（指针的指针，用于消费 token）
- *
- * 返回值：
- *   - 成功：返回构建好的 AST 节点
- *   - 失败：返回 NULL（分配 node 或解析失败）
- *
- * 逻辑：
- *   1. 查看当前 token。
- *   2. 分配 AST 节点 node。
- *      - 分配失败直接返回 NULL。
- *   3. 判断当前 token：
- *      - 如果是 '(' → 调用 parse_subshell 构建子 shell AST。
- *      - 否则 → 调用 parse_normal_cmd_redir_list 构建普通命令 AST。
+ * @brief 解析简单命令单元或子 Shell 结构。
+ * * 该函数是解析器中的决策点：
+ * 1. 预读当前 Token (peek_token) 以判断语法分支。
+ * 2. 分配一个新的 AST 节点内存。
+ * 3. 路径 A：如果检测到左括号 `(`，进入 parse_subshell 处理嵌套的命令流。
+ * 4. 路径 B：如果是普通单词或重定向符，进入 parse_normal_cmd_redir_list 解析命令名、参数及重定向。
+ * * @param cur        指向当前词法 Token 流指针的地址。
+ * @param minishell  指向全局上下文结构体。
+ * @return ast* 返回构建好的命令节点或子 Shell 节点；分配失败或解析错误返回 NULL。
  */
 ast *parse_simple_cmd_redir_list(t_lexer **cur, t_minishell *minishell)
 {

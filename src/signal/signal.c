@@ -13,6 +13,17 @@
 #include "../../include/minishell.h"
 #include "../../include/signals.h"
 
+/**
+ * @brief 处理交互模式下的 SIGINT (Ctrl+C) 信号。
+ * * 该函数执行以下 Readline 状态重置操作：
+ * 1. write(1, "\n", 1): 在终端打印一个物理换行符。
+ * 2. rl_on_new_line(): 告知 Readline 内部状态：光标已经移到了新行。
+ * 3. rl_replace_line("", 0): 清空当前 Readline 的输入缓冲区（抹除已输入的文字）。
+ * 4. rl_redisplay(): 强制刷新屏幕，在当前位置重新绘制提示符 (Prompt)。
+ * 5. g_signal = SIGINT: 记录全局信号标志，供解析器或执行器判断状态。
+ * 6. rl_done = 1: 关键属性，告知 rl_getc 立即结束当前的阻塞等待，
+ * 使 readline() 函数返回一个 NULL 指针或空字符串。
+ */
 void sigint_prompt(int sig)
 {
     (void)sig;
@@ -24,6 +35,17 @@ void sigint_prompt(int sig)
     rl_done = 1;
 }
 
+/**
+ * @brief 设置主提示符阶段的信号处理（简易版）。
+ * * 使用 signal() 函数进行快速配置：
+ * 1. SIGINT (Ctrl+C): 绑定到 sigint_prompt。
+ * - 当用户在等待输入时按下 Ctrl+C，会触发提示符重置逻辑。
+ * 2. SIGQUIT (Ctrl+\): 设置为 SIG_IGN (忽略)。
+ * - 防止用户通过反斜杠信号意外导致 Shell 退出或产生 Core Dump。
+ * 3. SIGTSTP (Ctrl+Z): 设置为 SIG_IGN (忽略)。
+ * - 屏蔽挂起信号，确保 Shell 在主交互界面不会被送入后台。
+ * * 注意：signal() 的行为在不同平台可能存在差异，建议在生产环境使用 sigaction()。
+ */
 void setup_prompt_signals(void)
 {
     signal(SIGINT, sigint_prompt);
@@ -31,6 +53,15 @@ void setup_prompt_signals(void)
     signal(SIGTSTP, SIG_IGN);
 }
 
+/**
+ * @brief 在子进程中恢复信号的默认系统行为。
+ * * 在执行 fork() 之后且执行 execve() 之前调用：
+ * 1. SIGINT (Ctrl+C): 恢复为 SIG_DFL (Default)。允许用户通过中断信号杀死运行中的外部程序。
+ * 2. SIGQUIT (Ctrl+\): 恢复为 SIG_DFL。允许外部程序在接收到退出信号时产生 Core Dump 并终止。
+ * 3. SIGTSTP (Ctrl+Z): 恢复为 SIG_DFL。允许外部程序响应挂起信号进入后台。
+ * * 这一步必不可少，因为子进程会继承父进程的信号掩码和处理函数。如果不重置，
+ * 外部程序将继承主 Shell 忽略 SIGQUIT 或捕获 SIGINT 的逻辑，导致其无法被正常控制。
+ */
 void setup_child_signals(void)
 {
     signal(SIGINT, SIG_DFL);
@@ -38,6 +69,17 @@ void setup_child_signals(void)
     signal(SIGTSTP, SIG_DFL);
 }
 
+/**
+ * @brief 在命令执行期间将父进程的信号设置为忽略模式。
+ * * 当 Minishell fork 出子进程并等待其结束时：
+ * 1. SIGINT (Ctrl+C): 设置为 SIG_IGN。父进程不会因 Ctrl+C 退出，
+ * 只有正在运行的子进程（如 cat, top）会响应此信号并终止。
+ * 2. SIGQUIT (Ctrl+\): 设置为 SIG_IGN。父进程不响应退出信号，
+ * 由子进程负责决定是否产生 Core Dump。
+ * 3. SIGTSTP (Ctrl+Z): 设置为 SIG_IGN。防止父进程在等待子进程时被挂起。
+ * * 这样做确保了终端的控制逻辑清晰：信号被直接发送给前台进程组（子进程），
+ * 而父进程保持静默，直到 waitpid 获取到子进程的退出状态。
+ */
 void setup_parent_exec_signals(void)
 {
     signal(SIGINT, SIG_IGN);
@@ -45,29 +87,26 @@ void setup_parent_exec_signals(void)
     signal(SIGTSTP, SIG_IGN);
 }
 
-
-
+/**
+ * @brief 配置主交互模式下的信号处理。
+ * * 该函数设置 Shell 在等待用户输入时的标准行为：
+ * 1. SIGINT (Ctrl+C): 绑定到 sigint_prompt。触发时通常执行：
+ * - 打印新行 (\n)
+ * - 告知 readline 重新显示提示符
+ * - 设置退出状态码为 130
+ * 2. SIGQUIT (Ctrl+\): 设置为 SIG_IGN (忽略)。
+ * - 按照 Bash 规范，在主提示符下按下 Ctrl+\ 不应产生 Core Dump 或退出 Shell。
+ * * 这一配置保证了 Shell 的交互体验符合 POSIX 标准。
+ */
 void setup_signals(void)
 {
     struct sigaction sa;
-
-    // 1. 指定处理函数
-    sa.sa_handler = sigint_prompt;
-
-    // 2. 初始化信号集，确保在处理 SIGINT 时不会被其他信号干扰
-    sigemptyset(&sa.sa_mask);
-
-    // 3. 设置标志位
-    // SA_RESTART: 让被信号中断的系统调用（如 read）自动重启，避免 readline 异常退出
-    sa.sa_flags = 0;
-
-    // 4. 应用配置
-    // 绑定 Ctrl+C (SIGINT)
-    sigaction(SIGINT, &sa, NULL);
-
-    // 5. 忽略 Ctrl+\ (SIGQUIT)
-    // 这是 Shell 的标准行为：在主提示符下按下 Ctrl+\ 不应有任何反应
     struct sigaction sa_ignore;
+
+    sa.sa_handler = sigint_prompt;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
     sa_ignore.sa_handler = SIG_IGN;
     sigemptyset(&sa_ignore.sa_mask);
     sa_ignore.sa_flags = 0;

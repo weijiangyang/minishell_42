@@ -49,5 +49,6 @@ void    			print_env(t_env *env);
 void 				free_env(t_env *env);
 t_env 				*find_env_var(t_env *env, const char *key);
 void 				free_char_matrix(char **matrix);
+char 				*get_env_value(t_minishell *ms, const char *key);
 
 #endif

@@ -12,6 +12,7 @@
 
 #include "../../include/exec.h"
 #include "../../include/minishell.h"
+#include <sys/wait.h>
 
 /*
 ** 函数作用：
@@ -88,7 +89,7 @@ void	restore_std_fds(t_fd_save *save)
 ** 把 waitpid 的返回状态 st 转换成 shell 退出码：
 ** 正常 exit -> 取 exit code；被信号杀死 -> 128 + 信号号。
 */
-#include <sys/wait.h>
+
 
 void	set_status_from_wait(t_minishell *msh, int st)
 {

@@ -14,31 +14,20 @@
 #include "../../include/parse.h"
 
 /**
- * parse_cmdline
- * ----------------
- * 目的：
- *   解析完整的命令行输入，构建对应的 AST（抽象语法树）。
- *   主要处理管道、逻辑操作和简单命令的组合。
- *
- * 参数：
- *   - cur : 指向当前 token 游标的指针，用于遍历 token 链表
- *
- * 返回值：
- *   - 成功：返回解析好的 AST 根节点指针
- *   - 失败：语法错误或解析失败时返回 NULL，并释放已分配的 AST
- *
- * 行为说明：
- *   1. 调用 parse_pipeline() 解析整个命令行的管道结构
- *   2. 检查解析完成后是否还有剩余 token
- *      - 如果存在且不是 TOK_END，打印语法错误并释放 AST
- *   3. 返回 AST 根节点
+ * @brief 解析整行命令行输入并构建抽象语法树 (AST)。
+ * * 该函数作为解析器的总入口，执行以下逻辑：
+ * 1. 调用 parse_pipeline 启动递归下降解析（处理命令和管道）。
+ * 2. 解析完成后，使用 peek_token 检查词法流中是否还有多余的 Token。
+ * 3. 如果解析结束但仍存在非结束符 (TOK_END) 的 Token，说明存在语法错误（如多余的闭括号或未识别字符）。
+ * * @param cur        指向当前词法 Token 流指针的地址。
+ * @param minishell  指向全局上下文结构体，用于解析过程中的状态记录。
+ * @return ast* 成功则返回构建好的 AST 根节点；发生语法错误则释放已分配内存并返回 NULL。
  */
 ast *parse_cmdline(t_lexer **cur, t_minishell *minishell)
 {
     ast *root;
     t_lexer *pt;
 
-      
     root = parse_pipeline(cur, minishell);
     if (!root)
         return NULL;
