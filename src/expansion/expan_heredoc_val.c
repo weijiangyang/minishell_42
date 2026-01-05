@@ -3,7 +3,7 @@
 #include "../../libft/libft.h"
 #include "../../include/build_in.h"
 
-static int ft_strcmp(const char *s1, const char *s2)
+static int ft_strcmp_1(const char *s1, const char *s2)
 {
     int i = 0;
 
@@ -50,7 +50,7 @@ static char *get_env_value(t_minishell *ms, const char *key)
     t_env *env = ms->env;
     while (env)
     {
-        if (ft_strcmp(env->key, key) == 0)
+        if (ft_strcmp_1(env->key, key) == 0)
             return env->value;
         env = env->next;
     }

@@ -127,4 +127,8 @@ char				*get_next_line(int fd);
 int					end_line(char *str);
 char				*extract_line(char *str);
 
+
+int heredoc_loop(int write_fd, const char *delimiter,
+                        t_minishell *msh, int quoted);
+
 #endif
