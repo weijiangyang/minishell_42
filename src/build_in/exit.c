@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/05 13:24:07 by weiyang           #+#    #+#             */
+/*   Updated: 2026/01/05 13:24:10 by weiyang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -46,45 +58,31 @@ static long to_long(const char *s)
     return val * sign;
 }
 
-/*
-** builtin_exit 改进版
-** in_child = 1: 当前在子进程里（不要直接 exit）
-** in_child = 0: 父进程（交互 shell）执行，可以直接 exit
-*/
-int builtin_exit(char **argv, t_minishell *msh, int in_child)
+
+int builtin_exit(char **argv, t_minishell *msh)
 {
-    long code = 0;
+    long code;
 
-    if (isatty(STDIN_FILENO))
+    code = 0;
+    if (isatty(STDIN_FILENO) && !msh->n_pipes)
         printf("exit\n");
-
     if (argv && argv[1])
     {
         if (!is_numeric(argv[1]))
         {
             ms_put3("minishell: exit: ", argv[1],
-                    ": numeric argument required\n");
-            return in_child ? 2 : (exit(2), 0);
+                    ": numeric argument required\n");   
+            exit(2);
         }
-
         if (argv[2])
         {
             ms_put3("minishell: exit: ", "too many arguments\n", "");
-            return 1;  // 不退出 shell
+            return 1;
         }
-
-        code = to_long(argv[1]);
-        if (in_child)
-            return (unsigned char)code;  // 子进程返回退出码
-        exit((unsigned char)code);      // 父进程直接 exit
+        code = to_long(argv[1]);      
+        exit((unsigned char)code); 
     }
-
     if (msh)
-    {
-        if (in_child)
-            return msh->last_exit_status;
         exit(msh->last_exit_status);
-    }
-
-    return in_child ? 0 : (exit(0), 0);
+    return 0;
 }

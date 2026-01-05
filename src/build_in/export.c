@@ -13,16 +13,6 @@
 #include "../../include/minishell.h"
 #include "../../include/build_in.h"
 
-t_env *find_env_var(t_env *env, const char *key)
-{
-    while (env)
-    {
-        if (strcmp(env->key, key) == 0)
-            return env;
-        env = env->next;
-    }
-    return NULL;
-}
 
 void print_export(t_env *env)
 {
@@ -36,58 +26,86 @@ void print_export(t_env *env)
     }
 }
 
+static int parse_export_arg(char *arg, char **key, char **value)
+{
+    char *equal;
+
+    equal = strchr(arg, '=');
+    if (equal)
+    {
+        *key = strndup(arg, equal - arg);
+        *value = strdup(equal + 1);
+        if (!*key || !*value)
+        {
+            perror("strdup");
+            free(*key);
+            free(*value);
+            return -1;
+        }
+    }
+    else
+    {
+        *key = strdup(arg);
+        *value = NULL;
+        if (!*key)
+            return (perror("strdup"), -1);
+    }
+    return 0;
+}
+
+static void update_env_var(t_env **env, char *key, char *value)
+{
+    t_env *existing;
+
+    existing = find_env_var(*env, key);
+    if (existing)
+    {
+        if (value)
+        {
+            free(existing->value);
+            existing->value = value;
+        }
+        free(key);
+    }
+    else
+        env_add_back(env, env_new(key, value));
+}
+
+static int export_one(char *arg, t_env **env)
+{
+    char *key;
+    char *value;
+
+    if (parse_export_arg(arg, &key, &value) == -1)
+        return 1;
+
+    if (!is_valid_identifier(key))
+    {
+        fprintf(stderr, "export: `%s': not a valid identifier\n", arg);
+        free(key);
+        free(value);
+        return 1;
+    }
+
+    update_env_var(env, key, value);
+    return 0;
+}
+
 int builtin_export(char **argv, t_env **env)
 {
     int status = 0;
+    int i = 1;
 
     if (!argv[1])
     {
         print_export(*env);
         return 0;
     }
-
-    for (int i = 1; argv[i]; i++)
+    while (argv[i])
     {
-        char *key = NULL;
-        char *value = NULL;
-        char *equal = strchr(argv[i], '=');
-        t_env *existing = NULL;
-
-        if (equal)
-        {
-            key = strndup(argv[i], equal - argv[i]);
-            value = strdup(equal + 1);
-        }
-        else
-        {
-            key = strdup(argv[i]);
-            value = NULL;
-        }
-
-        if (!is_valid_identifier(key))
-        {
-            fprintf(stderr, "export: `%s': not a valid identifier\n", argv[i]);
+        if (export_one(argv[i], env))
             status = 1;
-            free(key);
-            free(value);
-            continue; // 继续处理后续参数
-        }
-
-        existing = find_env_var(*env, key);
-        if (existing)
-        {
-            if (value)
-            {
-                free(existing->value);
-                existing->value = value;
-            }
-            free(key); // 这个 key 不需要了
-        }
-        else
-        {
-            env_add_back(env, env_new(key, value)); // 节点接管 key/value
-        }
+        i++;
     }
     return status;
 }
-

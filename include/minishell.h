@@ -40,4 +40,6 @@ typedef struct s_minishell
 	char	**paths;
 }	t_minishell;
 
+int ft_strcmp(const char *s1, const char *s2);
+
 #endif

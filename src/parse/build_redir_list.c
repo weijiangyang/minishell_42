@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   build_redir_list.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 16:17:59 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/30 01:19:18 by yzhang2          ###   ########.fr       */
+/*   Created: 2026/01/05 13:18:45 by weiyang           #+#    #+#             */
+/*   Updated: 2026/01/05 13:18:51 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #include "../../include/minishell.h"
 #include "../../include/parse.h"

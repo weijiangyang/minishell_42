@@ -3,81 +3,71 @@
 /*                                                        :::      ::::::::   */
 /*   parse_pipeline.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/11 17:29:31 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/29 17:05:44 by yzhang2          ###   ########.fr       */
+/*   Created: 2026/01/05 13:17:29 by weiyang           #+#    #+#             */
+/*   Updated: 2026/01/05 13:17:37 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #include "../../include/minishell.h"
 #include "../../include/parse.h"
 #include "../../include/error.h"
 #include "../../libft/libft.h"
 
-/**
- * parse_pipeline_1
- * ----------------
- * 目的：
- *   解析管道操作符 '|'，构建对应的 PIPE 类型 AST 节点。
- *   将左侧命令与右侧命令组合成一棵二叉树表示管道链。
- *
- * 参数：
- *   - cur     : 指向当前 token 游标的指针
- *   - left    : 指向已解析的左侧 AST 节点指针（输入/输出参数）
- *   - n_pipes : 指向管道数量计数器，每遇到一个 '|' 就递增
- *
- * 返回值：
- *   - 成功：返回更新后的 AST 节点（PIPE 树的根）
- *   - 失败：语法错误或内存分配失败时返回 NULL，并释放相关 AST
- *
- * 行为说明：
- *   1. 循环检查当前 token 是否为 TOK_PIPE
- *   2. 消耗管道符 token
- *   3. 调用 parse_simple_cmd() 解析管道右侧命令
- *   4. 为管道创建一个新的 NODE_PIPE AST 节点，将左/右子树连接
- *   5. 更新 left 指针为新创建的 PIPE 节点，继续处理后续管道
- */
-static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes, t_minishell *minishell)
+static int check_consecutive_pipes(t_lexer **cur)
+{
+    t_lexer *pt;
+
+    pt = peek_token(cur);
+    if (pt && pt->next && pt->next->tokentype == TOK_PIPE)
+    {
+        ft_putstr_fd("bash: syntax error near unexpected token `|'\n", STDERR_FILENO);
+        return -1;
+    }
+    return 0;
+}
+
+static ast *create_pipe_node(ast *left, ast *right, int *n_pipes)
+{
+    ast *node;
+
+    node = ft_calloc(1, sizeof(ast));
+    if (!node)
+        return NULL;
+    node->type = NODE_PIPE;
+    node->left = left;
+    node->right = right;
+    (*n_pipes)++;
+    return node;
+}
+
+static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes,
+        t_minishell *minishell)
 {
     ast *right;
-    t_lexer *pt;
+    ast *node;
 
     while (peek_token(cur) && peek_token(cur)->tokentype == TOK_PIPE)
     {
-        // 检查是否是连续的管道符号
-        pt = peek_token(cur);
-        if (pt && pt->next && pt->next->tokentype == TOK_PIPE) // 连续的管道符号
-        {
-            ft_putstr_fd("bash: syntax error near unexpected token `|'\n", STDERR_FILENO);
+        if (check_consecutive_pipes(cur) == -1)
             return (free_ast(*left), NULL);
-        }
-
         consume_token(cur); // 消耗管道符号
-
-        // 解析管道右侧的命令
         right = parse_simple_cmd_redir_list(cur, minishell);
-        if (!right) // 如果没有右侧命令，打印错误信息， 清理左侧命令，退出码为2
+        if (!right)
         {
             ms_err_syntax_unexpected("newline");
             minishell->last_exit_status = 2;
             return (free_ast(*left), NULL);
         }
-        // 创建管道节点并连接左/右命令
-        ast *node = ft_calloc(1, sizeof(ast));
+        node = create_pipe_node(*left, right, n_pipes);
         if (!node)
-        {
-            free_ast(*left);
-            free_ast(right);
-            return NULL;
-        }
-        node->type = NODE_PIPE;
-        node->left = *left;
-        node->right = right;
-        (*n_pipes)++;
+            return (free_ast(*left),free_ast(right), NULL);
         *left = node;
     }
-    return (*left);
+    return *left;
 }
 
 /**
@@ -113,16 +103,13 @@ ast *parse_pipeline(t_lexer **cur, t_minishell *minishell)
             STDERR_FILENO);
         return NULL;
     }
-
     left = parse_simple_cmd_redir_list(cur, minishell);
     if (!left)
         return NULL; // 其他语法错误，不是 PIPE
-
     n_pipes = 0;
     ast *result = parse_pipeline_1(cur, &left, &n_pipes, minishell);
     if (!result)
         return NULL;
-
-    left->n_pipes = n_pipes;
+    minishell->n_pipes = n_pipes;
     return result;
 }

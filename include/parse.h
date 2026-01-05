@@ -127,4 +127,11 @@ char				*get_next_line(int fd);
 int					end_line(char *str);
 char				*extract_line(char *str);
 
+
+int heredoc_loop(int write_fd, const char *delimiter,
+                        t_minishell *msh, int quoted);
+t_cmd *create_argv(char *str);
+char **build_argvs(t_cmd *argv_cmd, t_redir *redir, ast *node);
+ast *parse_normal_cmd_redir_list(t_lexer **cur, ast *node, t_minishell *minishell);
+
 #endif

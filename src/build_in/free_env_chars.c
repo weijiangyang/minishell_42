@@ -1,30 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   free_env_chars.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/22 15:17:26 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/22 15:17:28 by weiyang          ###   ########.fr       */
+/*   Created: 2026/01/05 14:43:59 by weiyang           #+#    #+#             */
+/*   Updated: 2026/01/05 14:44:02 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include "../../include/error.h"
+#include "../../libft/libft.h"
 #include "../../include/build_in.h"
 
-int builtin_pwd()
+void free_env(t_env *env)
 {
-    char cwd[PATH_MAX];
+    t_env *tmp;
+    while (env)
+    {
+        tmp = env;
+        env = env->next;
+        free(tmp->key);
+        free(tmp->value);
+        free(tmp);
+    }
+}
 
-    if (getcwd(cwd, sizeof(cwd)) != NULL)
+void free_char_matrix(char **matrix)
+{
+    int i = 0;
+    if (!matrix)
+        return ;
+    while (matrix[i])
     {
-        printf("%s\n", cwd);
-        return 0;
+        free(matrix[i]);
+        i++;
     }
-    else
-    {
-        perror("pwd");
-        return 1;
-    }
+    free(matrix);
 }
