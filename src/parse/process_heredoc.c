@@ -144,9 +144,10 @@ static int read_and_process_line(char **full_line, const char *delimiter,
 int heredoc_loop(int write_fd, const char *delimiter,
                         t_minishell *msh, int quoted)
 {
-    char *full_line = NULL;
+    char *full_line;
     int status;
 
+    full_line = NULL;
     setup_heredoc_signals();
     while (1)
     {
