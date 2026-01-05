@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #include "../../include/minishell.h"
 #include "../../include/parse.h"
 #include "../../include/error.h"

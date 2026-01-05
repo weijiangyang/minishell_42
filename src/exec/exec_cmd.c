@@ -106,7 +106,7 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 /*
 ** 函数作用：判断是否必须在父进程执行（会改变父进程状态的 builtin）。
 */
-/*static int	is_builtin_parent(char *cmd)
+static int	is_builtin_parent(char *cmd)
 {
 	if (!cmd)
 		return (0);
@@ -119,7 +119,7 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 	if (ft_strncmp(cmd, "exit", 5) == 0)
 		return (1);
 	return (0);
-}*/
+}
 
 /*
 ** 函数作用：
@@ -143,12 +143,12 @@ int exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	}
 	if (!node->argv || !node->argv[0])
 		return (run_redir_only_parent(msh, node, in_fd, out_fd));
-	/*if (is_builtin_parent(node->argv[0]))
+	if (is_builtin_parent(node->argv[0]))
 	{
 		ret = run_builtin_parent_logic(msh, node, in_fd, out_fd);
 		msh->last_exit_status = ret;
 		return (ret);
-	}*/
+	}
 	ensure_paths_ready(msh);
 	return (run_external_wait(msh, node, in_fd, out_fd));
 }
