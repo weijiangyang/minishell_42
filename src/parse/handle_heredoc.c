@@ -10,12 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
-#include "../../libft/libft.h"
-#include "../../include/expander.h"
-#include "../../include/error.h"
-#include "../../include/signals.h"
+#include "minishell.h"
+#include "parse.h"
+
 
 /**
  * @brief 在子进程中处理 Heredoc 的输入逻辑。

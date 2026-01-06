@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
-#include "../../libft/libft.h"
-
+#include "minishell.h"
+#include "parse.h"
 /**
  * @brief 释放重定向链表并关闭关联的系统资源。
  * * 遍历链表执行以下操作：

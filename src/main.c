@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/build_in.h"
-#include "../include/exec.h"
-#include "../include/minishell.h"
-#include "../include/repl.h"
-#include <unistd.h>
+
+#include "minishell.h"
+#include "repl.h"
 
 /*
 ** 函数作用：
@@ -135,7 +133,7 @@ int main(int argc, char **argv, char **envp)
         ms_puterr("minishell: no argument allowed\n");
         return (1);
     }
-    setup_signals();
+    setup_prompt_signals();
     if (!ms_init(&ms, envp))
     {
         ms_puterr("minishell: init failed\n");

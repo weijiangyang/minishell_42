@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/build_in.h"
+#include "minishell.h"
+#include "build_in.h"
 
 /**
  * @brief 解析 echo 命令的选项标志（主要是 -n）。

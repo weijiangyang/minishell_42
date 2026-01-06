@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/lexer.h"
+#include "minishell.h"
+#include "lexer.h"
 
 // 作用：跳过从 `i` 开始的连续空白。
 // 参数：命令串、起点。

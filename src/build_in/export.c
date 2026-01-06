@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/build_in.h"
+#include "minishell.h"
+#include "build_in.h"
 
 /**
  * @brief 以 Bash 标准格式打印所有环境变量。

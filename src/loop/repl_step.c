@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "minishell.h"
 #include "repl.h"
 
 /*
@@ -111,7 +111,7 @@ int repl_step(t_minishell *ms, char **acc)
 		return (step_handle_eof(ms, acc));
 
 	int ok;
-	ok = repl_join(acc, line); 
+	ok = repl_join(acc, line);
 	free(line);
 	line = NULL;
 	if (ok == 0)

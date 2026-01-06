@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/build_in.h"
-#include "../../include/minishell.h"
+#include "build_in.h"
+#include "minishell.h"
 
 /**
  * @brief 确定 cd 命令的目标路径并执行初步参数校验。

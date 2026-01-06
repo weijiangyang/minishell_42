@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/error.h"
-#include "../../libft/libft.h"
-#include "../../include/build_in.h"
+#include "minishell.h"
+#include "build_in.h"
 
 /**
  * @brief 计算环境变量链表中的节点总数。

@@ -12,9 +12,9 @@
 
 
 
-#include "../../include/build_in.h"
-#include "../../include/minishell.h"
-#include "../../libft/libft.h"
+#include "build_in.h"
+#include "minishell.h"
+
 
 /**
  * @brief 检查给定字符串是否匹配 Minishell 支持的内置命令。

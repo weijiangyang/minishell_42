@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
-#include "error.h"
+#include "exec.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：
@@ -93,20 +92,21 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 		setup_child_signals();
 		child_exec_one(msh, node, in_fd, out_fd);
 	}
-
 	if (in_fd > STDERR_FILENO)
 		close(in_fd);
 	if (out_fd > STDERR_FILENO)
 		close(out_fd);
-	if (waitpid(pid, &st, 0) > 0)
+	if (waitpid(pid, &st, WUNTRACED) > 0)
 		set_status_from_wait(msh, st);
+	setup_prompt_signals();
+	rl_on_new_line();
 	return (msh->last_exit_status);
 }
 
 /*
 ** 函数作用：判断是否必须在父进程执行（会改变父进程状态的 builtin）。
 */
-static int	is_builtin_parent(char *cmd)
+static int is_builtin_parent(char *cmd)
 {
 	if (!cmd)
 		return (0);

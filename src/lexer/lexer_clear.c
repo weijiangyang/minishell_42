@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/lexer.h"
+#include "minishell.h"
+#include "lexer.h"
 
 // 作用：释放一个词法节点内部动态资源。
 // 参数：节点指针。

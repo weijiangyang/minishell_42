@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "parse.h"
 
 /**
  * @brief 处理重定向 Token 的解析分支。

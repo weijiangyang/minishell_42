@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
-#include "../../libft/libft.h"
-
+#include "minishell.h"
+#include "parse.h"
 /**
  * @brief 创建并初始化一个新的命令节点。
  * * 该函数接收一个原始字符串，通过内存拷贝（ft_strdup）创建副本，

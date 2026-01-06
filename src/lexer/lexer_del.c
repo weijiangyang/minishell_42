@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/lexer.h"
+#include "minishell.h"
+#include "lexer.h"
 
 // 作用：删除链表头结点（并释放资源）。
 // 参数：头指针地址。

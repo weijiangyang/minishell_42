@@ -14,7 +14,6 @@
 # define MINISHELL_H
 
 # include <signal.h>
-# include <stdbool.h>
 
 /* forward declarations */
 typedef struct s_lexer t_lexer;

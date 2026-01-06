@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
+#include "minishell.h"
+#include "parse.h"
 
 /**
  * @brief 释放 AST 节点及其关联的重定向链表和参数数组。
