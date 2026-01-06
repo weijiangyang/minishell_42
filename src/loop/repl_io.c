@@ -6,77 +6,67 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:17:36 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 15:06:54 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 19:27:06 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "repl.h"
 
+/* 作用：当存储空间不够时，把盒子扩大一倍。 */
+static char	*ms_expand_buffer(char *buf, size_t *size, size_t len)
+{
+	char	*new_buf;
 
-/* 函数作用：非交互模式读一行，只读到 '\n' 就停，避免吞掉后续 bash 命令 */
+	*size = (*size) * 2;
+	new_buf = (char *)malloc(*size);
+	if (!new_buf)
+	{
+		free(buf);
+		return (NULL);
+	}
+	ft_memcpy(new_buf, buf, len);
+	free(buf);
+	return (new_buf);
+}
+
+/* 作用：在非交互模式下，一个字符一个字符地读取一行。 */
 static char	*ms_read_line_raw(int fd)
 {
 	char	*buf;
-	char	*tmp;
 	size_t	st[2];
-	ssize_t	rd;
 	char	ch;
 
-	buf = NULL;
-	tmp = NULL;
 	st[0] = 64;
 	st[1] = 0;
 	buf = (char *)malloc(st[0]);
 	if (!buf)
 		return (NULL);
-	rd = 1;
-	while (rd > 0)
+	while (read(fd, &ch, 1) > 0 && ch != '\n')
 	{
-		rd = read(fd, &ch, 1);
-		if (rd <= 0 || ch == '\n')
-			break ;
 		if (st[1] + 1 >= st[0])
 		{
-			st[0] = st[0] * 2;
-			tmp = (char *)malloc(st[0]);
-			if (!tmp)
-				return (free(buf), NULL);
-			ft_memcpy(tmp, buf, st[1]);
-			free(buf);
-			buf = tmp;
+			buf = ms_expand_buffer(buf, &st[0], st[1]);
+			if (!buf)
+				return (NULL);
 		}
-		buf[st[1]] = ch;
-		st[1] = st[1] + 1;
+		buf[st[1]++] = ch;
 	}
-	if (rd <= 0 && st[1] == 0)
+	if (st[1] == 0 && ch != '\n')
 		return (free(buf), NULL);
 	buf[st[1]] = '\0';
 	return (buf);
 }
 
-
-static char	*ms_read_line(const char *prompt)
+/* 作用：根据当前环境选择最合适的读取方式。 */
+static char	*ms_obtain_line(const char *prompt)
 {
-	char	*line;
-
-	line = NULL;
 	if (isatty(STDIN_FILENO))
-		line = readline(prompt);
-	else
-	line = ms_read_line_raw(STDIN_FILENO);
-	return (line);
+		return (readline(prompt));
+	return (ms_read_line_raw(STDIN_FILENO));
 }
 
-/*
-** 函数作用：
-**   读取用户一行输入。
-** 提示符规则：
-**   - acc 有内容：说明在续行 → "> "
-**   - acc 为空：主提示符 → "minishell$ "
-** 非交互模式（stdin 不是 tty）：
-**   - 不打印提示符（prompt 传空串）。
-*/
+/* 作用：根据命令是否写完，显示不同的提示符并读取输入。 */
 char	*repl_read(char *acc)
 {
 	char	*prompt;
@@ -89,15 +79,10 @@ char	*repl_read(char *acc)
 		else
 			prompt = "minishell$ ";
 	}
-	return (ms_read_line(prompt));
+	return (ms_obtain_line(prompt));
 }
 
-/*
-** 函数作用：
-**   判断字符串里是否有非空白字符。
-** 说明：
-**   用户只输入空格/Tab/回车时，不应该当作一条命令。
-*/
+/* 作用：检查这一行是不是只写了空格或 Tab。 */
 int	repl_has_text(const char *s)
 {
 	int	i;
@@ -112,33 +97,4 @@ int	repl_has_text(const char *s)
 		i++;
 	}
 	return (0);
-}
-
-/*
-** 函数作用：
-**   把 line 拼到 acc 后面。
-** 规则：
-**   - acc 为空：acc = strdup(line)
-**   - acc 非空：acc = acc + "\n" + line
-*/
-int	repl_join(char **acc, char *line)
-{
-	char	*tmp;
-
-	if (!acc || !line)
-		return (0);
-	if (!*acc)
-	{
-		*acc = ft_strdup(line);
-		return (*acc != NULL);
-	}
-	tmp = ft_strjoin(*acc, "\n");
-	free(*acc);
-	*acc = tmp;
-	if (!*acc)
-		return (0);
-	tmp = ft_strjoin(*acc, line);
-	free(*acc);
-	*acc = tmp;
-	return (*acc != NULL);
 }
