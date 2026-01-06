@@ -29,7 +29,6 @@ void sigint_prompt(int sig);
 void setup_prompt_signals(void);
 void setup_child_signals(void);
 void setup_parent_exec_signals(void);
-void setup_signals(void);
 void setup_heredoc_signals(void);
 void save_signals(t_saved_signals *old);
 void ignore_heredoc_signals(void);

@@ -87,7 +87,8 @@ static int process_heredoc_line(char **line, char **full_line,
 /**
  * @brief 读取并处理逻辑。
  * * 该函数是读取循环的核心，执行以下流程：
- * 1. 使用 get_next_line 从标准输入读取数据。
+ * 1. 使用 get_next_line 从标准输入读取数据。（“为什么 heredoc 不用 readline？“因为 heredoc 是阻塞 IO 模式，不需要行编辑和历史功能，使用 get_next_line 可以避免 readline 内部信号逻辑带来的副作用，
+        同时更容易精确控制 Ctrl-C 行为。”）。
  * 2. 信号处理：检测全局变量 g_signal。如果捕获到 SIGINT (Ctrl+C)，清理内存并返回中断信号。
  * 3. EOF 处理：如果读取结束且无残留数据，返回结束标志。
  * 4. 拼接逻辑：如果存在之前暂存的不完整行 (*full_line)，则将其与新读入的行拼接。

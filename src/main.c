@@ -135,7 +135,7 @@ int main(int argc, char **argv, char **envp)
         ms_puterr("minishell: no argument allowed\n");
         return (1);
     }
-    setup_signals();
+    setup_prompt_signals();
     if (!ms_init(&ms, envp))
     {
         ms_puterr("minishell: init failed\n");

@@ -36,24 +36,6 @@ void sigint_prompt(int sig)
 }
 
 /**
- * @brief 设置主提示符阶段的信号处理（简易版）。
- * * 使用 signal() 函数进行快速配置：
- * 1. SIGINT (Ctrl+C): 绑定到 sigint_prompt。
- * - 当用户在等待输入时按下 Ctrl+C，会触发提示符重置逻辑。
- * 2. SIGQUIT (Ctrl+\): 设置为 SIG_IGN (忽略)。
- * - 防止用户通过反斜杠信号意外导致 Shell 退出或产生 Core Dump。
- * 3. SIGTSTP (Ctrl+Z): 设置为 SIG_IGN (忽略)。
- * - 屏蔽挂起信号，确保 Shell 在主交互界面不会被送入后台。
- * * 注意：signal() 的行为在不同平台可能存在差异，建议在生产环境使用 sigaction()。
- */
-void setup_prompt_signals(void)
-{
-    signal(SIGINT, sigint_prompt);
-    signal(SIGQUIT, SIG_IGN);
-    signal(SIGTSTP, SIG_IGN);
-}
-
-/**
  * @brief 在子进程中恢复信号的默认系统行为。
  * * 在执行 fork() 之后且执行 execve() 之前调用：
  * 1. SIGINT (Ctrl+C): 恢复为 SIG_DFL (Default)。允许用户通过中断信号杀死运行中的外部程序。
@@ -82,11 +64,15 @@ void setup_child_signals(void)
  */
 void setup_parent_exec_signals(void)
 {
-    signal(SIGINT, SIG_IGN);
-    signal(SIGQUIT, SIG_IGN);
-    signal(SIGTSTP, SIG_IGN);
-}
+    struct sigaction sa;
 
+    sa.sa_handler = SIG_IGN;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGTSTP, &sa, NULL);
+}
 /**
  * @brief 配置主交互模式下的信号处理。
  * * 该函数设置 Shell 在等待用户输入时的标准行为：
@@ -98,17 +84,16 @@ void setup_parent_exec_signals(void)
  * - 按照 Bash 规范，在主提示符下按下 Ctrl+\ 不应产生 Core Dump 或退出 Shell。
  * * 这一配置保证了 Shell 的交互体验符合 POSIX 标准。
  */
-void setup_signals(void)
+void setup_prompt_signals(void)
 {
     struct sigaction sa;
-    struct sigaction sa_ignore;
 
-    sa.sa_handler = sigint_prompt;
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
+    sa.sa_flags = SA_RESTART;
+    sa.sa_handler = sigint_prompt;
     sigaction(SIGINT, &sa, NULL);
-    sa_ignore.sa_handler = SIG_IGN;
-    sigemptyset(&sa_ignore.sa_mask);
-    sa_ignore.sa_flags = 0;
-    sigaction(SIGQUIT, &sa_ignore, NULL);
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGTSTP, &sa, NULL);
 }
+

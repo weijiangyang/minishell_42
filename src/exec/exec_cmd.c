@@ -93,7 +93,6 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 		setup_child_signals();
 		child_exec_one(msh, node, in_fd, out_fd);
 	}
-
 	if (in_fd > STDERR_FILENO)
 		close(in_fd);
 	if (out_fd > STDERR_FILENO)
@@ -106,7 +105,7 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 /*
 ** 函数作用：判断是否必须在父进程执行（会改变父进程状态的 builtin）。
 */
-static int	is_builtin_parent(char *cmd)
+static int is_builtin_parent(char *cmd)
 {
 	if (!cmd)
 		return (0);
