@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:19:45 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/28 02:38:02 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 01:55:12 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ int	repl_step(t_minishell *ms, char **acc)
 	if (!line)
 		return (step_handle_eof(ms, acc));
 	ok = repl_join(acc, line);
+	free(line);
+	line = NULL;
 	if (ok == 0)
 		return (step_eof_more(ms, acc));
 	repl_run_acc(ms, acc);
