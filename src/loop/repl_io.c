@@ -13,18 +13,48 @@
 #include "../../include/minishell.h"
 #include "repl.h"
 
-static void	chomp_newline(char *s)
-{
-	int	i;
 
-	if (!s)
-		return ;
-	i = 0;
-	while (s[i])
-		i = i + 1;
-	if (i > 0 && s[i - 1] == '\n')
-		s[i - 1] = '\0';
+/* 函数作用：非交互模式读一行，只读到 '\n' 就停，避免吞掉后续 bash 命令 */
+static char	*ms_read_line_raw(int fd)
+{
+	char	*buf;
+	char	*tmp;
+	size_t	st[2];
+	ssize_t	rd;
+	char	ch;
+
+	buf = NULL;
+	tmp = NULL;
+	st[0] = 64;
+	st[1] = 0;
+	buf = (char *)malloc(st[0]);
+	if (!buf)
+		return (NULL);
+	rd = 1;
+	while (rd > 0)
+	{
+		rd = read(fd, &ch, 1);
+		if (rd <= 0 || ch == '\n')
+			break ;
+		if (st[1] + 1 >= st[0])
+		{
+			st[0] = st[0] * 2;
+			tmp = (char *)malloc(st[0]);
+			if (!tmp)
+				return (free(buf), NULL);
+			ft_memcpy(tmp, buf, st[1]);
+			free(buf);
+			buf = tmp;
+		}
+		buf[st[1]] = ch;
+		st[1] = st[1] + 1;
+	}
+	if (rd <= 0 && st[1] == 0)
+		return (free(buf), NULL);
+	buf[st[1]] = '\0';
+	return (buf);
 }
+
 
 static char	*ms_read_line(const char *prompt)
 {
@@ -34,12 +64,7 @@ static char	*ms_read_line(const char *prompt)
 	if (isatty(STDIN_FILENO))
 		line = readline(prompt);
 	else
-	{
-		/* 非交互：必须用 get_next_line，避免 readline 回显输入 */
-		line = get_next_line(STDIN_FILENO);
-		if (line)
-			chomp_newline(line);
-	}
+	line = ms_read_line_raw(STDIN_FILENO);
 	return (line);
 }
 

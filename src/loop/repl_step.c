@@ -109,9 +109,11 @@ int repl_step(t_minishell *ms, char **acc)
 
 	if (!line)
 		return (step_handle_eof(ms, acc));
-	
+
 	int ok;
-	ok = repl_join(acc, line);
+	ok = repl_join(acc, line);cd 
+	free(line);
+	line = NULL;
 	if (ok == 0)
 		return (step_eof_more(ms, acc));
 	repl_run_acc(ms, acc);
