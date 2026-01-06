@@ -89,22 +89,27 @@ void restore_std_fds(t_fd_save *save)
 ** 把 waitpid 的返回状态 st 转换成 shell 退出码：
 ** 正常 exit -> 取 exit code；被信号杀死 -> 128 + 信号号。
 */
-void set_status_from_wait(t_minishell *msh, int st)
+void set_status_from_wait(t_minishell *msh, int status)
 {
-	if (!msh)
-		return;
-	if (WIFEXITED(st))
-		msh->last_exit_status = WEXITSTATUS(st);
-	else if (WIFSIGNALED(st))
-	{
-		if (WTERMSIG(st) == SIGQUIT)
-			ft_putstr_fd("Quit (core dumped)\n", 2);
-		else
-			write(1, "\n", 1);
-		msh->last_exit_status = 128 + WTERMSIG(st);
-	}
-	else
-		msh->last_exit_status = 1;
+    if (WIFEXITED(status)) {
+        msh->last_exit_status = WEXITSTATUS(status);
+    } 
+    else if (WIFSIGNALED(status)) {
+        int sig = WTERMSIG(status);
+        if (sig == SIGQUIT)
+            write(1, "Quit (core dumped)\n", 19);
+        else if (sig == SIGINT)
+            write(1, "\n", 1);
+        msh->last_exit_status = 128 + sig;
+    } 
+    else if (WIFSTOPPED(status)) {
+        // 当按下 Ctrl+Z 时，子进程停止，waitpid(..., WUNTRACED) 返回
+        // 1. 打印一个换行，避免提示符和 ^Z 挤在一起
+        write(1, "\n", 1);
+        // 2. 告诉用户进程已停止（模拟真实 Shell）
+        printf("[1]+  Stopped\n"); 
+        msh->last_exit_status = 128 + WSTOPSIG(status);
+    }
 }
 /*
 ** 函数作用：

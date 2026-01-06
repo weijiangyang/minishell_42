@@ -97,8 +97,10 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 		close(in_fd);
 	if (out_fd > STDERR_FILENO)
 		close(out_fd);
-	if (waitpid(pid, &st, 0) > 0)
+	if (waitpid(pid, &st, WUNTRACED) > 0)
 		set_status_from_wait(msh, st);
+	setup_prompt_signals();
+	rl_on_new_line();
 	return (msh->last_exit_status);
 }
 
