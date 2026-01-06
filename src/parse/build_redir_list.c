@@ -12,10 +12,8 @@
 
 
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
-#include "../../libft/libft.h"
-
+#include "minishell.h"
+#include "parse.h"
 /**
  * @brief 创建并初始化一个新的重定向节点 (t_redir)。
  * * 该函数分配内存，并将 Lexer 识别到的 Token 类型转换为执行器识别的重定向类型。

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/build_in.h"
+#include "minishell.h"
+#include "build_in.h"
 
 /**
  * @brief pwd 内置命令的实现。

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
+#include "exec.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：动态数组扩容（容量翻倍，最小从 4 开始）

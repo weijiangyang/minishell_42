@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
-#include "../../libft/libft.h"
-#include <sys/wait.h>
+#include "exec.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：

@@ -11,13 +11,9 @@
 /* ************************************************************************** */
 
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
-#include "../../libft/libft.h"
-#include "../../include/expander.h"
-#include "../../include/error.h"
-#include "../../include/signals.h"
-
+#include "minishell.h"
+#include "parse.h"
+#include "expander.h"
 /**
  * @brief 将新读取的一行合并到已有的总字符串中，并自动管理内存。
  * * 该函数实现了字符串的动态累加逻辑：

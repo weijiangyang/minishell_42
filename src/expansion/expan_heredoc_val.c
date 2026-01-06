@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/expander.h"
-#include "../../libft/libft.h"
-#include "../../include/build_in.h"
+#include "minishell.h"
+#include "expander.h"
 
 /**
  * @brief 在环境变量链表中根据键名 (key) 查找对应的值 (value)。

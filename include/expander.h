@@ -15,7 +15,8 @@
 
 
 #include "parse.h"
-
+#include "../libft/libft.h"
+#include "build_in.h"
 
 enum						qstate
 {

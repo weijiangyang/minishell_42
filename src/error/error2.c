@@ -13,10 +13,7 @@
 
 #include "../../include/error.h"
 #include "../../include/minishell.h"
-#include "../../libft/libft.h"
-#include <errno.h>
-#include <unistd.h>
-#include <stdio.h>
+
 /*
 ** 函数作用：
 ** 打印系统调用失败的错误（带 minishell 前缀），格式尽量贴近 bash。

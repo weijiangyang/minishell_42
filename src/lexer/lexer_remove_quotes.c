@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/lexer.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "lexer.h"
 
 // 作用：从源串 `s` 的当前读指针起，拷贝**被指定引号包裹**的内容到 `res`，
 // 并维护源/目标索引 `idx`。

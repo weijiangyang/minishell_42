@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/signals.h"
+#include "minishell.h"
+#include "signals.h"
 
 /**
  * @brief 处理交互模式下的 SIGINT (Ctrl+C) 信号。

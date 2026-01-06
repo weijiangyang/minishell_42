@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
-
+#include "exec.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：执行一个 CMD 根节点（不在管道里）。

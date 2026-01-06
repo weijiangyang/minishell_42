@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
+#include "minishell.h"
+#include "parse.h"
 
 /**
  * @brief 解析子 Shell 结构 ( (command) )。

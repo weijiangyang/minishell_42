@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/build_in.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "build_in.h"
 
 /**
  * @brief 从环境变量链表中查找并彻底删除指定的变量。

@@ -16,8 +16,11 @@
 # define PARSE_H
 
 
-
+#include "../libft/libft.h"
 #include "lexer.h"
+#include "signals.h"
+#include "error.h"
+
 typedef struct s_list t_list;
 
 # define BUFFER_SIZE 42

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/build_in.h"
-#include "../../include/minishell.h"
+#include "build_in.h"
+#include "minishell.h"
 
 /**
  * @brief 创建并初始化一个新的环境变量链表节点。

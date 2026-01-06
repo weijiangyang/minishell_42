@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
-#include "../../include/error.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "parse.h"
 
 /**
  * @brief 检查词法流中是否存在非法的连续管道符。

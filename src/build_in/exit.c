@@ -10,12 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "../../include/minishell.h" // 你的 t_minishell 定义
-#include "../../libft/libft.h"
-#include "../../include/error.h"
+#include "minishell.h" // 你的 t_minishell 定义
+#include "build_in.h"
 
 // 判断字符串是否为合法数字
 static int is_numeric(const char *s)

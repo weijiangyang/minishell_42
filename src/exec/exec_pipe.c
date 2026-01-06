@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
+#include "exec.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：等待所有子进程结束，并把“最后一个命令”的退出码写回 msh。

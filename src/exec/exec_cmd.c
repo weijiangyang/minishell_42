@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
-#include "error.h"
+#include "exec.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：

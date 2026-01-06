@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
+#include "exec.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：判断 path 是否是目录。

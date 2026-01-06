@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 
-#include "../../include/minishell.h"
-#include "../../include/signals.h"
+#include "minishell.h"
+#include "signals.h"
 
 volatile sig_atomic_t g_signal;
 

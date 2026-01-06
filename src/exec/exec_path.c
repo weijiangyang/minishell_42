@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/exec.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "exec.h"
 
 static char	*join_dir_cmd(const char *dir, const char *cmd)
 {

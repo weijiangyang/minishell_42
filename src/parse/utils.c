@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "parse.h"
 
 /**
  * @brief 预读当前 Token 而不移动流指针。

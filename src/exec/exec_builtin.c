@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
-#include "../../libft/libft.h"
-#include "error.h"
+#include "exec.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：只关闭“不是标准输入/输出/错误”的 fd，避免误关 stdin/stdout。

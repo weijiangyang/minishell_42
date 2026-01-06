@@ -10,12 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/error.h"
-#include "../../include/minishell.h"
-#include "../../libft/libft.h"
-#include <errno.h>
-#include <unistd.h>
-#include <stdio.h>
+#include "error.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：把 3 段字符串按顺序打印到 stderr。

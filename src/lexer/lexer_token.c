@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 
-#include "../../include/minishell.h"
-#include "../../include/lexer.h"
-
+#include "minishell.h"
+#include "lexer.h"
 
 // 改了什么
 // 符号 token 改为 add_node(NULL, token, list)（关键修复）

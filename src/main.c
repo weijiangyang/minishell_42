@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/build_in.h"
-#include "../include/exec.h"
-#include "../include/minishell.h"
-#include "../include/repl.h"
-#include <unistd.h>
+
+#include "minishell.h"
+#include "repl.h"
 
 /*
 ** 函数作用：

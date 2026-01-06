@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
+#include "minishell.h"
+#include "parse.h"
 
 /**
  * @brief 解析整行命令行输入并构建抽象语法树 (AST)。

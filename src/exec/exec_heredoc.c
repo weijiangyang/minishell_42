@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 
-#include "../../include/minishell.h"
-#include "../../include/exec.h"
+#include "minishell.h"
+#include "exec.h"
 
 /**
  * @brief 递归遍历 AST 并预处理所有 Heredoc 节点。
