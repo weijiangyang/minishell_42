@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:40:59 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/22 16:48:46 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 18:47:02 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,22 @@
 #ifndef LEXER_H
 # define LEXER_H
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <string.h>
-#include <ctype.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <signal.h>
-#include <limits.h>
-#include <termios.h>
-
-#include "../libft/libft.h"
+# include "../libft/libft.h"
+# include <ctype.h>
+# include <fcntl.h>
+# include <limits.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <signal.h>
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <termios.h>
+# include <unistd.h>
 
 /* === 在 include/lexer.h 中添加 / 替换（放在头文件顶部其它定义附近） === */
 
@@ -97,8 +95,7 @@ typedef struct s_lexer
 	int						idx;
 	int						had_quotes;
 	int						quoted_by;
-	
-	
+
 	char					*raw;
 	struct s_lexer			*prev;
 	struct s_lexer			*next;
@@ -111,6 +108,7 @@ typedef struct s_index
 	size_t					j;
 }							t_index;
 
+const char					*token_symbol(tok_type t);
 t_lexer						*new_node(t_token_info *info, tok_type tokentype);
 void						list_add_back(t_lexer **lst, t_lexer *new);
 int							add_node(t_token_info *info, tok_type tokentype,
@@ -120,8 +118,10 @@ t_lexer						*clear_one(t_lexer **lst);
 void						del_first(t_lexer **lst);
 void						del_one(t_lexer **lst, int target);
 void						clear_list(t_lexer **lst);
-
+int							detect_signal(t_lexer **list);
 tok_type					is_token(int c);
+int							finalize_word_node(t_token_info *info,
+								t_lexer **list);
 int							handle_token(char *str, int idx, t_lexer **list);
 int							match_quotes(int i, char *str, char quote);
 
