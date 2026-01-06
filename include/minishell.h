@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 15:21:40 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/21 18:09:54 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 17:02:22 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ typedef struct s_minishell
 
 	int		n_pipes;
 	int		last_exit_status;
+	int		should_exit;
+	int		exit_code;
 
 	/* state */
 	char					lexer_unclosed_quote; /* '\0', '\'', '"' */
@@ -38,5 +40,7 @@ typedef struct s_minishell
 	char	**envp;
 	char	**paths;
 }	t_minishell;
+
+void ms_clear(t_minishell *ms);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:20:01 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/28 17:36:11 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 15:08:02 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@ static int ms_init(t_minishell *ms, char **envp)
     ms->paths = NULL;
     ms->lexer = NULL;
     ms->raw_line = NULL;
+    	ms->should_exit = 0;
+	ms->exit_code = 0;
+
     ms->last_exit_status = 0;
     ms->lexer_need_more = 0;
     ms->lexer_unclosed_quote = 0;
@@ -77,7 +80,7 @@ static int ms_init(t_minishell *ms, char **envp)
 **   你的项目里没有 free_char_matrix，所以这里用 while 手动 free(char**)。
 **   free_env 的参数是 t_env*，不是 t_env**，所以要传 ms->env。
 */
-static void ms_clear(t_minishell *ms)
+void ms_clear(t_minishell *ms)
 {
     int i;
     char **m;

@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 23:59:59 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/18 18:34:57 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 17:19:56 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 	if (pid == 0)
 	{
 		setup_child_signals();
-		child_exec_one(msh, node, in_fd, out_fd);
+		child_exec_one(msh, node, in_fd, out_fd, node);
 	}
 	if (in_fd > STDERR_FILENO)
 		close(in_fd);
