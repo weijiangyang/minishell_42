@@ -6,18 +6,14 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/18 21:03:52 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/30 04:21:43 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 19:49:05 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expander.h"
 #include "minishell.h"
 
-/*
-** 函数作用：只去掉 *s 里的引号（不做 $ 展开），并替换原指针。
-** 参数：s(指向字符串指针，函数内会 free 原串并换成新串)
-** 返回：成功 1，失败 0
-*/
+/* 保持逻辑不变：剥离引号 */
 static int	strip_quotes_inplace(char **s)
 {
 	char	*tmp;
@@ -25,7 +21,6 @@ static int	strip_quotes_inplace(char **s)
 	int		q_s;
 	int		q_d;
 
-	tmp = NULL;
 	had_q = 0;
 	q_s = 0;
 	q_d = 0;
@@ -41,32 +36,20 @@ static int	strip_quotes_inplace(char **s)
 	return (1);
 }
 
-/*
-** 函数作用：判断一个词的原始字符串里是否出现过引号字符。
-** 解释：未引号的 $EMPTY 展开成空时，bash 会把这个词直接删掉；
-**      但带引号的 "$EMPTY" 展开为空时，要保留成空字符串参数。
-*/
-static int	word_has_quotes(const char *s)
+/* 保持逻辑不变：数组前移一位（删除元素） */
+static void	argv_shift_left(char **argv, int i)
 {
-	int	i;
-
-	i = 0;
-	while (s && s[i])
+	while (argv[i])
 	{
-		if (s[i] == '\'' || s[i] == '"')
-			return (1);
+		argv[i] = argv[i + 1];
 		i = i + 1;
 	}
-	return (0);
 }
 
-/*
-** 函数作用：展开 argv（$ 展开 + 去引号），并按 bash 规则删除“未引号展开为空”的词。
-*/
+/* 保持逻辑不变：展开并处理 argv */
 static int	expand_argv_inplace(t_minishell *msh, ast *node)
 {
 	int		i;
-	int		j;
 	int		had_q;
 	char	*tmp;
 
@@ -80,12 +63,7 @@ static int	expand_argv_inplace(t_minishell *msh, ast *node)
 		if (tmp[0] == '\0' && had_q == 0)
 		{
 			free(tmp);
-			j = i;
-			while (node->argv[j])
-			{
-				node->argv[j] = node->argv[j + 1];
-				j = j + 1;
-			}
+			argv_shift_left(node->argv, i);
 		}
 		else
 		{
@@ -96,19 +74,11 @@ static int	expand_argv_inplace(t_minishell *msh, ast *node)
 	return (1);
 }
 
-/*
-** 函数作用：展开重定向链表的 filename。
-** 规则：
-**  - 普通重定向(< > >>)：$ 展开 + 去引号
-**  - heredoc(<<) 的 delimiter：永远只去引号（不做 $ 展开）
-** 参数：msh(全局上下文), r(重定向链表头)
-** 返回：成功 1，失败 0
-*/
+/* 保持逻辑不变：处理重定向文件名 */
 static int	expand_redirs_inplace(t_minishell *msh, t_redir *r)
 {
 	char	*tmp;
 
-	tmp = NULL;
 	while (r)
 	{
 		if (r->filename && r->type == HEREDOC)
@@ -128,11 +98,7 @@ static int	expand_redirs_inplace(t_minishell *msh, t_redir *r)
 	return (1);
 }
 
-/*
-** 函数作用：展开一个 CMD 节点：先 argv，再 redir。
-** 参数：msh(全局上下文), node(CMD 节点)
-** 返回：成功 1，失败 0
-*/
+/* 保持逻辑不变：入口函数 */
 int	expander_expand_cmd_node(t_minishell *msh, ast *node)
 {
 	if (!msh || !node || node->type != NODE_CMD)

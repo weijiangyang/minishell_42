@@ -6,20 +6,37 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 18:02:28 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 19:27:12 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "repl.h"
 
-/*
-** 函数作用：
-**   命令执行完之后，清理当前 acc（累计输入），并重置 lexer 状态。
-** err_code：
-**   - 0：正常清空
-**   - 2：语法/词法错误（和 bash 一样返回 2）
-*/
+/* 作用：把新读到的一行接在之前没写完的命令后面。 */
+int	repl_join(char **acc, char *line)
+{
+	char	*tmp;
+
+	if (!acc || !line)
+		return (0);
+	if (!*acc)
+	{
+		*acc = ft_strdup(line);
+		return (*acc != NULL);
+	}
+	tmp = ft_strjoin(*acc, "\n");
+	free(*acc);
+	*acc = tmp;
+	if (!*acc)
+		return (0);
+	tmp = ft_strjoin(*acc, line);
+	free(*acc);
+	*acc = tmp;
+	return (*acc != NULL);
+}
+
+/* 作用：执行完后打扫战场，把积累的输入清空。 */
 static void	run_drop_acc(t_minishell *ms, char **acc, int err_code)
 {
 	if (err_code != 0)
@@ -30,11 +47,7 @@ static void	run_drop_acc(t_minishell *ms, char **acc, int err_code)
 	ms->lexer_unclosed_quote = 0;
 }
 
-/*
-** 函数作用：
-**   真正执行一条“已经完成”的命令：
-**   lexer -> parser -> expander -> exec -> free
-*/
+/* 作用：组装语法树并真正开始跑命令。 */
 static void	run_one_cmd(t_minishell *ms)
 {
 	ast		*root;
@@ -55,29 +68,7 @@ static void	run_one_cmd(t_minishell *ms)
 	clear_list(&ms->lexer);
 }
 
-/*
-** 函数作用：
-**   释放 acc（累计输入缓冲区），并把指针置为 NULL。
-** 为什么要这样写：
-**   - 置 NULL 可以防止“二次 free”这种常见 bug。
-*/
-void	repl_free_acc(char **acc)
-{
-	if (!acc)
-		return ;
-	if (*acc)
-		free(*acc);
-	*acc = NULL;
-}
-
-
-/*
-** 函数作用：
-**   拿着 acc 去做 lexer/parse/exec。
-** 注意：
-**   - 如果 lexer 发现“引号没闭合”，会返回 LEX_NEED_MORE；
-**     这时不执行，只保留 acc，下一轮用 \"> \" 继续读。
-*/
+/* 作用：判断命令是否写完，完整就去执行，不完整就等下一行。 */
 void	repl_run_acc(t_minishell *ms, char **acc)
 {
 	int	lex_ret;
@@ -97,4 +88,14 @@ void	repl_run_acc(t_minishell *ms, char **acc)
 		add_history(*acc);
 	run_one_cmd(ms);
 	run_drop_acc(ms, acc, 0);
+}
+
+/* 作用：完全释放存命令的内存，防止泄露。 */
+void	repl_free_acc(char **acc)
+{
+	if (!acc)
+		return ;
+	if (*acc)
+		free(*acc);
+	*acc = NULL;
 }

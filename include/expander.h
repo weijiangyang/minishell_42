@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by ***********       #+#    #+#             */
-/*   Updated: 2025/12/21 22:36:06 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 19:47:41 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ typedef struct s_exp_data
 	char					**out;
 }							t_exp_data;
 
+
+
+int	word_has_quotes(const char *s);
 /*
 ** 函数作用：展开入口，parse 之后 exec 之前调用，遍历整棵 AST 做展开。
 ** 参数：minishell(全局上下文), root(AST 根)

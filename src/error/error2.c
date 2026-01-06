@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 17:22:21 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 17:54:34 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 19:19:54 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,21 @@ void    ms_err_syntax_unexpected(const char *tok)
 {
     ms_put3("minishell: syntax error near unexpected token `", NULL, NULL);
     ms_put3(tok, "'\n", NULL);
+}
+
+/*
+** 函数作用：打印引号未闭合导致的 EOF 错误。
+** 效果：minishell: unexpected EOF looking for `"` 
+** minishell: syntax error: unexpected end of file
+*/
+void    ms_err_eof_quote(char q)
+{
+    char    str[2];
+
+    str[0] = q;
+    str[1] = '\0';
+    // 第一行报错
+    ms_put3("minishell: unexpected EOF looking for `", str, "'\n");
+    // 第二行报错
+    ms_put3("minishell: syntax error: unexpected end of file\n", NULL, NULL);
 }
