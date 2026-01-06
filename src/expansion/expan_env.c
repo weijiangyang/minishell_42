@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/expander.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "expander.h"
+
 /*
 ** 函数作用：判断变量名首字符是否合法（字母或 _）。
 ** 参数：c(一个字符)

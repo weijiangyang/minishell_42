@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "minishell.h"
 #include "repl.h"
 
 /*
@@ -48,6 +48,7 @@ static void	run_one_cmd(t_minishell *ms)
 		clear_list(&ms->lexer);
 		return ;
 	}
+	prepare_heredocs(root, ms);
 	expander_ast(ms, root);
 	exec_ast(ms, root);
 	free_ast(root);

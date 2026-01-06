@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
+#include "exec.h"
+#include "minishell.h"
 
 static void	close_keep_std(int *fd)
 {

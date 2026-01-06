@@ -6,12 +6,12 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 00:15:10 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/30 06:42:26 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 17:17:29 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/exec.h"
-#include "../../include/minishell.h"
+#include "exec.h"
+#include "minishell.h"
 
 /*
 ** 函数作用：判断 path 是否是目录。
@@ -106,7 +106,7 @@ static void	close_heredoc_fds(t_redir *r)
 ** - command not found -> 127
 ** - permission denied / is a directory -> 126
 */
-static void	child_exec_external(t_minishell *msh, ast *node)
+static void	child_exec_external(t_minishell *msh, ast *node, ast *root)
 {
 	char	**argv;
 	char	*path;
@@ -115,45 +115,46 @@ static void	child_exec_external(t_minishell *msh, ast *node)
 
 	argv = node->argv;
 	if (!argv || !argv[0])
-		exit(0);
+		ms_child_exit(msh, root, 0);
 	change_envp(msh->env, &msh->envp);
 	path = find_cmd_path(msh, argv[0]);
 	if (!path)
 	{
 		ms_err_cmd_not_found(argv[0]);
-		exit(127);
+		ms_child_exit(msh, root, 127);
 	}
 	if (path_is_dir(path))
 	{
 		ms_err_exec(argv[0], EISDIR);
 		free(path);
-		exit(126);
+		ms_child_exit(msh, root, 126);
 	}
 	execve(path, argv, msh->envp);
 	err = errno;
 	if (try_print_bad_interpreter(argv[0], path, err))
 	{
 		free(path);
-		exit(126);
+		ms_child_exit(msh, root, 126);
 	}
 	ms_err_exec(argv[0], err);
 	code = 127;
 	if (err == EACCES || err == EISDIR)
 		code = 126;
 	free(path);
-	exit(code);
+	ms_child_exit(msh, root, code);
 }
 
 // ** 函数作用：子进程执行一个命令节点（包含 builtin / external）。
-void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd)
+void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd,
+		ast *root)
 {
 	int	new_in;
 	int	new_out;
 
 	if (!msh || !node || node->type != NODE_CMD)
-		exit(1);
+		ms_child_exit(msh, root, 1);
 	if (has_bad_heredoc(node->redir))
-		exit(1);
+		ms_child_exit(msh, root, 1);
 	new_in = in_fd;
 	new_out = out_fd;
 	if (new_in > STDERR_FILENO && node->argv && node->argv[0]
@@ -163,12 +164,12 @@ void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd)
 		new_in = -1;
 	}
 	if (apply_redir_list(node->redir, &new_in, &new_out) < 0)
-		exit(1);
+		ms_child_exit(msh, root, 1);
 	close_heredoc_fds(node->redir);
 	if (dup_in_out_or_close(new_in, new_out) < 0)
-		exit(1);
+		ms_child_exit(msh, root, 1);
 	if (node->argv && node->argv[0] && is_builtin(node->argv[0]))
-		exit(exec_builtin(node, &msh->env, msh));
-	child_exec_external(msh, node);
-	exit(1);
+		ms_child_exit(msh, root, exec_builtin(node, &msh->env, msh));
+	child_exec_external(msh, node, root);
+	ms_child_exit(msh, root, 1);
 }

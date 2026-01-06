@@ -15,6 +15,10 @@
 
 #include <errno.h>
 #include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+
+#include "../libft/libft.h"
 
 void	ms_put3(const char *a, const char *b, const char *c);
 void	ms_err_cmd_not_found(const char *cmd);

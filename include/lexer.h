@@ -31,6 +31,8 @@
 #include <limits.h>
 #include <termios.h>
 
+#include "../libft/libft.h"
+
 /* === 在 include/lexer.h 中添加 / 替换（放在头文件顶部其它定义附近） === */
 
 # define LEX_OK 1

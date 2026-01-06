@@ -6,12 +6,13 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:17:36 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 01:34:58 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 15:06:54 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "minishell.h"
 #include "repl.h"
+
 
 /* 函数作用：非交互模式读一行，只读到 '\n' 就停，避免吞掉后续 bash 命令 */
 static char	*ms_read_line_raw(int fd)

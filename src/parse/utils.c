@@ -10,25 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/parse.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "parse.h"
 
 /**
- * peek_token
- * ----------------
- * 目的：
- *   查看当前 token 游标指向的 token，但不移动游标。
- *
- * 参数：
- *   - cur : 指向当前 token 游标的指针
- *
- * 返回值：
- *   - 成功：返回当前 token 指针 (*cur)
- *   - 失败：如果 cur 为 NULL，返回 NULL
- *
- * 行为说明：
- *   - 不修改 cur 指向的 token，便于在解析时预览下一个 token
+ * @brief 预读当前 Token 而不移动流指针。
+ * * 该函数允许解析器在不“消耗” Token 的情况下检查其内容：
+ * 1. 检查传入的二级指针是否有效。
+ * 2. 返回当前词法单元 (t_lexer) 的指针。
+ * 3. 词法流指针 (*cur) 保持不变，供后续逻辑再次检查或消耗。
+ * * @param cur 指向当前 Token 流指针的地址。
+ * @return t_lexer* 返回当前 Token 节点的指针；若流已空或参数无效则返回 NULL。
  */
 t_lexer *peek_token(t_lexer **cur)
 {
@@ -38,22 +30,14 @@ t_lexer *peek_token(t_lexer **cur)
 }
 
 /**
- * consume_token
- * ----------------
- * 目的：
- *   消耗当前 token，并将游标移动到下一个 token。
- *
- * 参数：
- *   - cur : 指向当前 token 游标的指针
- *
- * 返回值：
- *   - 成功：返回被消耗的 token 指针
- *   - 失败：如果 cur 或 *cur 为 NULL，返回 NULL
- *
- * 行为说明：
- *   1. 保存当前 token 指针到临时变量 old
- *   2. 将游标 *cur 移动到下一个 token
- *   3. 返回原 token 指针 old
+ * @brief 消耗当前 Token 并将流指针移动到下一个节点。
+ * * 该函数实现了 Token 流的推进逻辑：
+ * 1. 安全检查：确保传入的流指针及其指向的内容有效。
+ * 2. 暂存当前：保存当前正在处理的 Token 指针，以便作为返回值。
+ * 3. 指针推进：将词法流指针 (*cur) 更新为链表中的下一个节点。
+ * 4. 返回：返回移动前保存的那个 Token 节点。
+ * * @param cur 指向当前词法 Token 流指针的地址。
+ * @return t_lexer* 返回被消耗掉的那个 Token 指针；若已到达流末尾则返回 NULL。
  */
 t_lexer *consume_token(t_lexer **cur)
 {
@@ -66,24 +50,14 @@ t_lexer *consume_token(t_lexer **cur)
 }
 
 /**
- * expect_token
- * ----------------
- * 目的：
- *   检查当前 token 是否符合预期类型，如果符合则消耗它，
- *   否则打印语法错误并返回 NULL。
- *
- * 参数：
- *   - type : 期望的 token 类型
- *   - cur  : 指向当前 token 游标的指针
- *
- * 返回值：
- *   - 成功：返回当前 token 指针（已消耗）
- *   - 失败：当前 token 不存在或类型不匹配时返回 NULL
- *
- * 行为说明：
- *   1. 检查 cur 或 *cur 是否为 NULL，或 token 类型是否不匹配
- *   2. 如果不匹配，打印语法错误信息
- *   3. 如果匹配，调用 consume_token 消耗当前 token 并返回
+ * @brief 验证当前 Token 类型并消耗它。
+ * * 该函数用于强制性的语法匹配：
+ * 1. 检查当前 Token 是否存在且其类型是否符合预期 (type)。
+ * 2. 如果类型不匹配：打印语法错误信息并返回 NULL，中断解析。
+ * 3. 如果类型匹配：调用 consume_token 推进流指针并返回该 Token。
+ * * @param type 预期的 Token 类型（如 TOK_RPAREN, TOK_WORD 等）。
+ * @param cur  指向当前词法 Token 流指针的地址。
+ * @return t_lexer* 匹配成功返回被消耗的 Token；匹配失败返回 NULL。
  */
 t_lexer *expect_token(tok_type type, t_lexer **cur)
 {
@@ -96,21 +70,14 @@ t_lexer *expect_token(tok_type type, t_lexer **cur)
 }
 
 /**
- * is_redir_token
- * ----------------
- * 目的：
- *   判断给定 token 是否为重定向类型（<, >, >>, <<）。
- *
- * 参数：
- *   - pt : 指向当前 token
- *
- * 返回值：
- *   - 1 : token 是重定向类型
- *   - 0 : token 不是重定向类型
- *
- * 行为说明：
- *   - 检查 token 的 tokentype 是否属于以下类型：
- *       TOK_REDIR_IN, TOK_REDIR_OUT, TOK_APPEND, TOK_HEREDOC
+ * @brief 判断给定的 Token 是否为重定向操作符。
+ * * 该函数检查以下四种标准的 Shell 重定向类型：
+ * 1. TOK_REDIR_IN  ('<'): 输入重定向。
+ * 2. TOK_REDIR_OUT ('>'): 输出重定向。
+ * 3. TOK_APPEND    ('>>'): 追加输出重定向。
+ * 4. TOK_HEREDOC   ('<<'): 这里的文档重定向。
+ * * @param pt 指向待检查的词法单元 (t_lexer) 的指针。
+ * @return int 如果是重定向操作符返回 1；否则返回 0。
  */
 int is_redir_token(t_lexer *pt)
 {
@@ -124,23 +91,13 @@ int is_redir_token(t_lexer *pt)
 }
 
 /**
- * safe_strdup
- * ----------------
- * 目的：
- *   安全地复制字符串，封装 strdup 并处理内存分配失败。
- *
- * 参数：
- *   - s : 需要复制的源字符串
- *
- * 返回值：
- *   - 成功：返回新分配的字符串副本
- *   - 失败或 s 为 NULL：返回 NULL
- *
- * 行为说明：
- *   1. 如果输入字符串 s 为 NULL，直接返回 NULL
- *   2. 调用 ft_strdup 复制字符串
- *   3. 如果分配失败，打印错误信息
- *   4. 返回复制后的字符串指针
+ * @brief 安全的字符串复制函数。
+ * * 相比于标准的 ft_strdup，该函数增加了以下保护：
+ * 1. 输入检查：如果输入字符串指针 s 为空，直接返回 NULL，防止程序崩溃。
+ * 2. 失败反馈：如果 ft_strdup 因为内存耗尽（malloc 失败）返回 NULL，
+ * 则向标准错误输出报错信息。
+ * * @param s 指向待复制原始字符串的指针。
+ * @return char* 成功返回新分配的字符串副本；若输入为空或分配失败则返回 NULL。
  */
 char *safe_strdup(const char *s)
 {
@@ -150,3 +107,6 @@ char *safe_strdup(const char *s)
         fprintf(stderr, "memory error: strdup failed\n");
     return p;
 }
+
+
+

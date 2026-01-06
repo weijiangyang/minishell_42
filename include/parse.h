@@ -16,8 +16,11 @@
 # define PARSE_H
 
 
-
+#include "../libft/libft.h"
 #include "lexer.h"
+#include "signals.h"
+#include "error.h"
+
 typedef struct s_list t_list;
 
 # define BUFFER_SIZE 42
@@ -48,6 +51,7 @@ typedef struct s_redir
 	int				heredoc_fd;
 	bool			is_expanded;
 	t_redir_type	type;
+	int				quoted;
 
 }					t_redir;
 /**
@@ -119,11 +123,18 @@ char				*safe_strdup(const char *s);
 ast					*parse_simple_cmd_redir_list(t_lexer **cur,
 						t_minishell *minishell);
 void				free_t_cmd_node(t_cmd *argv_cmd);
-int					heredoc_loop(int write_fd, const char *delimiter);
+
 int					handle_heredoc(t_redir *new_redir, t_minishell *minishell);
 int					build_redir(t_lexer **cur, t_redir **redir_list, t_minishell *minishell);
 char				*get_next_line(int fd);
 int					end_line(char *str);
 char				*extract_line(char *str);
+
+
+int heredoc_loop(int write_fd, const char *delimiter,
+                        t_minishell *msh, int quoted);
+t_cmd *create_argv(char *str);
+char **build_argvs(t_cmd *argv_cmd, t_redir *redir, ast *node);
+ast *parse_normal_cmd_redir_list(t_lexer **cur, ast *node, t_minishell *minishell);
 
 #endif

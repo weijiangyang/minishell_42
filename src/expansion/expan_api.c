@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
-#include "../../include/expander.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "expander.h"
+
 /*
 ** 函数作用：把 s 去引号；如果本来没有引号，就复制一份 s。
 ** 参数：s(输入字符串)
