@@ -50,7 +50,7 @@ int	run_builtin_parent_logic(t_minishell *msh, ast *node, int in_fd,
 		return (close_keep_std(in_fd), close_keep_std(out_fd), 1);
 	new_in = in_fd;
 	new_out = out_fd;
-	if (apply_redir_list(node->redir, &new_in, &new_out) < 0)
+	if (apply_redir_list(node->redir, &new_in, &new_out, msh) < 0)
 		return (restore_std_fds(&save), 1);
 	if (dup_in_out_or_close(new_in, new_out) < 0)
 		return (restore_std_fds(&save), 1);

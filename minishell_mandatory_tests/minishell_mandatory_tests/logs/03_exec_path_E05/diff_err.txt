@@ -1,5 +1,5 @@
---- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E05.7qdRBL/bash.err.norm	2026-01-08 13:05:19.754125419 +0100
-+++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E05.7qdRBL/mini.err.norm	2026-01-08 13:05:19.754125419 +0100
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E05.jLUbHD/bash.err.norm	2026-01-08 16:17:52.676423851 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E05.jLUbHD/mini.err.norm	2026-01-08 16:17:52.676423851 +0100
 @@ -1 +1 @@
 -SHELL: line 1: /: Is a directory
-+SHELL: /: Is a directory
++SHELL: line1: /: Is a directory

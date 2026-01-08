@@ -52,7 +52,7 @@ static int	open_redir_fd(t_redir *r)
 ** - 如果中途某一步打开失败：打印错误，并关闭之前已打开的 *in_fd *out_fd
 **  （非标准 fd），避免父进程 fd 泄露。
 */
-int	apply_redir_list(t_redir *r, int *in_fd, int *out_fd)
+int	apply_redir_list(t_redir *r, int *in_fd, int *out_fd, t_minishell *msh)
 {
 	int	fd;
 
@@ -64,7 +64,7 @@ int	apply_redir_list(t_redir *r, int *in_fd, int *out_fd)
 			close_keep_std(out_fd);
 		fd = open_redir_fd(r);
 		if (fd < 0)
-			return (ms_err_redir(r->filename ? r->filename : "redir", errno),
+			return (ms_err_redir(r->filename ? r->filename : "redir", errno, msh),
 				close_keep_std(in_fd), close_keep_std(out_fd), -1);
 		if (r->type == REDIR_INPUT || r->type == HEREDOC)
 			*in_fd = fd;

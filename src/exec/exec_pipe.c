@@ -35,7 +35,7 @@ static void	wait_all_and_set_last(t_minishell *msh, pid_t *pids, int n)
 		if (pid > 0 && pid != last_pid && saw_pipe == 0)
 		{
 			if (WIFSIGNALED(st) && WTERMSIG(st) == SIGPIPE)
-				(write(2, "Broken pipe\n", 12), saw_pipe = 1);
+				(saw_pipe = 1);
 		}
 		if (pid == last_pid)
 			set_status_from_wait(msh, st);

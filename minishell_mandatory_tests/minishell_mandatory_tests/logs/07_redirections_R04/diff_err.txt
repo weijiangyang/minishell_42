@@ -1,5 +1,5 @@
---- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R04.VjiCVh/bash.err.norm	2026-01-08 13:05:20.238106220 +0100
-+++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R04.VjiCVh/mini.err.norm	2026-01-08 13:05:20.238106220 +0100
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R04.LXLoif/bash.err.norm	2026-01-08 16:50:51.528809961 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R04.LXLoif/mini.err.norm	2026-01-08 16:50:51.532809806 +0100
 @@ -0,0 +1,2 @@
 +printf: warning: ignoring excess arguments, starting with ‘cat’
 +printf: warning: ignoring excess arguments, starting with ‘cat’

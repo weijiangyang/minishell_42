@@ -47,7 +47,7 @@ static int run_redir_only_parent(t_minishell *msh, ast *node, int in_fd,
 	new_in = STDIN_FILENO;
 	new_out = STDOUT_FILENO;
 	ret = 0;
-	if (apply_redir_list(node->redir, &new_in, &new_out) < 0)
+	if (apply_redir_list(node->redir, &new_in, &new_out, msh) < 0)
 		ret = 1;
 	if (new_in > STDERR_FILENO)
 		close(new_in);
@@ -106,7 +106,7 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 /*
 ** 函数作用：判断是否必须在父进程执行（会改变父进程状态的 builtin）。
 */
-static int is_builtin_parent(char *cmd)
+int is_builtin_parent(char *cmd)
 {
 	if (!cmd)
 		return (0);

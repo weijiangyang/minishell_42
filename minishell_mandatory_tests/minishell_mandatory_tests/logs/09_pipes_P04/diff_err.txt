@@ -1,4 +1,4 @@
---- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.09_pipes.P04.buBcVO/bash.err.norm	2026-01-08 13:05:20.462097334 +0100
-+++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.09_pipes.P04.buBcVO/mini.err.norm	2026-01-08 13:05:20.466097176 +0100
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.09_pipes.P04.1toqp7/bash.err.norm	2026-01-08 16:36:43.005501301 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.09_pipes.P04.1toqp7/mini.err.norm	2026-01-08 16:36:43.009501147 +0100
 @@ -0,0 +1 @@
 +Broken pipe

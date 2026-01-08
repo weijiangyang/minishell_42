@@ -79,11 +79,11 @@ static int cd_get_oldcwd(char *cwd, size_t size)
  * * @param target 经过校验后的目标路径字符串。
  * @return int 切换成功返回 0，失败返回 -1。
  */
-static int cd_change_dir(const char *target)
+static int cd_change_dir(const char *target, t_minishell *msh)
 {
     if (chdir(target) != 0)
     {
-        fprintf(stderr, "bash: cd: %s: No such file or directory\n", target);
+        fprintf(stderr, "minishell: line %d: cd: %s: No such file or directory\n", msh->lineno, target);
         return -1;
     }
     return 0;
@@ -102,7 +102,7 @@ static int cd_change_dir(const char *target)
  * @param env  指向环境变量链表的指针地址。
  * @return int 成功返回 0，任何阶段失败则返回 1。
  */
-int ft_cd(char **argv, t_env **env)
+int ft_cd(char **argv, t_env **env, t_minishell *msh)
 {
     char cwd[4096];
     char *target;
@@ -114,7 +114,7 @@ int ft_cd(char **argv, t_env **env)
     if (cd_get_oldcwd(cwd, sizeof(cwd)) != 0)
         return 1;
 
-    if (cd_change_dir(target) != 0)
+    if (cd_change_dir(target, msh) != 0)
         return 1;
 
     env_set(env, "OLDPWD", cwd);

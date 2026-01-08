@@ -23,8 +23,8 @@
 
 void	ms_put3(const char *a, const char *b, const char *c);
 void	ms_err_cmd_not_found(const char *cmd);
-void	ms_err_exec(const char *name, int err);
-void	ms_err_redir(const char *name, int err);
+void	ms_err_exec(const char *name, int err, t_minishell *msh);
+void    ms_err_redir(const char *name, int err, t_minishell *ms);
 void	ms_perror(const char *ctx);
 void    ms_err_bad_interpreter(const char *cmd, const char *interp);
 void    ms_err_syntax_unexpected(const char *tok);

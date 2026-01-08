@@ -56,7 +56,7 @@ int				pipe_collect(ast *root, ast ***out_arr, int *out_n);
 void            child_exec_one(t_minishell *msh, ast *node, int in_fd,
                         int out_fd, ast *root);
 
-int				apply_redir_list(t_redir *r, int *in_fd, int *out_fd);
+int				apply_redir_list(t_redir *r, int *in_fd, int *out_fd, t_minishell *msh);
 int				dup_in_out_or_close(int in_fd, int out_fd);
 
 int				exec_refresh_paths(t_minishell *msh);

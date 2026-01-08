@@ -1,5 +1,5 @@
---- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R05.NQG4xG/bash.err.norm	2026-01-08 13:05:20.270104950 +0100
-+++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R05.NQG4xG/mini.err.norm	2026-01-08 13:05:20.270104950 +0100
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R05.8KL2Ow/bash.err.norm	2026-01-08 16:38:49.776635056 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R05.8KL2Ow/mini.err.norm	2026-01-08 16:38:49.776635056 +0100
 @@ -1 +1 @@
 -SHELL: line 4: ro: Permission denied
 +SHELL: ro: Permission denied

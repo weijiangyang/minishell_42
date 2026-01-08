@@ -68,13 +68,13 @@ int	exec_builtin(ast *node, t_env **env, t_minishell *msh)
 	if (!node || !node->argv || !node->argv[0])
 		return (1);
 	if (ft_strcmp(node->argv[0], "cd") == 0)
-		return (ft_cd(node->argv, env));
+		return (ft_cd(node->argv, env, msh));
 	if (ft_strcmp(node->argv[0], "echo") == 0)
 		return (ft_echo(node->argv));
 	if (ft_strcmp(node->argv[0], "pwd") == 0)
 		return (builtin_pwd());
 	if (ft_strcmp(node->argv[0], "export") == 0)
-		return (builtin_export(node->argv, env));
+		return (builtin_export(node->argv, env, msh));
 	if (ft_strcmp(node->argv[0], "env") == 0)
 		return (builtin_env(node->argv, *env));
 	if (ft_strcmp(node->argv[0], "unset") == 0)

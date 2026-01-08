@@ -124,7 +124,7 @@ static void update_env_var(t_env **env, char *key, char *value)
  * @param env  环境变量链表的二级指针。
  * @return int 成功返回 0，解析失败或键名非法返回 1。
  */
-static int export_one(char *arg, t_env **env)
+static int export_one(char *arg, t_env **env, t_minishell *msh)
 {
     char *key;
     char *value;
@@ -134,7 +134,9 @@ static int export_one(char *arg, t_env **env)
 
     if (!is_valid_identifier(key))
     {
-        fprintf(stderr, "export: `%s': not a valid identifier\n", arg);
+        fprintf(stderr,
+                "minishell: line %d: export: `%s': not a valid identifier\n",
+                msh->lineno, arg);
         free(key);
         free(value);
         return 1;
@@ -147,7 +149,7 @@ static int export_one(char *arg, t_env **env)
 /**
  * @brief export 内置命令的主函数。
  * * 运行逻辑：
- * 1. 列表显示模式：若 argv 仅包含命令本身（无参数），调用 print_export 以 
+ * 1. 列表显示模式：若 argv 仅包含命令本身（无参数），调用 print_export 以
  * "declare -x KEY="VALUE"" 格式打印所有变量。
  * 2. 变量设置模式：遍历从 argv[1] 开始的所有参数。
  * - 对每个参数调用 export_one 进行解析、校验和存储。
@@ -158,7 +160,7 @@ static int export_one(char *arg, t_env **env)
  * @param env  环境变量链表的二级指针。
  * @return int 退出状态码。
  */
-int builtin_export(char **argv, t_env **env)
+int builtin_export(char **argv, t_env **env, t_minishell *msh)
 {
     int status = 0;
     int i = 1;
@@ -170,7 +172,7 @@ int builtin_export(char **argv, t_env **env)
     }
     while (argv[i])
     {
-        if (export_one(argv[i], env))
+        if (export_one(argv[i], env, msh))
             status = 1;
         i++;
     }
