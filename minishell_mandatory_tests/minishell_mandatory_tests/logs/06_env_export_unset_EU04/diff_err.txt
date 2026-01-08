@@ -1,5 +1,5 @@
---- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.06_env_export_unset.EU04.ioWE20/bash.err.norm	2026-01-08 13:00:37.077419834 +0100
-+++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.06_env_export_unset.EU04.ioWE20/mini.err.norm	2026-01-08 13:00:37.077419834 +0100
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.06_env_export_unset.EU04.nkf6T0/bash.err.norm	2026-01-08 13:05:20.106111455 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.06_env_export_unset.EU04.nkf6T0/mini.err.norm	2026-01-08 13:05:20.110111298 +0100
 @@ -1 +1 @@
 -SHELL: line 1: export: `9ABC=1': not a valid identifier
 +export: `9ABC=1': not a valid identifier

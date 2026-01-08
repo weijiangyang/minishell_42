@@ -1,5 +1,5 @@
---- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E04.bTwOW5/bash.err.norm	2026-01-08 13:00:36.653436921 +0100
-+++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E04.bTwOW5/mini.err.norm	2026-01-08 13:00:36.653436921 +0100
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E04.GjwTai/bash.err.norm	2026-01-08 13:05:19.726126528 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E04.GjwTai/mini.err.norm	2026-01-08 13:05:19.726126528 +0100
 @@ -1 +1 @@
 -SHELL: line 3: ./noexec.sh: Permission denied
 +SHELL: ./noexec.sh: /bin/sh: bad interpreter: Permission denied
