@@ -13,8 +13,6 @@
 #include "minishell.h"
 #include "repl.h"
 
-#include "minishell.h"
-#include "../../include/repl.h"
 
 /*
 ** 作用：向屏幕报告错误。
