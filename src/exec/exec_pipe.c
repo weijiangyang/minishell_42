@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:27:46 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 17:19:09 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 00:38:12 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,13 @@ static int	pipe_step(t_pipe_ctx *ctx, int i)
 		return (0);
 	pid = fork();
 	if (pid < 0)
-		return (/* 关闭 pfd 并返回 0 */ 0);
+	{
+		if (pfd[0] != -1)
+			close(pfd[0]);
+		if (pfd[1] != -1)
+			close(pfd[1]);
+		return (0);
+	}
 	if (pid == 0)
 	{
 		cmd = ctx->arr[i];
