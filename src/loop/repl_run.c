@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 19:27:12 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 00:50:26 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ void	repl_run_acc(t_minishell *ms, char **acc)
 		return (run_drop_acc(ms, acc, 2));
 	if (isatty(STDIN_FILENO) && repl_has_text(*acc))
 		add_history(*acc);
+	ms->raw_line = NULL;
+	repl_free_acc(acc);
 	run_one_cmd(ms);
 	run_drop_acc(ms, acc, 0);
 }
