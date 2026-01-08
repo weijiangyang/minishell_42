@@ -96,9 +96,8 @@ static int consume_redir_pair(t_lexer **cur, t_lexer **op, t_lexer **filetok,
 	*filetok = consume_token(cur);
 	if (!*filetok || (*filetok)->tokentype != TOK_WORD)
 	{
-		ft_putstr_fd("minishell: syntax error near unexpected token\n", 2);
-		if (ms)
-			ms->last_exit_status = 2;
+		ms_err_syntax_only_redir(ms);
+		ms->parse_status = PARSE_SYNTAX_ERROR;
 		return (0);
 	}
 	return (1);

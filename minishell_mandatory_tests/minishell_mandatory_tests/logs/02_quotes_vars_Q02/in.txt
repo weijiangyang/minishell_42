@@ -1,0 +1,4 @@
+export TESTVAR="hello world"
+echo "$TESTVAR"
+
+exit

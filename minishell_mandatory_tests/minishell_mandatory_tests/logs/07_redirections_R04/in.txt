@@ -1,0 +1,6 @@
+rm -f out1 out2
+echo hi > out1 > out2
+printf "out1:["; cat out1; echo "]"
+printf "out2:["; cat out2; echo "]"
+
+exit

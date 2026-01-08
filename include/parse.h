@@ -54,6 +54,9 @@ typedef struct s_redir
 	int				quoted;
 
 }					t_redir;
+
+
+
 /**
  * @struct s_cmd
  * @brief  单向链表节点，用于在解析阶段暂存命令参数（argv）。
@@ -105,7 +108,7 @@ void				free_argv_list(t_cmd *a);
 void				free_redir_list(t_redir *r);
 t_lexer				*peek_token(t_lexer **cur);
 t_lexer				*consume_token(t_lexer **cur);
-t_lexer				*expect_token(tok_type type, t_lexer **cur);
+t_lexer 			*expect_token(tok_type type, t_lexer **cur, t_minishell *msh);
 int					is_redir_token(t_lexer *pt);
 void				print_indent(int depth);
 void				print_ast(ast *node, int depth);
@@ -119,7 +122,7 @@ int					main(int argc, char *argv[], char **envp);
 ast					*parse_pipeline(t_lexer **cur, t_minishell *minishell);
 ast					*parse_subshell(t_lexer **cur, ast *node,
 						t_minishell *minishell);
-char				*safe_strdup(const char *s);
+char 				*safe_strdup(const char *s, t_minishell *msh);
 ast					*parse_simple_cmd_redir_list(t_lexer **cur,
 						t_minishell *minishell);
 void				free_t_cmd_node(t_cmd *argv_cmd);

@@ -19,6 +19,7 @@
 #include <unistd.h>
 
 #include "../libft/libft.h"
+#include "minishell.h"
 
 void	ms_put3(const char *a, const char *b, const char *c);
 void	ms_err_cmd_not_found(const char *cmd);
@@ -28,5 +29,7 @@ void	ms_perror(const char *ctx);
 void    ms_err_bad_interpreter(const char *cmd, const char *interp);
 void    ms_err_syntax_unexpected(const char *tok);
 void	ms_put3(const char *a, const char *b, const char *c);
+void    ms_err_syntax(const char *token, t_minishell *ms);
+void    ms_err_syntax_only_redir(t_minishell *ms);
 
 #endif

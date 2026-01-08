@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.06_env_export_unset.EU01.qMgUiA/bash.out	2025-12-28 02:41:28.623098875 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.06_env_export_unset.EU01.qMgUiA/mini.out	2025-12-28 02:41:28.672576719 +0100
+@@ -1 +0,0 @@
+-123

@@ -1,0 +1,4 @@
+export TESTVAR=abc
+echo $TESTVAR
+
+exit

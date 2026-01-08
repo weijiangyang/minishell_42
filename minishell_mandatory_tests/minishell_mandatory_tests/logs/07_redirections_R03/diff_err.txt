@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.07_redirections.R03.V7MMsG/bash.err.norm	2025-12-28 02:41:35.818034624 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.07_redirections.R03.V7MMsG/mini.err.norm	2025-12-28 02:41:35.931912516 +0100
+@@ -0,0 +1 @@
++SHELL: line1\nline2\n: command not found

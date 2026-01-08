@@ -31,3 +31,20 @@ void    ms_err_syntax_unexpected(const char *tok)
     ms_put3("minishell: syntax error near unexpected token `", NULL, NULL);
     ms_put3(tok, "'\n", NULL);
 }
+
+
+void ms_err_syntax(const char *token, t_minishell *ms) 
+{
+    fprintf(stderr, "minishell: line %d: syntax error near unexpected token `%s'\n",
+        ms->lineno, token);
+    if (ms->input_line)
+        fprintf(stderr, "minishell: line %d: `%s'\n",ms->lineno, ms->input_line);
+}
+
+void ms_err_syntax_only_redir(t_minishell *ms) 
+{
+    fprintf(stderr, "minishell: line %d: syntax error near unexpected token `newline'\n",
+        ms->lineno);
+    if (ms->input_line)
+        fprintf(stderr, "minishell: line %d: `%s'\n",ms->lineno, ms->input_line);
+}

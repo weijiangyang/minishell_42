@@ -1,0 +1,10 @@
+# 10 - builtin: exit（mandatory：无选项）
+# 这里主要看：exit 的退出码是否等于上一条命令的退出码（bash 默认如此）
+
+## X01 | exit：上一条 true -> 退出码 0
+true
+exit
+
+## X02 | exit：上一条 false -> 退出码 1
+false
+exit

@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.02_quotes_vars.Q04.GDX4dX/bash.err.norm	2025-12-28 02:41:03.773483588 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.02_quotes_vars.Q04.GDX4dX/mini.err.norm	2025-12-28 02:41:03.823141325 +0100
+@@ -0,0 +1 @@
++SHELL: X Y: command not found

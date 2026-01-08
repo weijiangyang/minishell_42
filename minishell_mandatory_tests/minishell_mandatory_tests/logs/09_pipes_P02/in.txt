@@ -1,0 +1,3 @@
+printf "a\nb\na\n" | grep a | wc -l
+
+exit

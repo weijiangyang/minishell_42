@@ -30,8 +30,9 @@ ast *parse_subshell(t_lexer **cur, ast *node, t_minishell *minishell)
     consume_token(cur);
     node->type = NODE_SUBSHELL;
     node->sub = parse_pipeline(cur, minishell);
-    if (!expect_token(TOK_RPAREN, cur))
+    if (!expect_token(TOK_RPAREN, cur, minishell))
     {
+        minishell->parse_status = PARSE_SYNTAX_ERROR;
         fprintf(stderr, "Syntax error: expected ')'\n");
         free_ast(node);
         return NULL;

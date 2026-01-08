@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.03_exec_path.E03.WI6n5w/bash.err.norm	2025-12-28 02:41:12.098595571 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.03_exec_path.E03.WI6n5w/mini.err.norm	2025-12-28 02:41:12.211254425 +0100
+@@ -0,0 +1 @@
++SHELL: #!/bin/sh\necho EXT_OK\n: No such file or directory

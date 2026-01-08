@@ -1,0 +1,5 @@
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E05.KsFxPF/bash.err.norm	2026-01-08 13:00:36.681435793 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.03_exec_path.E05.KsFxPF/mini.err.norm	2026-01-08 13:00:36.681435793 +0100
+@@ -1 +1 @@
+-SHELL: line 1: /: Is a directory
++SHELL: /: Is a directory

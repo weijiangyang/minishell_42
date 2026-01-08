@@ -1,0 +1,8 @@
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R04.vL77ec/bash.out	2026-01-08 13:00:37.233413547 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.07_redirections.R04.vL77ec/mini.out	2026-01-08 13:00:37.241413225 +0100
+@@ -1,3 +1 @@
+-out1:[]
+-out2:[hi
+-]
++out1:[;out2:[;
+\ No newline at end of file

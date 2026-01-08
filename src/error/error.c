@@ -10,8 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "error.h"
-#include "minishell.h"
+#include "../../include/error.h"
+#include "../../include/minishell.h"
+#include "../../libft/libft.h"
+#include <errno.h>
+#include <unistd.h>
+#include <stdio.h>
 
 /*
 ** 函数作用：把 3 段字符串按顺序打印到 stderr。
@@ -36,11 +40,12 @@ void	ms_put3(const char *a, const char *b, const char *c)
 /*
 ** 函数作用：打印 “command not found” 错误，并尽量贴近 bash 输出格式。
 */
-void    ms_err_cmd_not_found(const char *cmd)
+void ms_err_cmd_not_found(const char *cmd)
 {
-    ms_put3("minishell: ", NULL, NULL);
+    ms_put3("minishell: line 1: ", NULL, NULL);
     ms_put3(cmd, ": command not found\n", NULL);
 }
+
 
 /*
 ** 函数作用：打印 execve 相关错误，例如 Permission denied / Is a directory 等。

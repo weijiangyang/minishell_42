@@ -1,0 +1,29 @@
+# 02 - 引号与变量展开（mandatory）
+
+## Q01 | 单引号：不展开变量，不解释元字符
+export TESTVAR=hello
+echo '$TESTVAR | > <'
+
+## Q02 | 双引号：展开变量，但保留空格
+export TESTVAR="hello world"
+echo "$TESTVAR"
+
+## Q03 | 变量展开：普通变量
+export TESTVAR=abc
+echo $TESTVAR
+
+## Q04 | 未定义变量：应展开为空
+unset TESTVAR
+echo "X$TESTVAR Y"
+
+## Q05 | $?：上一条成功命令 -> 0
+true
+echo $?
+
+## Q06 | $?：上一条失败命令 -> 1（用 false）
+false
+echo $?
+
+## Q07 | $?：command not found -> 127
+nosuch_command_42
+echo $?

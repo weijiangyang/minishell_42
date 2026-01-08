@@ -1,0 +1,5 @@
+export ABC=123
+unset ABC
+echo "X$ABC Y"
+
+exit

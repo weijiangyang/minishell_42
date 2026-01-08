@@ -1,0 +1,20 @@
+# 08 - heredoc <<（mandatory）
+# 注意：这里用 cat 演示；bash 的行为是：未加引号的 delimiter 会做变量展开；加引号则不展开。
+
+## H01 | heredoc：未引用 delimiter，变量应展开
+export ABC=hello
+cat << EOF
+$ABC
+EOF
+
+## H02 | heredoc：引用 delimiter，变量不应展开
+export ABC=hello
+cat << 'EOF'
+$ABC
+EOF
+
+## H03 | heredoc + pipe：输入通过管道给 grep
+export ABC=hello
+cat << EOF | grep hello
+$ABC
+EOF

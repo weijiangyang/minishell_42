@@ -1,0 +1,4 @@
+export ABC=123
+env | grep '^ABC='
+
+exit

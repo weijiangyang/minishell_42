@@ -1,0 +1,5 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.07_redirections.R03.V7MMsG/bash.out	2025-12-28 02:41:35.378678368 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.07_redirections.R03.V7MMsG/mini.out	2025-12-28 02:41:35.519256134 +0100
+@@ -1,2 +0,0 @@
+-line1
+-line2

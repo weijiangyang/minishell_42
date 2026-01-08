@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "repl.h"
+#include "../../include/repl.h"
 
 /*
 ** 函数作用：
@@ -109,7 +109,13 @@ int repl_step(t_minishell *ms, char **acc)
 
 	if (!line)
 		return (step_handle_eof(ms, acc));
-
+	if (!*acc)
+	{
+		ms->input_line = ft_strdup(line);
+		(ms->lineno)++;
+	}
+	//printf("%d\n",ms->lineno);
+	//printf("%s\n", ms->input_line);
 	int ok;
 	ok = repl_join(acc, line);
 	free(line);

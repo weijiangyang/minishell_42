@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.03_exec_path.E01.irtfDF/bash.err.norm	2025-12-28 02:41:09.129867400 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.03_exec_path.E01.irtfDF/mini.err.norm	2025-12-28 02:41:09.333587276 +0100
+@@ -0,0 +1 @@
++SHELL: a\n: command not found

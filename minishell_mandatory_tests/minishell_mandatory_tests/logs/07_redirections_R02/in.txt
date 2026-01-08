@@ -1,0 +1,6 @@
+rm -f out
+echo 1 > out
+echo 2 >> out
+cat out
+
+exit

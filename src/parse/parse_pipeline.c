@@ -22,14 +22,14 @@
  * * @param cur 指向当前词法 Token 流指针的地址。
  * @return int 发现非法连续管道返回 -1；语法正常返回 0。
  */
-static int check_consecutive_pipes(t_lexer **cur)
+static int check_consecutive_pipes(t_lexer **cur, t_minishell *msh)
 {
     t_lexer *pt;
 
     pt = peek_token(cur);
     if (pt && pt->next && pt->next->tokentype == TOK_PIPE)
     {
-        ft_putstr_fd("bash: syntax error near unexpected token `|'\n", STDERR_FILENO);
+        ms_err_syntax(pt->next->str, msh);
         return (-1);
     }
     return 0;
@@ -83,14 +83,13 @@ static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes,
 
     while (peek_token(cur) && peek_token(cur)->tokentype == TOK_PIPE)
     {
-        if (check_consecutive_pipes(cur) == -1)
+        if (check_consecutive_pipes(cur, minishell) == -1)
             return (free_ast(*left), NULL);
         consume_token(cur);
         right = parse_simple_cmd_redir_list(cur, minishell);
         if (!right)
         {
-            ms_err_syntax_unexpected("newline");
-            minishell->last_exit_status = 2;
+            minishell->parse_status = PARSE_INCOMPLETE_INPUT;
             return (free_ast(*left), NULL);
         }
         node = create_pipe_node(*left, right, n_pipes);
@@ -119,9 +118,8 @@ ast *parse_pipeline(t_lexer **cur, t_minishell *minishell)
 
     if (peek_token(cur) && peek_token(cur)->tokentype == TOK_PIPE)
     {
-        ft_putstr_fd(
-            "bash: syntax error near unexpected token `|'\n",
-            STDERR_FILENO);
+        minishell->parse_status = PARSE_SYNTAX_ERROR;
+        ms_err_syntax(peek_token(cur)->str, minishell);
         return NULL;
     }
     left = parse_simple_cmd_redir_list(cur, minishell);

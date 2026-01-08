@@ -1,0 +1,6 @@
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.01_syntax.S05.s9Ygrp/bash.err.norm	2026-01-08 10:53:32.638274123 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.01_syntax.S05.s9Ygrp/mini.err.norm	2026-01-08 10:53:32.638274123 +0100
+@@ -1,2 +1 @@
+-SHELL: line 1: syntax error near unexpected token `|'
+-SHELL: line 1: `| echo hello'
++SHELL: line 2: syntax error near unexpected token `|'

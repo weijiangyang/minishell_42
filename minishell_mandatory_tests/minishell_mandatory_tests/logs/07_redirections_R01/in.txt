@@ -1,0 +1,5 @@
+rm -f out
+echo hello > out
+cat out
+
+exit

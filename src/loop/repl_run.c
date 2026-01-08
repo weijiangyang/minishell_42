@@ -44,7 +44,10 @@ static void	run_one_cmd(t_minishell *ms)
 	root = parse_cmdline(&tmp, ms);
 	if (!root)
 	{
-		ms->last_exit_status = 2;
+		if (ms->parse_status == PARSE_OK || ms->parse_status == PARSE_INCOMPLETE_INPUT)
+			ms->last_exit_status = 0;
+		else
+			ms->last_exit_status= 2;
 		clear_list(&ms->lexer);
 		return ;
 	}

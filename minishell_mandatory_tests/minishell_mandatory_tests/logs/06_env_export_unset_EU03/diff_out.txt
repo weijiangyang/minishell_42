@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.06_env_export_unset.EU03.lecXvz/bash.out	2025-12-28 02:41:30.985510900 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.06_env_export_unset.EU03.lecXvz/mini.out	2025-12-28 02:41:30.993401209 +0100
+@@ -1 +0,0 @@
+-ABC=123

@@ -1,0 +1,5 @@
+printf '#!/bin/sh\necho NO\n' > noexec.sh
+chmod -x noexec.sh
+./noexec.sh
+
+exit

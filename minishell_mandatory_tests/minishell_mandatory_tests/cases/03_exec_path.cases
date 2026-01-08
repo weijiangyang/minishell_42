@@ -1,0 +1,21 @@
+# 03 - PATH/绝对路径/相对路径执行（mandatory）
+
+## E01 | PATH 查找：执行 ls（在空目录里输出应为空/或只有换行，所以先造文件）
+printf "a\n" > f1
+ls
+
+## E02 | 绝对路径：/bin/echo
+/bin/echo Hello Minishell
+
+## E03 | 相对路径：执行当前目录脚本 ./t.sh
+printf '#!/bin/sh\necho EXT_OK\n' > t.sh
+chmod +x t.sh
+./t.sh
+
+## E04 | 权限不足：尝试执行不可执行文件（应 Permission denied / exit 126）
+printf '#!/bin/sh\necho NO\n' > noexec.sh
+chmod -x noexec.sh
+./noexec.sh
+
+## E05 | 目录当命令执行（应 Is a directory / exit 126 或 127 取决于实现，和 bash 对比）
+/

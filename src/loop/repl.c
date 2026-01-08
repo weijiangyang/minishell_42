@@ -18,10 +18,10 @@
 **   minishell 的主循环：不停读取用户输入并执行。
 **   acc 用来保存“半截输入”，支持续行（比如：引号没闭合）。
 */
-void	repl_loop(t_minishell *ms)
+void repl_loop(t_minishell *ms)
 {
-	char	*acc;
-	int		stop;
+	char *acc;
+	int stop;
 
 	acc = NULL;
 	stop = 0;

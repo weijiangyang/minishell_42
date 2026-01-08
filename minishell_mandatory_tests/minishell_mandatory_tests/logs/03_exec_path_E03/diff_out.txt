@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.03_exec_path.E03.WI6n5w/bash.out	2025-12-28 02:41:11.806540556 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.03_exec_path.E03.WI6n5w/mini.out	2025-12-28 02:41:11.827053171 +0100
+@@ -1 +0,0 @@
+-EXT_OK

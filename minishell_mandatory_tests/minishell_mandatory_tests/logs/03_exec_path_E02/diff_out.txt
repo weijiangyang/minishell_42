@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.03_exec_path.E02.hKEi8T/bash.out	2025-12-28 02:41:10.059381160 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.03_exec_path.E02.hKEi8T/mini.out	2025-12-28 02:41:10.106096960 +0100
+@@ -1 +0,0 @@
+-Hello Minishell

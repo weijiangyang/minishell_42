@@ -41,6 +41,7 @@ static int ms_init_env(t_minishell *ms, char **envp)
     if (!ms->env)
         return (0);
     ms->envp = NULL;
+    ms->lineno = 0;
     change_envp(ms->env, &ms->envp);
     if (!ms->envp)
         return (0);
@@ -63,6 +64,7 @@ static int ms_init(t_minishell *ms, char **envp)
     ms->last_exit_status = 0;
     ms->lexer_need_more = 0;
     ms->lexer_unclosed_quote = 0;
+    ms->parse_status = PARSE_OK;
     if (!ms_init_env(ms, envp))
         return (0);
     if (ensure_paths_ready(ms) != 0)

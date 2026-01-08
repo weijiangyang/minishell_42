@@ -21,6 +21,12 @@ typedef struct s_env   t_env;
 
 extern volatile sig_atomic_t g_signal;
 
+typedef enum e_parse_status
+{
+    PARSE_OK,
+    PARSE_SYNTAX_ERROR,
+    PARSE_INCOMPLETE_INPUT   // 关键！
+}   t_parse_status;
 typedef struct s_minishell
 {
 	t_lexer	*lexer;
@@ -37,6 +43,9 @@ typedef struct s_minishell
 
 	char	**envp;
 	char	**paths;
+	int		lineno;
+	char   *input_line;
+	int		parse_status;
 }	t_minishell;
 
 #endif

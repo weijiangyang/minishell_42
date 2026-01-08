@@ -1,0 +1,7 @@
+rm -f ro
+echo x > ro
+chmod -w ro
+echo y > ro
+echo $?
+
+exit

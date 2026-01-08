@@ -59,10 +59,11 @@ t_lexer *consume_token(t_lexer **cur)
  * @param cur  指向当前词法 Token 流指针的地址。
  * @return t_lexer* 匹配成功返回被消耗的 Token；匹配失败返回 NULL。
  */
-t_lexer *expect_token(tok_type type, t_lexer **cur)
+t_lexer *expect_token(tok_type type, t_lexer **cur, t_minishell *msh)
 {
     if (!cur || !*cur || (*cur)->tokentype != type)
     {
+        msh->parse_status = PARSE_SYNTAX_ERROR;
         fprintf(stderr, "Syntax error : expected token type %d\n", type);
         return NULL;
     }
@@ -99,12 +100,15 @@ int is_redir_token(t_lexer *pt)
  * * @param s 指向待复制原始字符串的指针。
  * @return char* 成功返回新分配的字符串副本；若输入为空或分配失败则返回 NULL。
  */
-char *safe_strdup(const char *s)
+char *safe_strdup(const char *s, t_minishell *msh)
 {
     if (!s) return NULL;
     char *p = ft_strdup(s);
     if (!p)
+    {
+        msh->parse_status = PARSE_SYNTAX_ERROR;
         fprintf(stderr, "memory error: strdup failed\n");
+    }
     return p;
 }
 

@@ -1,0 +1,4 @@
+echo -n -nnn hi
+echo end
+
+exit

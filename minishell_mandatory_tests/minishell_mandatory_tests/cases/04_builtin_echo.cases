@@ -1,0 +1,18 @@
+# 04 - builtin: echo（mandatory：支持 -n）
+
+## EC01 | echo 无参数：打印空行
+echo
+
+## EC02 | echo 普通输出
+echo Hello
+
+## EC03 | echo -n：不输出换行（后面紧跟另一次 echo）
+echo -n Hello
+echo World
+
+## EC04 | echo 多个 -n（常见评测点：-n -nnn 都算 -n）
+echo -n -nnn hi
+echo end
+
+## EC05 | echo 参数包含引号
+echo "a  b" 'c  d'

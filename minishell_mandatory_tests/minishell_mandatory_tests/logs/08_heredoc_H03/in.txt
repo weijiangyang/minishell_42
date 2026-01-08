@@ -1,0 +1,6 @@
+export ABC=hello
+cat << EOF | grep hello
+$ABC
+EOF
+
+exit

@@ -1,0 +1,2 @@
+minishell: line 1: syntax error near unexpected token `<'
+minishell: line 1: `echo hello <'

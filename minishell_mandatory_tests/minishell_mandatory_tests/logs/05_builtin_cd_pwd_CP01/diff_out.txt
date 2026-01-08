@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.05_builtin_cd_pwd.CP01.mNogYU/bash.out	2025-12-28 02:41:21.864640887 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.05_builtin_cd_pwd.CP01.mNogYU/mini.out	2025-12-28 02:41:21.920581406 +0100
+@@ -1 +0,0 @@
+-/home/work/wy-co-run

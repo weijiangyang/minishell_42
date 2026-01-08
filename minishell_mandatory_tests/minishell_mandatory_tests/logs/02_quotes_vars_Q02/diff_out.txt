@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.02_quotes_vars.Q02.illL1Z/bash.out	2025-12-28 02:41:00.951238146 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.02_quotes_vars.Q02.illL1Z/mini.out	2025-12-28 02:41:00.973804751 +0100
+@@ -1 +0,0 @@
+-hello world

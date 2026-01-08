@@ -1,0 +1,4 @@
+export 9ABC=1
+echo $?
+
+exit

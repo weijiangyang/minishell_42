@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.04_builtin_echo.EC01.30RFYv/bash.out	2025-12-28 02:41:16.283787284 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.04_builtin_echo.EC01.30RFYv/mini.out	2025-12-28 02:41:16.359659119 +0100
+@@ -1 +0,0 @@
+-

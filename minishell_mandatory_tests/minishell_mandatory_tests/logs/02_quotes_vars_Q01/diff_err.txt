@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.02_quotes_vars.Q01.JhYwa1/bash.err.norm	2025-12-28 02:41:00.136244948 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.02_quotes_vars.Q01.JhYwa1/mini.err.norm	2025-12-28 02:41:00.177424904 +0100
+@@ -0,0 +1 @@
++SHELL: $TESTVAR | > <: command not found

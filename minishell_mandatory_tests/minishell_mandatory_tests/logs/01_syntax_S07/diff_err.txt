@@ -1,0 +1,6 @@
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.01_syntax.S07.PAhNo2/bash.err.norm	2026-01-08 12:57:32.360920301 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.01_syntax.S07.PAhNo2/mini.err.norm	2026-01-08 12:57:32.360920301 +0100
+@@ -1,2 +1,2 @@
+-SHELL: line 1: syntax error near unexpected token `newline'
++SHELL: line 1: syntax error near unexpected token `>'
+ SHELL: line 1: `>'

@@ -1,0 +1,5 @@
+printf '#!/bin/sh\necho EXT_OK\n' > t.sh
+chmod +x t.sh
+./t.sh
+
+exit

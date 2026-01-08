@@ -1,0 +1,18 @@
+# 06 - builtin: env / export / unset（mandatory）
+
+## EU01 | export 设置变量，echo 能读到
+export ABC=123
+echo $ABC
+
+## EU02 | unset 删除变量
+export ABC=123
+unset ABC
+echo "X$ABC Y"
+
+## EU03 | env（不直接比对全量，改成过滤）
+export ABC=123
+env | grep '^ABC='
+
+## EU04 | export 非法标识符（bash 会报 not a valid identifier；对比你的输出）
+export 9ABC=1
+echo $?

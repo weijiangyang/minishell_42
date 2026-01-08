@@ -1,0 +1,5 @@
+rm -f in
+printf "line1\nline2\n" > in
+cat < in
+
+exit

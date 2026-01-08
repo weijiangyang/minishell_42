@@ -1,0 +1,15 @@
+# 09 - pipes |（mandatory）
+
+## P01 | 简单管道
+echo hello | cat
+
+## P02 | 多级管道：grep + wc
+printf "a\nb\na\n" | grep a | wc -l
+
+## P03 | 管道退出码：默认等于最后一个命令（false | true -> $? 为 0）
+false | true
+echo $?
+
+## P04 | builtin 在管道里（bash 中 builtin 会在子进程中执行，不影响主 shell）
+pwd | exit
+echo "still_here"

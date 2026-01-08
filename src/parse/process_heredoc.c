@@ -148,7 +148,7 @@ int heredoc_loop(int write_fd, const char *delimiter,
     setup_heredoc_signals();
     while (1)
     {
-        if (!full_line)
+        if (!full_line && isatty(STDIN_FILENO))
             write(STDOUT_FILENO, "heredoc> ", 9);
         g_signal = 0;
         status = read_and_process_line(&full_line, delimiter,

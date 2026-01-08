@@ -1,0 +1,5 @@
+--- /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.05_builtin_cd_pwd.CP05.431wFP/bash.err.norm	2026-01-08 13:00:36.957424670 +0100
++++ /home/weiyang/Documents/new/minishell_mandatory_tests/minishell_mandatory_tests/logs/tmp.05_builtin_cd_pwd.CP05.431wFP/mini.err.norm	2026-01-08 13:00:36.961424508 +0100
+@@ -1 +1 @@
+-SHELL: line 1: cd: /no/such/dir_42: No such file or directory
++SHELL: cd: /no/such/dir_42: No such file or directory

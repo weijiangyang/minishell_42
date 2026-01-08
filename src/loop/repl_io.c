@@ -55,7 +55,6 @@ static char	*ms_read_line_raw(int fd)
 	return (buf);
 }
 
-
 static char	*ms_read_line(const char *prompt)
 {
 	char	*line;
@@ -64,7 +63,7 @@ static char	*ms_read_line(const char *prompt)
 	if (isatty(STDIN_FILENO))
 		line = readline(prompt);
 	else
-	line = ms_read_line_raw(STDIN_FILENO);
+		line = ms_read_line_raw(STDIN_FILENO);
 	return (line);
 }
 

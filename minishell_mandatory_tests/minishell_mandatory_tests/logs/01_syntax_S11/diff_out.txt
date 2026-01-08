@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.01_syntax.S11.bIGkmv/bash.out	2025-12-28 02:40:59.012834876 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.01_syntax.S11.bIGkmv/mini.out	2025-12-28 02:40:59.019405963 +0100
+@@ -1 +0,0 @@
+-0

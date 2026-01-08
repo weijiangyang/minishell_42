@@ -1,0 +1,21 @@
+# 05 - builtin: cd / pwd（mandatory）
+
+## CP01 | pwd：输出当前目录
+pwd
+
+## CP02 | cd 到相对路径 + pwd
+mkdir -p a/b
+cd a/b
+pwd
+
+## CP03 | cd 回到上一级 + pwd
+cd ..
+pwd
+
+## CP04 | cd 绝对路径（用 /tmp 或当前工作目录的绝对路径）
+cd /tmp
+pwd
+
+## CP05 | cd 不存在路径（应报错，exit 1）
+cd /no/such/dir_42
+echo $?

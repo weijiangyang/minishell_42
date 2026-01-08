@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.04_builtin_echo.EC05.QNi96R/bash.err.norm	2025-12-28 02:41:20.371203344 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.04_builtin_echo.EC05.QNi96R/mini.err.norm	2025-12-28 02:41:20.473002463 +0100
+@@ -0,0 +1 @@
++SHELL: a  b: command not found

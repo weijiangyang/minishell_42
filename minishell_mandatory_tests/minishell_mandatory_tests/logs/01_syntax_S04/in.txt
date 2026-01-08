@@ -1,0 +1,3 @@
+nosuch_command_42
+
+exit

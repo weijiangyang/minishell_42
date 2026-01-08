@@ -1,0 +1,4 @@
+pwd | exit
+echo "still_here"
+
+exit

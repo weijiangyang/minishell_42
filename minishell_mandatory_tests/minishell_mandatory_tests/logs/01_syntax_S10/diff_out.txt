@@ -1,0 +1,4 @@
+--- /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.01_syntax.S10.6ms4g7/bash.out	2025-12-28 02:40:57.831897214 +0100
++++ /home/work/wy-co-run/minishell_mandatory_tests/logs/tmp.01_syntax.S10.6ms4g7/mini.out	2025-12-28 02:40:57.869972459 +0100
+@@ -1 +0,0 @@
+-$
