@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:27:46 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/30 04:26:39 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 17:19:09 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,30 +75,36 @@ static int	pipe_step(t_pipe_ctx *ctx, int i)
 	int		pfd[2];
 	int		child_out;
 	pid_t	pid;
+	ast		*cmd;
+	ast		*root;
+	int		in_fd;
+	int		out_fd;
 
-	child_out = pipe_make(i, ctx->n, ctx->out_fd, pfd);
+	child_out = pipe_make(i, ctx->n, ctx->out_fd, pfd); // 创建管道
 	if (child_out < 0)
 		return (0);
 	pid = fork();
 	if (pid < 0)
-	{
-		if (pfd[0] != -1)
-			close(pfd[0]);
-		if (pfd[1] != -1)
-			close(pfd[1]);
-		return (0);
-	}
+		return (/* 关闭 pfd 并返回 0 */ 0);
 	if (pid == 0)
 	{
+		cmd = ctx->arr[i];
+		root = ctx->root;
+		in_fd = ctx->in_fd;
+		out_fd = child_out;
 		if (pfd[0] != -1)
 			close(pfd[0]);
-		child_exec_one(ctx->msh, ctx->arr[i], ctx->in_fd, child_out);
+		free(ctx->pids);
+		free(ctx->arr);
+		child_exec_one(ctx->msh, cmd, in_fd, out_fd, root);
 	}
 	ctx->pids[i] = pid;
-	if (ctx->in_fd > STDERR_FILENO)
+	// --- 父进程管理逻辑 ---
+	if (ctx->in_fd > 2) // 关闭传给当前子进程的“上一段读端” [cite: 29]
 		close(ctx->in_fd);
-	if (pfd[1] != -1)
+	if (pfd[1] != -1) // 关闭当前管道的“写端”
 		close(pfd[1]);
+	// 将“当前管道读端”存入 ctx，传给下一段循环
 	ctx->in_fd = pfd[0];
 	return (1);
 }
@@ -142,6 +148,7 @@ int	exec_pipe_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	if (!ctx.pids)
 		return (free(ctx.arr), 0);
 	ctx.msh = msh;
+	ctx.root = node;
 	ctx.in_fd = in_fd;
 	ctx.out_fd = out_fd;
 	ok = pipe_run_all(&ctx, &done);

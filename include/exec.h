@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:03:49 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/30 01:40:37 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 17:01:42 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_pipe_ctx
 	t_minishell	*msh;
 	ast			**arr;
 	pid_t		*pids;
+	ast            *root;
 	int			n;
 	int			in_fd;
 	int			out_fd;
@@ -52,8 +53,8 @@ int				exec_cmd_node(t_minishell *msh, ast *node, int in_fd,
 int				exec_pipe_node(t_minishell *msh, ast *node, int in_fd,
 					int out_fd);
 int				pipe_collect(ast *root, ast ***out_arr, int *out_n);
-void			child_exec_one(t_minishell *msh, ast *node, int in_fd,
-					int out_fd);
+void            child_exec_one(t_minishell *msh, ast *node, int in_fd,
+                        int out_fd, ast *root);
 
 int				apply_redir_list(t_redir *r, int *in_fd, int *out_fd);
 int				dup_in_out_or_close(int in_fd, int out_fd);
@@ -61,6 +62,7 @@ int				dup_in_out_or_close(int in_fd, int out_fd);
 int				exec_refresh_paths(t_minishell *msh);
 int				ensure_paths_ready(t_minishell *msh);
 void			free_paths(t_minishell *msh);
+void            ms_child_exit(t_minishell *msh, ast *root, int status);
 
 char			*find_cmd_path(t_minishell *msh, const char *cmd);
 

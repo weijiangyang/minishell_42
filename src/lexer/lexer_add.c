@@ -6,41 +6,14 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 22:12:34 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/20 16:31:09 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 18:30:45 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "lexer.h"
+#include "minishell.h"
 
-// 改了什么
-// switch 改 if/else if
-// 保持：符号 token 会 strdup 出 raw/str
 
-/*
-** 函数作用：
-** 给“符号 token”提供它应该显示的文本，比如 TOK_PIPE -> "|"
-**
-** 参数含义：
-** t：token 类型
-**
-** 返回值：
-** 返回对应的字符串常量；没有就返回 NULL
-*/
-static const char	*token_symbol(tok_type t)
-{
-	if (t == TOK_PIPE)
-		return ("|");
-	if (t == TOK_REDIR_OUT)
-		return (">");
-	if (t == TOK_REDIR_IN)
-		return ("<");
-	if (t == TOK_APPEND)
-		return (">>");
-	if (t == TOK_HEREDOC)
-		return ("<<");
-	return (NULL);
-}
 
 /*
 ** 函数作用：
@@ -67,47 +40,51 @@ static void	init_node_info(t_lexer *new, t_token_info *info)
 		new->quoted_by = new->quoted_by + 2;
 }
 
+
 /*
-** 函数作用：
-** 分配并初始化一个 t_lexer 节点
-** - word token：直接使用 info 里的指针（不再 strdup）
-** - 符号 token：根据 token_symbol 分配 raw/str
-**
-** 参数含义：
-** info：word 的信息包；符号 token 时传 NULL
-** tokentype：token 类型
-**
-** 返回值：
-** 成功返回新节点指针；失败返回 NULL
+** 作用：给新节点起个名字。
+** 如果没有提供信息，就根据类型（比如管道或重定向）自动填上符号。
 */
-t_lexer	*new_node(t_token_info *info, tok_type tokentype)
+static int	assign_node_name(t_lexer *new, tok_type type)
+{
+	const char	*symbol;
+
+	symbol = token_symbol(type);
+	if (!symbol)
+		return (1);
+	new->raw = ft_strdup(symbol);
+	if (!new->raw)
+		return (0);
+	new->str = ft_strdup(symbol);
+	if (!new->str)
+	{
+		free(new->raw);
+		return (0);
+	}
+	return (1);
+}
+
+/*
+** 作用：创建一个新的“零件”（节点）。
+** 准备好它的位置、编号和类型，方便后面串成链表。
+*/
+t_lexer	*new_node(t_token_info *info, tok_type type)
 {
 	t_lexer		*new;
-	const char	*sym;
-	static int	idx;
+	static int	count = 0;
 
-	new = NULL;
-	sym = NULL;
 	new = malloc(sizeof(*new));
 	if (!new)
 		return (NULL);
+	ft_bzero(new, sizeof(*new));
 	init_node_info(new, info);
 	if (info == NULL)
 	{
-		sym = token_symbol(tokentype);
-		if (sym)
-		{
-			new->raw = ft_strdup(sym);
-			if (!new->raw)
-				return (free(new), NULL);
-			new->str = ft_strdup(sym);
-			if (!new->str)
-				return (free(new->raw), free(new), NULL);
-		}
+		if (!assign_node_name(new, type))
+			return (free(new), NULL);
 	}
-	new->tokentype = tokentype;
-	new->idx = idx;
-	idx = idx + 1;
+	new->tokentype = type;
+	new->idx = count++;
 	new->next = NULL;
 	new->prev = NULL;
 	return (new);

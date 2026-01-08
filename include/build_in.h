@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:25:53 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/05 13:25:55 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/06 15:01:02 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "error.h"
 # include "parse.h"
 # include <limits.h>
+#include <unistd.h> 
 
 typedef struct s_env
 {

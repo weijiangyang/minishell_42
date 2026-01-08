@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/18 17:29:14 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 18:04:27 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 19:26:12 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	ms_err_redir(const char *name, int err);
 void	ms_perror(const char *ctx);
 void    ms_err_bad_interpreter(const char *cmd, const char *interp);
 void    ms_err_syntax_unexpected(const char *tok);
-void	ms_put3(const char *a, const char *b, const char *c);
 void    ms_err_syntax(const char *token, t_minishell *ms);
 void    ms_err_syntax_only_redir(t_minishell *ms);
+void    ms_err_eof_quote(char q);
 
 #endif

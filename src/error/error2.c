@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 17:22:21 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/29 17:54:34 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/06 19:19:54 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 /*
 ** 函数作用：
-** 打印系统调用失败的错误（带 minishell 前缀），格式尽量贴近 bash。
+** 打印系统调用失败的错误（带 minishell 前缀），格式尽量贴近 bash.
 ** 例：minishell: line 1: fork: Resource temporarily unavailable
 */
 void    ms_perror(const char *msg)
@@ -25,26 +25,49 @@ void    ms_perror(const char *msg)
     perror(msg);
 }
 
-
 void    ms_err_syntax_unexpected(const char *tok)
 {
     ms_put3("minishell: syntax error near unexpected token `", NULL, NULL);
     ms_put3(tok, "'\n", NULL);
 }
 
-
+/*
+** 打印普通语法错误
+*/
 void ms_err_syntax(const char *token, t_minishell *ms) 
 {
     fprintf(stderr, "minishell: line %d: syntax error near unexpected token `%s'\n",
         ms->lineno, token);
     if (ms->input_line)
-        fprintf(stderr, "minishell: line %d: `%s'\n",ms->lineno, ms->input_line);
+        fprintf(stderr, "minishell: line %d: `%s'\n", ms->lineno, ms->input_line);
 }
 
+/*
+** 打印只重定向相关的语法错误
+*/
 void ms_err_syntax_only_redir(t_minishell *ms) 
 {
     fprintf(stderr, "minishell: line %d: syntax error near unexpected token `newline'\n",
         ms->lineno);
     if (ms->input_line)
-        fprintf(stderr, "minishell: line %d: `%s'\n",ms->lineno, ms->input_line);
+        fprintf(stderr, "minishell: line %d: `%s'\n", ms->lineno, ms->input_line);
 }
+
+/*
+** 打印引号未闭合导致的 EOF 错误
+** 效果：
+** minishell: unexpected EOF looking for `"`
+** minishell: syntax error: unexpected end of file
+*/
+void    ms_err_eof_quote(char q)
+{
+    char    str[2];
+
+    str[0] = q;
+    str[1] = '\0';
+    // 第一行报错
+    ms_put3("minishell: unexpected EOF looking for `", str, "'\n");
+    // 第二行报错
+    ms_put3("minishell: syntax error: unexpected end of file\n", NULL, NULL);
+}
+
