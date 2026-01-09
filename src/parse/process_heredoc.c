@@ -110,7 +110,17 @@ static int read_and_process_line(char **full_line, const char *delimiter,
         return -1;
     }
     if (!line && *full_line == NULL)
+    {
+        write(1, "\n", 1);
+        ft_putchar_fd("minishell: warning: here-document at line ", 2);
+        
+        char *b = "delimited by end-of-file('want of )";
+        const char *c = delimiter;
+
+        ms_put3(a, b,c);
         return 1;
+    }
+        
     if (!line)
     {
         line = *full_line;

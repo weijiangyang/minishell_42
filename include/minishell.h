@@ -39,6 +39,7 @@ typedef struct s_minishell
 
 	char	**envp;
 	char	**paths;
+	int		lineno;
 }	t_minishell;
 
 void ms_clear(t_minishell *ms);

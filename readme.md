@@ -128,6 +128,7 @@ Key points:
 
 ### Error Handling
 
+* Generic error return exit status 1
 * Syntax errors return exit status 2
 
 * Command not found returns 127
