@@ -66,8 +66,8 @@ typedef enum
 {
 	TOK_WORD,
 	TOK_PIPE,      // |
-	TOK_AND,       // &&
-	TOK_OR,        // ||
+	//TOK_AND,       // &&
+	//TOK_OR,        // ||
 	TOK_LPAREN,    // (
 	TOK_RPAREN,    // )
 	TOK_REDIR_IN,  // <
@@ -75,8 +75,8 @@ typedef enum
 	TOK_APPEND,    // >>
 	TOK_HEREDOC,   // <<
 	TOK_END,       // EOF
-	TOK_AMP,       // &
-	TOK_SEMI,      // ;
+	//TOK_AMP,       // &
+	//TOK_SEMI,      // ;
 	TOK_ERROR
 }							tok_type;
 
