@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:20:01 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/06 19:12:12 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 00:57:28 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ static int	ms_initial_system(t_minishell *ms, char **envp)
 	ms->envp = NULL;
 	ms->paths = NULL;
 	ms->lexer = NULL;
+	ms->cur_ast = NULL;
 	ms->raw_line = NULL;
 	ms->should_exit = 0;
 	ms->last_exit_status = 0;

@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/09 00:50:26 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 01:07:46 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ static void	run_drop_acc(t_minishell *ms, char **acc, int err_code)
 	ms->lexer_unclosed_quote = 0;
 }
 
-/* 作用：组装语法树并真正开始跑命令。 */
 static void	run_one_cmd(t_minishell *ms)
 {
 	ast		*root;
@@ -61,9 +60,18 @@ static void	run_one_cmd(t_minishell *ms)
 		clear_list(&ms->lexer);
 		return ;
 	}
-	prepare_heredocs(root, ms);
+	ms->cur_ast = root;
+	if (!prepare_heredocs(root, ms))
+	{
+		ms->cur_ast = NULL;
+		free_ast(root);
+		clear_list(&ms->lexer);
+		return ;
+	}
+	change_envp(ms->env, &ms->envp);
 	expander_ast(ms, root);
 	exec_ast(ms, root);
+	ms->cur_ast = NULL;
 	free_ast(root);
 	clear_list(&ms->lexer);
 }
