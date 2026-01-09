@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:44 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/09 01:08:51 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static int	wait_for_child(pid_t pid, int *status)
  * - 状态码为 0：表示输入成功，将管道读端赋值给 redir->heredoc_fd。
  * - 状态码非 0：表示输入失败（如语法错），关闭读端并更新 Shell 退出状态。
  * 2. 信号终止 (WIFSIGNALED)：
- * - 通常指 Ctrl+C。关闭读端，按 Bash 规范计算状态码 (128 + 信号值)。
+ * - 通常指 Ctrl+C。关闭读端，按 minishell 规范计算状态码 (128 + 信号值)。
  * * @param status  由 waitpid 获取的子进程退出状态信息。
  * @param pipefd  Heredoc 通讯管道。
  * @param redir   当前的重定向节点，用于存储结果 fd。

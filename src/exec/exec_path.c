@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:16:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/18 18:21:18 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static char	*join_dir_cmd(const char *dir, const char *cmd)
 ** 如果命令本来就带 '/'，就直接当作路径复制返回。
 ** 关键修复：
 ** - 如果在 PATH 里遇到“存在但不可执行”的同名文件，也直接返回该路径，
-**   让 execve 产生 EACCES/EISDIR，并映射到 126（更贴近 bash）。
+**   让 execve 产生 EACCES/EISDIR，并映射到 126（更贴近 minishell）。
 */
 char	*find_cmd_path(t_minishell *msh, const char *cmd)
 {

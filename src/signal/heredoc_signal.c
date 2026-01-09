@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_signal.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:19:41 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/05 13:19:43 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ static void sigint_heredoc(int sig)
  * g_signal，允许读取循环识别中断并退出。
  * 2. SIGTSTP (Ctrl+Z): 设置为 SIG_IGN (忽略)。防止用户在 Heredoc 输入期间
  * 将 Shell 挂起到后台，这会导致复杂的终端状态恢复问题。
- * 3. SIGQUIT (Ctrl+\): 设置为 SIG_IGN (忽略)。Bash 的标准行为是在 
+ * 3. SIGQUIT (Ctrl+\): 设置为 SIG_IGN (忽略)。minishell 的标准行为是在 
  * Heredoc 提示符下不产生 Core Dump 也不退出。
  */
 void setup_heredoc_signals(void)

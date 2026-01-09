@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/18 17:30:03 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/30 03:20:55 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	ms_put3(const char *a, const char *b, const char *c)
 }
 
 /*
-** 函数作用：打印 “command not found” 错误，并尽量贴近 bash 输出格式。
+** 函数作用：打印 “command not found” 错误，并尽量贴近 minishell 输出格式。
 */
 void    ms_err_cmd_not_found(const char *cmd)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:23:39 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/05 13:23:42 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:33 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static int cd_get_oldcwd(char *cwd, size_t size)
  * @brief 执行物理目录切换并处理可能的失败情况。
  * * 1. 系统调用：调用 chdir(target) 尝试更改当前进程的工作目录。
  * 2. 错误捕获：如果返回值不为 0，表示切换失败（通常原因为路径不存在或权限不足）。
- * 3. 错误反馈：仿照 Bash 格式向标准错误 (stderr) 输出提示信息。
+ * 3. 错误反馈：仿照 minishell 格式向标准错误 (stderr) 输出提示信息。
  * 4. 状态返回：成功返回 0，失败返回 -1。
  * * @param target 经过校验后的目标路径字符串。
  * @return int 切换成功返回 0，失败返回 -1。
@@ -83,7 +83,7 @@ static int cd_change_dir(const char *target)
 {
     if (chdir(target) != 0)
     {
-        fprintf(stderr, "bash: cd: %s: No such file or directory\n", target);
+        fprintf(stderr, "minishell: cd: %s: No such file or directory\n", target);
         return -1;
     }
     return 0;

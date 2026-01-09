@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 00:15:10 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 17:17:29 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	path_is_dir(const char *path)
 }
 
 /*
-** 函数作用：当 execve 因为 EACCES 失败时，尝试模拟 bash 的
+** 函数作用：当 execve 因为 EACCES 失败时，尝试模拟 minishell 的
 ** “bad interpreter: Permission denied” 报错。
 ** 只在脚本文件以 "#!" 开头时才打印。
 ** 返回：1 表示已经打印了；0 表示不适用。
@@ -102,7 +102,7 @@ static void	close_heredoc_fds(t_redir *r)
 
 /*
 ** 函数作用：子进程执行外部命令（PATH 搜索 + execve）。
-** 返回码规则（贴 bash）：
+** 返回码规则（贴 minishell）：
 ** - command not found -> 127
 ** - permission denied / is a directory -> 126
 */
