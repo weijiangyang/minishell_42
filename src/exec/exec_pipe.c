@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:27:46 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 17:19:09 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 /*
 ** 函数作用：等待所有子进程结束，并把“最后一个命令”的退出码写回 msh。
-** 额外行为：如果有非最后一个命令因为 SIGPIPE 结束，打印 " broken pipe"（贴近 bash）。
+** 额外行为：如果有非最后一个命令因为 SIGPIPE 结束，打印 " broken pipe"（贴近 minishell）。
 */
 static void	wait_all_and_set_last(t_minishell *msh, pid_t *pids, int n)
 {
@@ -85,7 +85,13 @@ static int	pipe_step(t_pipe_ctx *ctx, int i)
 		return (0);
 	pid = fork();
 	if (pid < 0)
-		return (/* 关闭 pfd 并返回 0 */ 0);
+	{
+		if (pfd[0] != -1)
+			close(pfd[0]);
+		if (pfd[1] != -1)
+			close(pfd[1]);
+		return (0);
+	}
 	if (pid == 0)
 	{
 		cmd = ctx->arr[i];
@@ -131,7 +137,7 @@ static int	pipe_run_all(t_pipe_ctx *ctx, int *done)
 
 /*
 ** 函数作用：执行任意长度的 pipeline：a | b | c | ...
-** 关键点：返回值必须等于“最后一个命令”的退出码（bash 默认行为）。
+** 关键点：返回值必须等于“最后一个命令”的退出码（minishell 默认行为）。
 */
 int	exec_pipe_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 {

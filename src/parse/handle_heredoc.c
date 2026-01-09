@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   handle_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:44 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/22 15:18:46 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "exec.h"
 #include "minishell.h"
 #include "parse.h"
-
 
 /**
  * @brief 在子进程中处理 Heredoc 的输入逻辑。
@@ -26,21 +26,24 @@
  * @param shell   指向全局结构体，用于获取环境变量（用于展开）。
  * @param pipefd  已打开的管道文件描述符数组。
  */
-static void heredoc_fork_child(t_redir *redir, t_minishell *shell,
-                               int pipefd[2])
+static void	heredoc_fork_child(t_redir *redir, t_minishell *shell,
+		int pipefd[2])
 {
-    int result;
+	int	result;
 
-    setup_heredoc_signals();
-    close(pipefd[0]);
-    if (redir->quoted)
-        result = heredoc_loop(pipefd[1], redir->filename, shell, 1);
-    else
-        result = heredoc_loop(pipefd[1], redir->filename, shell, 0);
-    if (result < 0)
-        exit(130);
-    close(pipefd[1]);
-    exit(0);
+	setup_heredoc_signals();
+	close(pipefd[0]);
+	if (redir->quoted)
+		result = heredoc_loop(pipefd[1], redir->filename, shell, 1);
+	else
+		result = heredoc_loop(pipefd[1], redir->filename, shell, 0);
+	if (result < 0)
+	{
+		close(pipefd[1]);
+		ms_child_exit(shell, shell->cur_ast, 130);
+	}
+	close(pipefd[1]);
+	ms_child_exit(shell, shell->cur_ast, 0);
 }
 
 /**
@@ -53,14 +56,14 @@ static void heredoc_fork_child(t_redir *redir, t_minishell *shell,
  * @param status 指向存储退出状态信息的整数指针。
  * @return int   成功返回 0；发生非中断类的系统错误返回 -1。
  */
-static int wait_for_child(pid_t pid, int *status)
+static int	wait_for_child(pid_t pid, int *status)
 {
-    while (waitpid(pid, status, 0) == -1)
-    {
-        if (errno != EINTR)
-            return -1;
-    }
-    return 0;
+	while (waitpid(pid, status, 0) == -1)
+	{
+		if (errno != EINTR)
+			return (-1);
+	}
+	return (0);
 }
 
 /**
@@ -70,38 +73,40 @@ static int wait_for_child(pid_t pid, int *status)
  * - 状态码为 0：表示输入成功，将管道读端赋值给 redir->heredoc_fd。
  * - 状态码非 0：表示输入失败（如语法错），关闭读端并更新 Shell 退出状态。
  * 2. 信号终止 (WIFSIGNALED)：
- * - 通常指 Ctrl+C。关闭读端，按 Bash 规范计算状态码 (128 + 信号值)。
+ * - 通常指 Ctrl+C。关闭读端，按 minishell 规范计算状态码 (128 + 信号值)。
  * * @param status  由 waitpid 获取的子进程退出状态信息。
  * @param pipefd  Heredoc 通讯管道。
  * @param redir   当前的重定向节点，用于存储结果 fd。
  * @param shell   指向全局结构体，用于更新最后一次执行的状态码。
  * @return int    成功返回 0；失败或被信号中断返回 -1。
  */
-static int handle_child_exit(int status, int pipefd[2], t_redir *redir,
-                             t_minishell *shell)
+static int	handle_child_exit(int status, int pipefd[2], t_redir *redir,
+		t_minishell *shell)
 {
-    if (WIFEXITED(status))
-    {
-        int code = WEXITSTATUS(status);
-        if (code == 0)
-        {
-            redir->heredoc_fd = pipefd[0];
-            return 0;
-        }
-        close(pipefd[0]);
-        redir->heredoc_fd = -1;
-        shell->last_exit_status = code;
-        return -1;
-    }
-    else if (WIFSIGNALED(status))
-    {
-        close(pipefd[0]);
-        redir->heredoc_fd = -1;
-        shell->last_exit_status = 128 + WTERMSIG(status);
-        return -1;
-    }
-    redir->heredoc_fd = pipefd[0];
-    return 0;
+	int	code;
+
+	if (WIFEXITED(status))
+	{
+		code = WEXITSTATUS(status);
+		if (code == 0)
+		{
+			redir->heredoc_fd = pipefd[0];
+			return (0);
+		}
+		close(pipefd[0]);
+		redir->heredoc_fd = -1;
+		shell->last_exit_status = code;
+		return (-1);
+	}
+	else if (WIFSIGNALED(status))
+	{
+		close(pipefd[0]);
+		redir->heredoc_fd = -1;
+		shell->last_exit_status = 128 + WTERMSIG(status);
+		return (-1);
+	}
+	redir->heredoc_fd = pipefd[0];
+	return (0);
 }
 
 /**
@@ -117,18 +122,16 @@ static int handle_child_exit(int status, int pipefd[2], t_redir *redir,
  * @param shell   指向全局结构体，用于获取/更新环境变量及状态。
  * @return int    成功且完成输入返回 0；子进程出错或被信号中断返回 -1。
  */
-static int heredoc_parent(pid_t pid, int pipefd[2], t_redir *redir,
-                          t_minishell *shell)
+static int	heredoc_parent(pid_t pid, int pipefd[2], t_redir *redir,
+		t_minishell *shell)
 {
-    int status;
+	int	status;
 
-    close(pipefd[1]);
-    ignore_heredoc_signals();
-
-    if (wait_for_child(pid, &status) == -1)
-        return -1;
-
-    return handle_child_exit(status, pipefd, redir, shell);
+	close(pipefd[1]);
+	ignore_heredoc_signals();
+	if (wait_for_child(pid, &status) == -1)
+		return (-1);
+	return (handle_child_exit(status, pipefd, redir, shell));
 }
 
 /**
@@ -144,25 +147,25 @@ static int heredoc_parent(pid_t pid, int pipefd[2], t_redir *redir,
  * @param shell 指向全局上下文结构体。
  * @return int   成功读取并准备好 fd 返回 0；发生错误或被中断返回 -1。
  */
-int handle_heredoc(t_redir *redir, t_minishell *shell)
+int	handle_heredoc(t_redir *redir, t_minishell *shell)
 {
-    int pipefd[2];
-    pid_t pid;
-    t_saved_signals saved;
-    int ret;
+	int				pipefd[2];
+	pid_t			pid;
+	t_saved_signals	saved;
+	int				ret;
 
-    save_signals(&saved);
-    if (pipe(pipefd) < 0)
-        return (restore_signals(&saved), -1);
-    pid = fork();
-    if (pid < 0)
-        return (restore_signals(&saved), -1);
-    if (pid == 0)
-        return (heredoc_fork_child(redir, shell, pipefd), 0);
-    else
-    {
-        ret = heredoc_parent(pid, pipefd, redir, shell);
-        restore_signals(&saved);
-        return ret;
-    }
+	save_signals(&saved);
+	if (pipe(pipefd) < 0)
+		return (restore_signals(&saved), -1);
+	pid = fork();
+	if (pid < 0)
+		return (restore_signals(&saved), -1);
+	if (pid == 0)
+		return (heredoc_fork_child(redir, shell, pipefd), 0);
+	else
+	{
+		ret = heredoc_parent(pid, pipefd, redir, shell);
+		restore_signals(&saved);
+		return (ret);
+	}
 }

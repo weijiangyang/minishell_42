@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 17:22:21 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 19:19:54 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 /*
 ** 函数作用：
-** 打印系统调用失败的错误（带 minishell 前缀），格式尽量贴近 bash。
+** 打印系统调用失败的错误（带 minishell 前缀），格式尽量贴近 minishell。
 ** 例：minishell: line 1: fork: Resource temporarily unavailable
 */
 void    ms_perror(const char *msg)

@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 16:21:54 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/08/12 15:39:55 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 01:18:17 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,11 @@ char	*refresh_backup(char *backup)
 	while (backup[i] && backup[i] != '\n')
 		i++;
 	if (!backup[i])
+	{
+		free(backup);
+		return (NULL);
+	}
+	if (!backup[i + 1])
 	{
 		free(backup);
 		return (NULL);

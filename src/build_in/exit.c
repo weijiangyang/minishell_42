@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:24:07 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/06 15:01:46 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:33 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int	builtin_exit(char **argv, t_minishell *msh)
 		msh->exit_code = ret;
 		msh->should_exit = 1;
 	}
-	/* bash 交互模式会打印 exit(Ctrl-D 那里也是这么做的） */
+	/* minishell 交互模式会打印 exit(Ctrl-D 那里也是这么做的） */
 	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
 		write(STDOUT_FILENO, "exit\n", 5);
 	return (ret);

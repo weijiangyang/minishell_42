@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_pipeline.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:17:29 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/05 13:17:37 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
  * * 该函数通过 peek_token 查看当前 Token 及其后续节点：
  * 1. 如果当前 Token 之后紧跟另一个 TOK_PIPE，则判定为语法错误。
  * 2. 这种检查能有效拦截类似于 "ls ||" 或 "| |" 的非法输入（注意：Minishell 通常不处理 || 逻辑运算符）。
- * 3. 报错信息模拟了 Bash 的标准输出格式。
+ * 3. 报错信息模拟了 minishell 的标准输出格式。
  * * @param cur 指向当前词法 Token 流指针的地址。
  * @return int 发现非法连续管道返回 -1；语法正常返回 0。
  */
@@ -29,7 +29,7 @@ static int check_consecutive_pipes(t_lexer **cur)
     pt = peek_token(cur);
     if (pt && pt->next && pt->next->tokentype == TOK_PIPE)
     {
-        ft_putstr_fd("bash: syntax error near unexpected token `|'\n", STDERR_FILENO);
+        ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
         return (-1);
     }
     return 0;
@@ -120,7 +120,7 @@ ast *parse_pipeline(t_lexer **cur, t_minishell *minishell)
     if (peek_token(cur) && peek_token(cur)->tokentype == TOK_PIPE)
     {
         ft_putstr_fd(
-            "bash: syntax error near unexpected token `|'\n",
+            "minishell: syntax error near unexpected token `|'\n",
             STDERR_FILENO);
         return NULL;
     }
