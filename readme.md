@@ -90,6 +90,15 @@ Hello, world
 | `env`    | Display environment variables |
 | `exit`   | Exit the shell                |
 ```
+
+### Priority of commands  and File Descriptors (FD)
+
+Our minishell correctly handles redirection and pipe priority:
+
+Redirection takes precedence over pipes: If a command has both piped output and redirected file output (e.g., `ls | grep a > file`), `> file` overrides the pipe redirection, ensuring data flows to the final file.
+
+FD leak protection: After each redirection and pipe operation, the program correctly closes any unused `pipe_fd`s, preventing system crashes due to file descriptor exhaustion.
+
 ### Signal Handling
 
 minishell handles signals to mimic standard shell behavior and improve user experience.
