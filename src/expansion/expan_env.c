@@ -6,12 +6,15 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:34:06 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/21 22:38:12 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 03:26:50 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "build_in.h"
 #include "expander.h"
+#include "minishell.h"
+
+
 
 /*
 ** 函数作用：判断变量名首字符是否合法（字母或 _）。
@@ -53,57 +56,27 @@ int	var_len(const char *s)
 }
 
 /*
-** 做什么：
-**   返回 entry 中第一个 '=' 的索引位置。
-**   若没找到 '='，则返回字符串长度（即 '\0' 的位置）。
-**
-** 举例：
-**   "PATH=/usr/bin" → 4
-**   "HOME=/home/user" → 4
-**   "SHELL" → 5（即 strlen("SHELL")）
-**
-** 谁调：
-**   env_value_dup()（在解析环境变量名时）
-*/
-size_t	equal_sign(char *entry)
-{
-	int	i;
-
-	if (!entry)
-		return (0);
-	i = 0;
-	while (entry[i] && entry[i] != '=')
-		i++;
-	return (i);
-}
-
-/*
 ** 函数作用：在 minishell->envp 里找变量 name[0..len-1]，并复制它的值。
 ** 参数：minishell(全局上下文), name(变量名起点), len(变量名长度)
 ** 返回：找到则返回值的 strdup；找不到返回 strdup("")；失败返回 NULL
 */
-char	*env_value_dup(t_minishell *minishell, const char *name, int len)
+char    *env_value_dup(t_minishell *minishell, const char *name, int len)
 {
-	int		k;
-	int		keylen;
-	char	*entry;
+    t_env   *cur;
 
-	k = 0;
-	keylen = 0;
-	entry = NULL;
-	if (!minishell || !minishell->envp || !name)
-		return (ft_strdup(""));
-	while (minishell->envp[k])
-	{
-		entry = minishell->envp[k];
-		keylen = (int)equal_sign(entry);
-		if (keylen == len && ft_strncmp(name, entry, len) == 0)
-		{
-			if (entry[keylen] == '=')
-				return (ft_strdup(entry + keylen + 1));
-			return (ft_strdup(entry + keylen));
-		}
-		k = k + 1;
-	}
-	return (ft_strdup(""));
+    if (!minishell || !name || len <= 0)
+        return (ft_strdup(""));
+    cur = minishell->env;
+    while (cur)
+    {
+        if (cur->key && (int)ft_strlen(cur->key) == len
+            && ft_strncmp(cur->key, name, len) == 0)
+        {
+            if (cur->value)
+                return (ft_strdup(cur->value));
+            return (ft_strdup(""));
+        }
+        cur = cur->next;
+    }
+    return (ft_strdup(""));
 }

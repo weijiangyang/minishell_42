@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 15:21:40 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/09 00:57:07 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 02:54:13 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ typedef struct s_minishell
 	t_lexer						*lexer;
 	t_env						*env;
 	ast							*cur_ast;
+	
 
 	char						*raw_line;
-
 	int							n_pipes;
 	int							last_exit_status;
 	int							should_exit;
