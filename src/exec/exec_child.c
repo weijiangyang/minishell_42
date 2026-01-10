@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 00:15:10 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 17:17:29 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 16:52:56 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	path_is_dir(const char *path)
 }
 
 /*
-** 函数作用：当 execve 因为 EACCES 失败时，尝试模拟 bash 的
+** 函数作用：当 execve 因为 EACCES 失败时，尝试模拟 minishell 的
 ** “bad interpreter: Permission denied” 报错。
 ** 只在脚本文件以 "#!" 开头时才打印。
 ** 返回：1 表示已经打印了；0 表示不适用。
@@ -95,14 +95,35 @@ static void	close_heredoc_fds(t_redir *r)
 	while (r)
 	{
 		if (r->type == HEREDOC && r->heredoc_fd >= 0)
+		{
 			close(r->heredoc_fd);
+			r->heredoc_fd = -1;
+		}
 		r = r->next;
 	}
 }
 
 /*
+** 函数作用：在子进程里关闭“整棵 AST”里所有 heredoc 的 fd。
+** 为什么：pipeline 里其它命令也会继承这些 fd，不关就会在外部程序里看到 fd 泄露。
+*/
+static void	close_all_heredoc_fds(ast *node)
+{
+	if (!node)
+		return ;
+	if (node->type == NODE_CMD)
+		close_heredoc_fds(node->redir);
+	if (node->sub)
+		close_all_heredoc_fds(node->sub);
+	if (node->left)
+		close_all_heredoc_fds(node->left);
+	if (node->right)
+		close_all_heredoc_fds(node->right);
+}
+
+/*
 ** 函数作用：子进程执行外部命令（PATH 搜索 + execve）。
-** 返回码规则（贴 bash）：
+** 返回码规则（贴 minishell）：
 ** - command not found -> 127
 ** - permission denied / is a directory -> 126
 */
@@ -165,7 +186,7 @@ void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd,
 	}
 	if (apply_redir_list(node->redir, &new_in, &new_out) < 0)
 		ms_child_exit(msh, root, 1);
-	close_heredoc_fds(node->redir);
+	close_all_heredoc_fds(root);
 	if (dup_in_out_or_close(new_in, new_out) < 0)
 		ms_child_exit(msh, root, 1);
 	if (node->argv && node->argv[0] && is_builtin(node->argv[0]))

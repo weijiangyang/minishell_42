@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:17:12 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/22 15:17:18 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:33 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "build_in.h"
 
 /**
- * @brief 以 Bash 标准格式打印所有环境变量。
+ * @brief 以 minishell 标准格式打印所有环境变量。
  * * 行为逻辑：
  * 1. 遍历链表：从头到尾访问环境变量。
  * 2. 格式化输出：每个变量前缀固定为 "declare -x "。
@@ -81,12 +81,12 @@ static int parse_export_arg(char *arg, char **key, char **value)
 
 /**
  * @brief 更新已存在的环境变量或添加新变量（专门针对 export 逻辑）。
- * * 覆盖规则（模拟 Bash 行为）：
+ * * 覆盖规则（模拟 minishell 行为）：
  * 1. 查找变量：检查 key 是否已存在于链表中。
  * 2. 变量已存在：
  * - 如果新 value 不为 NULL：说明输入是 `export KEY=VALUE`，此时执行覆盖操作，
  * 释放旧值并指向新值。
- * - 如果新 value 为 NULL：说明输入是 `export KEY`，Bash 规定此时不应修改旧值。
+ * - 如果新 value 为 NULL：说明输入是 `export KEY`，minishell 规定此时不应修改旧值。
  * - 无论是否更新，都要释放传入的 key 内存（因为旧节点已持有同名的 key）。
  * 3. 变量不存在：
  * - 直接调用 env_new 和 env_add_back 创建并挂载新节点。

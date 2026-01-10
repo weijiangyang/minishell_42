@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 23:59:59 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 17:19:56 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int has_bad_heredoc(t_redir *r)
 ** 函数作用：
 ** 只有重定向、没有命令时（如：> a 或 < infile）：
 ** - 仍然要按顺序“尝试应用重定向”，从而创建文件/检查文件并在失败时报错。
-** - 不执行任何命令；成功返回 0，失败返回 1（更贴近 bash 行为）。
+** - 不执行任何命令；成功返回 0，失败返回 1（更贴近 minishell 行为）。
 ** - 同时把传进来的 in_fd/out_fd（若非标准 fd）关闭，避免父进程泄露。
 */
 static int run_redir_only_parent(t_minishell *msh, ast *node, int in_fd,

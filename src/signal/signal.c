@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:19:35 by weiyang           #+#    #+#             */
-/*   Updated: 2025/12/22 15:19:37 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void setup_parent_exec_signals(void)
  * - 告知 readline 重新显示提示符
  * - 设置退出状态码为 130
  * 2. SIGQUIT (Ctrl+\): 设置为 SIG_IGN (忽略)。
- * - 按照 Bash 规范，在主提示符下按下 Ctrl+\ 不应产生 Core Dump 或退出 Shell。
+ * - 按照 minishell 规范，在主提示符下按下 Ctrl+\ 不应产生 Core Dump 或退出 Shell。
  * * 这一配置保证了 Shell 的交互体验符合 POSIX 标准。
  */
 void setup_prompt_signals(void)

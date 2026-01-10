@@ -6,12 +6,37 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 19:27:12 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/09 19:23:56 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "repl.h"
+
+/* 返回 1 表示这条命令里真的出现过 heredoc 操作符 <<（不在引号里） */
+static int	lexer_has_heredoc(t_lexer *lx)
+{
+	while (lx)
+	{
+		if (lx->tokentype == TOK_HEREDOC)
+			return (1);
+		lx = lx->next;
+	}
+	return (0);
+}
+
+/* 只复制第一行（遇到 '\n' 就截断） */
+static char	*dup_first_line(const char *s)
+{
+	size_t	i;
+
+	if (!s)
+		return (NULL);
+	i = 0;
+	while (s[i] && s[i] != '\n')
+		i++;
+	return (ft_substr(s, 0, i));
+}
 
 /* 作用：把新读到的一行接在之前没写完的命令后面。 */
 int	repl_join(char **acc, char *line)
@@ -47,7 +72,6 @@ static void	run_drop_acc(t_minishell *ms, char **acc, int err_code)
 	ms->lexer_unclosed_quote = 0;
 }
 
-/* 作用：组装语法树并真正开始跑命令。 */
 static void	run_one_cmd(t_minishell *ms)
 {
 	ast		*root;
@@ -61,9 +85,18 @@ static void	run_one_cmd(t_minishell *ms)
 		clear_list(&ms->lexer);
 		return ;
 	}
-	prepare_heredocs(root, ms);
+	ms->cur_ast = root;
+	if (!prepare_heredocs(root, ms))
+	{
+		ms->cur_ast = NULL;
+		free_ast(root);
+		clear_list(&ms->lexer);
+		return ;
+	}
+	change_envp(ms->env, &ms->envp);
 	expander_ast(ms, root);
 	exec_ast(ms, root);
+	ms->cur_ast = NULL;
 	free_ast(root);
 	clear_list(&ms->lexer);
 }
@@ -71,7 +104,8 @@ static void	run_one_cmd(t_minishell *ms)
 /* 作用：判断命令是否写完，完整就去执行，不完整就等下一行。 */
 void	repl_run_acc(t_minishell *ms, char **acc)
 {
-	int	lex_ret;
+	int		lex_ret;
+	char	*hist;
 
 	if (!repl_has_text(*acc))
 		return (run_drop_acc(ms, acc, 0));
@@ -85,7 +119,20 @@ void	repl_run_acc(t_minishell *ms, char **acc)
 	if (lex_ret != LEX_OK)
 		return (run_drop_acc(ms, acc, 2));
 	if (isatty(STDIN_FILENO) && repl_has_text(*acc))
-		add_history(*acc);
+	{
+		hist = NULL;
+		if (lexer_has_heredoc(ms->lexer))
+			hist = dup_first_line(*acc);
+		else
+			hist = ft_strdup(*acc);
+		if (hist)
+		{
+			add_history(hist);
+			free(hist);
+		}
+	}
+	ms->raw_line = NULL;
+	repl_free_acc(acc);
 	run_one_cmd(ms);
 	run_drop_acc(ms, acc, 0);
 }
