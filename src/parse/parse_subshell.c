@@ -32,7 +32,7 @@ ast *parse_subshell(t_lexer **cur, ast *node, t_minishell *minishell)
     node->sub = parse_pipeline(cur, minishell);
     if (!expect_token(TOK_RPAREN, cur))
     {
-        fprintf(stderr, "Syntax error: expected ')'\n");
+        ft_putstr_fd("Syntax error: expected ')'\n", 2);
         free_ast(node);
         return NULL;
     }

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 #include "parse.h"
-
+#include "error.h"
 /**
  * @brief 预读当前 Token 而不移动流指针。
  * * 该函数允许解析器在不“消耗” Token 的情况下检查其内容：
@@ -44,9 +44,9 @@ t_lexer *consume_token(t_lexer **cur)
     if (!cur || !*cur)
         return NULL;
 
-    t_lexer *old = *cur;      
-    *cur = (*cur)->next;     
-    return old;               
+    t_lexer *old = *cur;
+    *cur = (*cur)->next;
+    return old;
 }
 
 /**
@@ -63,7 +63,7 @@ t_lexer *expect_token(tok_type type, t_lexer **cur)
 {
     if (!cur || !*cur || (*cur)->tokentype != type)
     {
-        fprintf(stderr, "Syntax error : expected token type %d\n", type);
+        ms_put3("Syntax error : expected token type ", (char*)type, "\n");
         return NULL;
     }
     return consume_token(cur);
@@ -81,9 +81,9 @@ t_lexer *expect_token(tok_type type, t_lexer **cur)
  */
 int is_redir_token(t_lexer *pt)
 {
-    if (pt->tokentype == TOK_REDIR_IN || 
-        pt->tokentype == TOK_REDIR_OUT || 
-        pt->tokentype == TOK_APPEND || 
+    if (pt->tokentype == TOK_REDIR_IN ||
+        pt->tokentype == TOK_REDIR_OUT ||
+        pt->tokentype == TOK_APPEND ||
         pt->tokentype == TOK_HEREDOC)
         return 1;
     else
@@ -101,12 +101,10 @@ int is_redir_token(t_lexer *pt)
  */
 char *safe_strdup(const char *s)
 {
-    if (!s) return NULL;
+    if (!s)
+        return NULL;
     char *p = ft_strdup(s);
     if (!p)
         fprintf(stderr, "memory error: strdup failed\n");
     return p;
 }
-
-
-

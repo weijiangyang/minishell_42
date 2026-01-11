@@ -134,7 +134,7 @@ static int export_one(char *arg, t_env **env)
 
     if (!is_valid_identifier(key))
     {
-        fprintf(stderr, "export: `%s': not a valid identifier\n", arg);
+        ms_put3("export: ", arg, " not a valid identifier\n");
         free(key);
         free(value);
         return 1;
@@ -147,7 +147,7 @@ static int export_one(char *arg, t_env **env)
 /**
  * @brief export 内置命令的主函数。
  * * 运行逻辑：
- * 1. 列表显示模式：若 argv 仅包含命令本身（无参数），调用 print_export 以 
+ * 1. 列表显示模式：若 argv 仅包含命令本身（无参数），调用 print_export 以
  * "declare -x KEY="VALUE"" 格式打印所有变量。
  * 2. 变量设置模式：遍历从 argv[1] 开始的所有参数。
  * - 对每个参数调用 export_one 进行解析、校验和存储。

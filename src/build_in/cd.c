@@ -35,7 +35,7 @@ static char *cd_get_target(char **argv)
         target = getenv("HOME");
         if (!target)
         {
-            fprintf(stderr, "cd: HOME not set\n");
+            ft_putstr_fd("cd: HOME not set\n", STDERR_FILENO);
             return NULL;
         }
     }
@@ -83,8 +83,8 @@ static int cd_change_dir(const char *target)
 {
     if (chdir(target) != 0)
     {
-        fprintf(stderr, "minishell: cd: %s: No such file or directory\n", target);
-        return -1;
+        ms_put3("minishell: cd: ", target, "No such file or directory\n");
+        return (-1);
     }
     return 0;
 }

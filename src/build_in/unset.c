@@ -30,14 +30,14 @@ static void delete_env_var(t_env **env, const char *key)
     t_env *prev = NULL;
 
     if (!temp)
-        return ;
+        return;
     if (strcmp(temp->key, key) == 0)
     {
-        *env = temp->next; 
+        *env = temp->next;
         free(temp->key);
         free(temp->value);
         free(temp);
-        return ;
+        return;
     }
     while (temp != NULL && strcmp(temp->key, key) != 0)
     {
@@ -45,7 +45,7 @@ static void delete_env_var(t_env **env, const char *key)
         temp = temp->next;
     }
     if (temp == NULL)
-        return ;
+        return;
     prev->next = temp->next;
     free(temp->key);
     free(temp->value);
@@ -105,9 +105,7 @@ int builtin_unset(char **argv, t_env **env)
     {
         if (!is_valid_identifier(argv[i]))
         {
-            fprintf(stderr,
-                "unset: `%s': not a valid identifier\n",
-                argv[i]);
+            ms_put3("unset: ", argv[i], " not a valid identifier\n");
             status = 1;
         }
         else

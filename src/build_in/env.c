@@ -113,8 +113,8 @@ int builtin_env(char **argv, t_env *env)
 { 
     if (argv[1]) 
     {
-        fprintf(stderr, "env: %s: No such file or directory\n", argv[1]);
-        return 127; 
+        ms_put3("env: ", argv[1], " No such file or directory\n");
+        return (127); 
     }
     print_env(env);
     return 0;
