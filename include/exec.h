@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:03:49 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 22:56:23 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,9 @@ int prepare_heredocs(t_ast *node, t_minishell *ms);
 int run_builtin_parent_logic(t_minishell *msh, t_ast *node, int in_fd,
 							 int out_fd);
 
+/* exec_child_utils.c */
+int		path_is_dir(const char *path);
+int		has_bad_heredoc(t_redir *r);
+void	close_all_heredoc_fds(t_ast *node);
+							 
 #endif

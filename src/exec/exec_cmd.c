@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 23:59:59 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 23:22:51 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,34 +15,17 @@
 
 /*
 ** 函数作用：
-** 检查这个命令的重定向里有没有“坏掉的 heredoc”：
-** 如果 heredoc 在解析阶段被 Ctrl+C 打断，fd 会变成 -1。
-** 这种情况下执行器不要再跑命令，直接当作被中断。
-*/
-static int has_bad_heredoc(t_redir *r)
-{
-	while (r)
-	{
-		if (r->type == HEREDOC && r->heredoc_fd < 0)
-			return (1);
-		r = r->next;
-	}
-	return (0);
-}
-
-/*
-** 函数作用：
 ** 只有重定向、没有命令时（如：> a 或 < infile）：
 ** - 仍然要按顺序“尝试应用重定向”，从而创建文件/检查文件并在失败时报错。
 ** - 不执行任何命令；成功返回 0，失败返回 1（更贴近 minishell 行为）。
 ** - 同时把传进来的 in_fd/out_fd（若非标准 fd）关闭，避免父进程泄露。
 */
-static int run_redir_only_parent(t_minishell *msh, t_ast *node, int in_fd,
-								 int out_fd)
+static int	run_redir_only_parent(t_minishell *msh, t_ast *node, int in_fd,
+		int out_fd)
 {
-	int new_in;
-	int new_out;
-	int ret;
+	int	new_in;
+	int	new_out;
+	int	ret;
 
 	new_in = STDIN_FILENO;
 	new_out = STDOUT_FILENO;
@@ -62,19 +45,44 @@ static int run_redir_only_parent(t_minishell *msh, t_ast *node, int in_fd,
 }
 
 /*
-** 函数作用：
-** 执行外部命令：fork 出子进程去 execve，父进程负责关闭 fd 和 wait。
-** wait 结束后，把子进程的退出码写回 msh->last_exit_status。
-** 关键修复：
-** - fork() 失败时，关闭传进来的 in_fd/out_fd（非 STD），避免父进程泄露。
+** 这个函数是父进程专用的收尾工作，就像家长在校门口接孩子。
+** 1. 关掉不再需要的管道文件（防止资源泄露）。
+** 2. 专心等待刚才生出来的子进程（pid）放学（运行结束）。
+** 3. 拿到子进程的成绩单（退出状态 st），更新到全局记录里。
+** 4. 整理好心情（恢复信号），准备迎接用户的下一次输入。
+** @param pid: 子进程的身份证号。
+** @param in/out_fd: 要关闭的文件描述符。
 */
-static int run_external_wait(t_minishell *msh, t_ast *node, int in_fd,
-							 int out_fd)
+static int	handle_parent_wait(t_minishell *msh, pid_t pid, int in_fd,
+		int out_fd)
 {
-	pid_t pid;
-	int st;
+	int	st;
 
+	if (in_fd > STDERR_FILENO)
+		close(in_fd);
+	if (out_fd > STDERR_FILENO)
+		close(out_fd);
 	st = 0;
+	if (waitpid(pid, &st, WUNTRACED) > 0)
+		set_status_from_wait(msh, st);
+	setup_prompt_signals();
+	rl_on_new_line();
+	return (msh->last_exit_status);
+}
+
+/*
+** 这个函数负责运行一个外部命令，并且让父进程停下来等它。
+** 1. 设置好信号（比如忽略 Ctrl+C，防止父进程被误杀）。
+** 2. 尝试分身（fork）：
+** - 如果失败（pid < 0）：报错，关灯（关文件），直接回家（返回错误）。
+** - 如果是孩子（pid == 0）：去执行具体的命令（child_exec_one）。
+** - 如果是父亲（pid > 0）：调用上面的函数，乖乖等待孩子结束。
+*/
+static int	run_external_wait(t_minishell *msh, t_ast *node, int in_fd,
+		int out_fd)
+{
+	pid_t	pid;
+
 	setup_parent_exec_signals();
 	pid = fork();
 	if (pid < 0)
@@ -92,21 +100,13 @@ static int run_external_wait(t_minishell *msh, t_ast *node, int in_fd,
 		setup_child_signals();
 		child_exec_one(msh, node, in_fd, out_fd, node);
 	}
-	if (in_fd > STDERR_FILENO)
-		close(in_fd);
-	if (out_fd > STDERR_FILENO)
-		close(out_fd);
-	if (waitpid(pid, &st, WUNTRACED) > 0)
-		set_status_from_wait(msh, st);
-	setup_prompt_signals();
-	rl_on_new_line();
-	return (msh->last_exit_status);
+	return (handle_parent_wait(msh, pid, in_fd, out_fd));
 }
 
 /*
 ** 函数作用：判断是否必须在父进程执行（会改变父进程状态的 builtin）。
 */
-static int is_builtin_parent(char *cmd)
+static int	is_builtin_parent(char *cmd)
 {
 	if (!cmd)
 		return (0);
@@ -129,9 +129,9 @@ static int is_builtin_parent(char *cmd)
 ** 3) builtin 在父进程执行
 ** 4) 外部命令 fork+wait
 */
-int exec_cmd_node(t_minishell *msh, t_ast *node, int in_fd, int out_fd)
+int	exec_cmd_node(t_minishell *msh, t_ast *node, int in_fd, int out_fd)
 {
-	int ret;
+	int	ret;
 
 	ret = 0;
 	if (!node)
