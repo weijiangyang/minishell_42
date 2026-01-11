@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_pipe_collect.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 16:47:37 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/27 16:51:28 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,18 @@
 ** 返回值：成功 1，失败 0
 */
 
-static int	pipe_resize(ast ***arr, int len, int *cap)
+static int pipe_resize(t_ast ***arr, int len, int *cap)
 {
-	ast	**new_arr;
-	int	new_cap;
-	int	i;
+	t_ast **new_arr;
+	int new_cap;
+	int i;
 
 	new_cap = *cap;
 	if (new_cap == 0)
 		new_cap = 4;
 	else
 		new_cap = new_cap * 2;
-	new_arr = (ast **)malloc(sizeof(**arr) * new_cap);
+	new_arr = (t_ast **)malloc(sizeof(**arr) * new_cap);
 	if (new_arr == NULL)
 		return (0);
 	i = 0;
@@ -50,7 +50,7 @@ static int	pipe_resize(ast ***arr, int len, int *cap)
 ** 参数含义：arr/len/cap(动态数组三件套), node(要加入的命令节点)
 ** 返回值：成功 1，失败 0
 */
-static int	pipe_push(ast ***arr, int *len, int *cap, ast *node)
+static int pipe_push(t_ast ***arr, int *len, int *cap, t_ast *node)
 {
 	if (*len >= *cap)
 		if (!pipe_resize(arr, *len, cap))
@@ -62,10 +62,10 @@ static int	pipe_push(ast ***arr, int *len, int *cap, ast *node)
 
 /*
 ** 函数作用：递归摊平 PIPE 树：a|b|c -> [a,b,c]
-** 参数含义：node(AST 当前节点), arr/len/cap(动态数组三件套)
+** 参数含义：node(t_ast 当前节点), arr/len/cap(动态数组三件套)
 ** 返回值：成功 1，失败 0
 */
-static int	pipe_collect_rec(ast *node, ast ***arr, int *len, int *cap)
+static int pipe_collect_rec(t_ast *node, t_ast ***arr, int *len, int *cap)
 {
 	if (!node)
 		return (1);
@@ -83,11 +83,11 @@ static int	pipe_collect_rec(ast *node, ast ***arr, int *len, int *cap)
 ** 参数含义：root(PIPE 根), out_arr(输出数组), out_n(输出段数)
 ** 返回值：成功 1，失败 0
 */
-int	pipe_collect(ast *root, ast ***out_arr, int *out_n)
+int pipe_collect(t_ast *root, t_ast ***out_arr, int *out_n)
 {
-	ast	**arr;
-	int	len;
-	int	cap;
+	t_ast **arr;
+	int len;
+	int cap;
 
 	arr = NULL;
 	len = 0;

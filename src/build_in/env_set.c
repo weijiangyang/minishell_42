@@ -67,17 +67,17 @@ static t_env *create_env_var(const char *key, const char *value)
  */
 static void add_env_var(t_env **env, t_env *new_var)
 {
-	t_env *last;
+	t_env *lt_ast;
 
 	if (!*env)
 	{
 		*env = new_var;
 		return;
 	}
-	last = *env;
-	while (last->next)
-		last = last->next;
-	last->next = new_var;
+	lt_ast = *env;
+	while (lt_ast->next)
+		lt_ast = lt_ast->next;
+	lt_ast->next = new_var;
 }
 
 /**

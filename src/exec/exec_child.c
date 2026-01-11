@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_child.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 00:15:10 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/09 16:52:56 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 ** 函数作用：判断 path 是否是目录。
 ** 目录不能当可执行文件运行：应报错 "Is a directory"，并返回 126。
 */
-static int	path_is_dir(const char *path)
+static int path_is_dir(const char *path)
 {
-	struct stat	st;
+	struct stat st;
 
 	if (!path)
 		return (0);
@@ -36,14 +36,14 @@ static int	path_is_dir(const char *path)
 ** 只在脚本文件以 "#!" 开头时才打印。
 ** 返回：1 表示已经打印了；0 表示不适用。
 */
-static int	try_print_bad_interpreter(const char *cmd, const char *path,
-		int err)
+static int try_print_bad_interpreter(const char *cmd, const char *path,
+									 int err)
 {
-	int		fd;
-	ssize_t	n;
-	char	buf[200];
-	int		i;
-	int		j;
+	int fd;
+	ssize_t n;
+	char buf[200];
+	int i;
+	int j;
 
 	if (!cmd || !path)
 		return (0);
@@ -76,7 +76,7 @@ static int	try_print_bad_interpreter(const char *cmd, const char *path,
 ** 函数作用：检查 heredoc 是否失败。
 ** 你的项目结构里 heredoc_fd < 0 就表示 heredoc 没准备好/失败。
 */
-static int	has_bad_heredoc(t_redir *r)
+static int has_bad_heredoc(t_redir *r)
 {
 	while (r)
 	{
@@ -90,7 +90,7 @@ static int	has_bad_heredoc(t_redir *r)
 /*
 ** 函数作用：在子进程里关闭 heredoc 的 fd，避免 fd 泄露。
 */
-static void	close_heredoc_fds(t_redir *r)
+static void close_heredoc_fds(t_redir *r)
 {
 	while (r)
 	{
@@ -104,13 +104,13 @@ static void	close_heredoc_fds(t_redir *r)
 }
 
 /*
-** 函数作用：在子进程里关闭“整棵 AST”里所有 heredoc 的 fd。
+** 函数作用：在子进程里关闭“整棵 t_ast”里所有 heredoc 的 fd。
 ** 为什么：pipeline 里其它命令也会继承这些 fd，不关就会在外部程序里看到 fd 泄露。
 */
-static void	close_all_heredoc_fds(ast *node)
+static void close_all_heredoc_fds(t_ast *node)
 {
 	if (!node)
-		return ;
+		return;
 	if (node->type == NODE_CMD)
 		close_heredoc_fds(node->redir);
 	if (node->sub)
@@ -127,12 +127,12 @@ static void	close_all_heredoc_fds(ast *node)
 ** - command not found -> 127
 ** - permission denied / is a directory -> 126
 */
-static void	child_exec_external(t_minishell *msh, ast *node, ast *root)
+static void child_exec_external(t_minishell *msh, t_ast *node, t_ast *root)
 {
-	char	**argv;
-	char	*path;
-	int		err;
-	int		code;
+	char **argv;
+	char *path;
+	int err;
+	int code;
 
 	argv = node->argv;
 	if (!argv || !argv[0])
@@ -166,11 +166,11 @@ static void	child_exec_external(t_minishell *msh, ast *node, ast *root)
 }
 
 // ** 函数作用：子进程执行一个命令节点（包含 builtin / external）。
-void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd,
-		ast *root)
+void child_exec_one(t_minishell *msh, t_ast *node, int in_fd, int out_fd,
+					t_ast *root)
 {
-	int	new_in;
-	int	new_out;
+	int new_in;
+	int new_out;
 
 	if (!msh || !node || node->type != NODE_CMD)
 		ms_child_exit(msh, root, 1);
@@ -178,8 +178,7 @@ void	child_exec_one(t_minishell *msh, ast *node, int in_fd, int out_fd,
 		ms_child_exit(msh, root, 1);
 	new_in = in_fd;
 	new_out = out_fd;
-	if (new_in > STDERR_FILENO && node->argv && node->argv[0]
-		&& is_builtin(node->argv[0]))
+	if (new_in > STDERR_FILENO && node->argv && node->argv[0] && is_builtin(node->argv[0]))
 	{
 		close(new_in);
 		new_in = -1;

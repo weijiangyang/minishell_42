@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   repl_run.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/09 19:23:56 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:30:21 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "repl.h"
 
 /* 返回 1 表示这条命令里真的出现过 heredoc 操作符 <<（不在引号里） */
-static int	lexer_has_heredoc(t_lexer *lx)
+static int lexer_has_heredoc(t_lexer *lx)
 {
 	while (lx)
 	{
@@ -26,9 +26,9 @@ static int	lexer_has_heredoc(t_lexer *lx)
 }
 
 /* 只复制第一行（遇到 '\n' 就截断） */
-static char	*dup_first_line(const char *s)
+static char *dup_first_line(const char *s)
 {
-	size_t	i;
+	size_t i;
 
 	if (!s)
 		return (NULL);
@@ -39,9 +39,9 @@ static char	*dup_first_line(const char *s)
 }
 
 /* 作用：把新读到的一行接在之前没写完的命令后面。 */
-int	repl_join(char **acc, char *line)
+int repl_join(char **acc, char *line)
 {
-	char	*tmp;
+	char *tmp;
 
 	if (!acc || !line)
 		return (0);
@@ -62,50 +62,50 @@ int	repl_join(char **acc, char *line)
 }
 
 /* 作用：执行完后打扫战场，把积累的输入清空。 */
-static void	run_drop_acc(t_minishell *ms, char **acc, int err_code)
+static void run_drop_acc(t_minishell *ms, char **acc, int err_code)
 {
 	if (err_code != 0)
-		ms->last_exit_status = err_code;
+		ms->lt_ast_exit_status = err_code;
 	repl_free_acc(acc);
 	ms->raw_line = NULL;
 	ms->lexer_need_more = 0;
 	ms->lexer_unclosed_quote = 0;
 }
 
-static void	run_one_cmd(t_minishell *ms)
+static void run_one_cmd(t_minishell *ms)
 {
-	ast		*root;
-	t_lexer	*tmp;
+	t_ast *root;
+	t_lexer *tmp;
 
 	tmp = ms->lexer;
 	root = parse_cmdline(&tmp, ms);
 	if (!root)
 	{
-		ms->last_exit_status = 2;
+		ms->lt_ast_exit_status = 2;
 		clear_list(&ms->lexer);
-		return ;
+		return;
 	}
-	ms->cur_ast = root;
+	ms->cur_t_ast = root;
 	if (!prepare_heredocs(root, ms))
 	{
-		ms->cur_ast = NULL;
+		ms->cur_t_ast = NULL;
 		free_ast(root);
 		clear_list(&ms->lexer);
-		return ;
+		return;
 	}
 	change_envp(ms->env, &ms->envp);
-	expander_ast(ms, root);
-	exec_ast(ms, root);
-	ms->cur_ast = NULL;
+	expander_t_ast(ms, root);
+	exec_t_ast(ms, root);
+	ms->cur_t_ast = NULL;
 	free_ast(root);
 	clear_list(&ms->lexer);
 }
 
 /* 作用：判断命令是否写完，完整就去执行，不完整就等下一行。 */
-void	repl_run_acc(t_minishell *ms, char **acc)
+void repl_run_acc(t_minishell *ms, char **acc)
 {
-	int		lex_ret;
-	char	*hist;
+	int lex_ret;
+	char *hist;
 
 	if (!repl_has_text(*acc))
 		return (run_drop_acc(ms, acc, 0));
@@ -114,7 +114,7 @@ void	repl_run_acc(t_minishell *ms, char **acc)
 	if (lex_ret == LEX_NEED_MORE)
 	{
 		ms->raw_line = NULL;
-		return ;
+		return;
 	}
 	if (lex_ret != LEX_OK)
 		return (run_drop_acc(ms, acc, 2));
@@ -138,10 +138,10 @@ void	repl_run_acc(t_minishell *ms, char **acc)
 }
 
 /* 作用：完全释放存命令的内存，防止泄露。 */
-void	repl_free_acc(char **acc)
+void repl_free_acc(char **acc)
 {
 	if (!acc)
-		return ;
+		return;
 	if (*acc)
 		free(*acc);
 	*acc = NULL;

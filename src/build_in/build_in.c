@@ -10,11 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #include "build_in.h"
 #include "minishell.h"
-
 
 /**
  * @brief 检查给定字符串是否匹配 Minishell 支持的内置命令。
@@ -32,7 +29,7 @@
  * * @param cmd 待检查的命令字符串。
  * @return int 如果是内置命令返回 1；否则返回 0。
  */
-int	is_builtin(const char *cmd)
+int is_builtin(const char *cmd)
 {
 	if (!cmd)
 		return (0);
@@ -59,12 +56,12 @@ int	is_builtin(const char *cmd)
  * 1. 基础检查：确保节点、参数数组及命令名均有效。
  * 2. 逻辑分发：通过 ft_strcmp 匹配命令字符串。
  * 3. 状态返回：调用对应的具体实现函数，并将它们的返回值（0 表示成功）向上传递。
- * * @param node 包含命令及其参数 (argv) 的 AST 节点。
+ * * @param node 包含命令及其参数 (argv) 的 t_ast 节点。
  * @param env  指向环境变量链表的指针地址（某些命令如 cd/export 需要修改它）。
  * @param msh  全局上下文，主要用于 exit 命令清理资源。
  * @return int 返回内置命令执行后的退出状态码（0-255）。
  */
-int	exec_builtin(ast *node, t_env **env, t_minishell *msh)
+int exec_builtin(t_ast *node, t_env **env, t_minishell *msh)
 {
 	if (!node || !node->argv || !node->argv[0])
 		return (1);

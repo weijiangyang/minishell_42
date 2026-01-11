@@ -24,15 +24,15 @@
  * @param value 已分配好的变量值字符串指针。
  * @return t_env* 指向新节点的指针，失败则返回 NULL。
  */
-t_env	*env_new(char *key, char *value)
+t_env *env_new(char *key, char *value)
 {
-	t_env	*new_env;
+	t_env *new_env;
 
 	new_env = (t_env *)malloc(sizeof(t_env));
 	if (!new_env)
 		return (NULL);
 	new_env->key = key;
-    new_env->value = value;
+	new_env->value = value;
 	new_env->next = NULL;
 	return (new_env);
 }
@@ -46,21 +46,21 @@ t_env	*env_new(char *key, char *value)
  * @param new_env 待插入的新节点指针。
  */
 
-void	env_add_back(t_env **env, t_env *new_env)
+void env_add_back(t_env **env, t_env *new_env)
 {
-	t_env	*last;
+	t_env *lt_ast;
 
 	if (!env || !new_env)
-		return ;
+		return;
 	if (*env == NULL)
 	{
 		*env = new_env;
-		return ;
+		return;
 	}
-	last = *env;
-	while (last->next)
-		last = last->next;
-	last->next = new_env;
+	lt_ast = *env;
+	while (lt_ast->next)
+		lt_ast = lt_ast->next;
+	lt_ast->next = new_env;
 }
 
 /**
@@ -78,23 +78,23 @@ void	env_add_back(t_env **env, t_env *new_env)
  */
 t_env *init_env(char **envp)
 {
-    t_env *env;
+	t_env *env;
 
-    env = NULL;
-    int     i = 0;
+	env = NULL;
+	int i = 0;
 
-    while (envp[i])
-    {
-        char *equal = strchr(envp[i], '=');
-        if (equal)
-        {
-            char *key = strndup(envp[i], equal - envp[i]);
-            char *value = strdup(equal + 1);
-            env_add_back(&env, env_new(key, value));
-        }
-        i++;
-    }
-    return env;
+	while (envp[i])
+	{
+		char *equal = strchr(envp[i], '=');
+		if (equal)
+		{
+			char *key = strndup(envp[i], equal - envp[i]);
+			char *value = strdup(equal + 1);
+			env_add_back(&env, env_new(key, value));
+		}
+		i++;
+	}
+	return env;
 }
 
 /**
@@ -110,13 +110,12 @@ t_env *init_env(char **envp)
  * @return int 成功返回 0，带参数报错则返回 127。
  */
 int builtin_env(char **argv, t_env *env)
-{ 
-    if (argv[1]) 
-    {
-        ms_put3("env: ", argv[1], " No such file or directory\n");
-        return (127); 
-    }
-    print_env(env);
-    return 0;
+{
+	if (argv[1])
+	{
+		ms_put3("env: ", argv[1], " No such file or directory\n");
+		return (127);
+	}
+	print_env(env);
+	return 0;
 }
-
