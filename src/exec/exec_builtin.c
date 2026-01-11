@@ -3,7 +3,8 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@42.fr>                     +#+  +:+      
+	+#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 15:15:42 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/05 15:15:44 by weiyang          ###   ########.fr       */
@@ -16,7 +17,7 @@
 /*
 ** 函数作用：只关闭“不是标准输入/输出/错误”的 fd，避免误关 stdin/stdout。
 */
-static void close_keep_std(int fd)
+static void	close_keep_std(int fd)
 {
 	if (fd > STDERR_FILENO)
 		close(fd);
@@ -37,13 +38,13 @@ static void close_keep_std(int fd)
  * @param out_fd 初始输出 FD（通常来自管道）。
  * @return int   返回内置命令的退出状态码。
  */
-int run_builtin_parent_logic(t_minishell *msh, t_ast *node, int in_fd,
-							 int out_fd)
+int	run_builtin_parent_logic(t_minishell *msh, t_ast *node, int in_fd,
+		int out_fd)
 {
-	t_fd_save save;
-	int new_in;
-	int new_out;
-	int ret;
+	t_fd_save	save;
+	int			new_in;
+	int			new_out;
+	int			ret;
 
 	ret = 1;
 	if (save_std_fds(&save) != 0)

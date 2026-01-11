@@ -6,13 +6,12 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 04:44:56 by yzhang2           #+#    #+#             */
-/*   Updated: 2025/12/20 16:31:00 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 22:24:02 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "minishell.h"
 #include "lexer.h"
+#include "minishell.h"
 
 // 改了什么
 // 符号 token 改为 add_node(NULL, token, list)（关键修复）
@@ -53,7 +52,8 @@ tok_type	is_token(int c)
 ** 失败返回 -1
 ** 不属于双字符返回 0
 */
-static int	handle_double_token(tok_type tokentype, int next_char, t_lexer **list)
+static int	handle_double_token(tok_type tokentype, int next_char,
+		t_lexer **list)
 {
 	if (tokentype == TOK_REDIR_OUT && is_token(next_char) == TOK_REDIR_OUT)
 	{

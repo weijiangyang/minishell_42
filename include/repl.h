@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   repl.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:16:20 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 18:23:21 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 22:34:17 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,10 @@ void repl_run_acc(t_minishell *ms, char **acc);
 ** 返回：1 表示要退出 shell；0 表示继续循环。
 */
 int repl_step(t_minishell *ms, char **acc);
+
+
+/* repl_utils.c */
+int		lexer_has_heredoc(t_lexer *lx);
+char	*dup_first_line(const char *s);
 
 #endif
