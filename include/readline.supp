@@ -1,0 +1,47 @@
+{
+    readline_all_leaks
+    Memcheck:Leak
+    match-leak-kinds: reachable
+    ...
+    obj:*/libreadline.so.*
+}
+
+{
+    readline_all_leaks_indirect
+    Memcheck:Leak
+    match-leak-kinds: indirect
+    ...
+    obj:*/libreadline.so.*
+}
+
+{
+    tinfo_all_leaks
+    Memcheck:Leak
+    match-leak-kinds: reachable
+    ...
+    obj:*/libtinfo.so.*
+}
+
+{
+    ncurses_all_leaks
+    Memcheck:Leak
+    match-leak-kinds: reachable
+    ...
+    obj:*/libncurses.so.*
+}
+
+{
+    ncursesw_all_leaks
+    Memcheck:Leak
+    match-leak-kinds: reachable
+    ...
+    obj:*/libncursesw.so.*
+}
+
+{
+    history_all_leaks
+    Memcheck:Leak
+    match-leak-kinds: reachable
+    ...
+    obj:*/libhistory.so.*
+}

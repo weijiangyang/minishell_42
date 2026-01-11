@@ -39,9 +39,11 @@ typedef struct s_minishell
 	char						lexer_unclosed_quote;
 	int							lexer_need_more;
 
-	char						**envp;
-	char						**paths;
-}								t_minishell;
+
+	char	**envp;
+	char	**paths;
+	int		lineno;
+}	t_minishell;
 
 void							ms_clear(t_minishell *ms);
 

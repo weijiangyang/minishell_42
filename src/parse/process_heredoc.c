@@ -112,6 +112,7 @@ static int	read_and_process_line(char **full_line, const char *delimiter,
 {
 	char	*line;
 
+
 	line = get_next_line(STDIN_FILENO);
 	if (g_signal == SIGINT)
 	{
@@ -133,6 +134,7 @@ static int	read_and_process_line(char **full_line, const char *delimiter,
 			quoted))
 		return (2);
 	return (0);
+
 }
 
 /**
