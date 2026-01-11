@@ -112,38 +112,7 @@ static int	read_and_process_line(char **full_line, const char *delimiter,
 {
 	char	*line;
 
-<<<<<<< HEAD
-    line = get_next_line(STDIN_FILENO);
-    if (g_signal == SIGINT)
-    {
-        free(line);
-        free(*full_line);
-        write(1, "\n", 1);
-        return -1;
-    }
-    if (!line && *full_line == NULL)
-    {
-        write(1, "\n", 1);
-        ft_putchar_fd("minishell: warning: here-document at line ", 2);
-        
-        char *b = "delimited by end-of-file('want of )";
-        const char *c = delimiter;
 
-        ms_put3(a, b,c);
-        return 1;
-    }
-        
-    if (!line)
-    {
-        line = *full_line;
-        *full_line = NULL;
-    }
-    else if (*full_line)
-        line = join_full_line(*full_line, line);
-    if (process_heredoc_line(&line, full_line, delimiter, write_fd, msh, quoted))
-        return 2;
-    return 0;
-=======
 	line = get_next_line(STDIN_FILENO);
 	if (g_signal == SIGINT)
 	{
@@ -165,7 +134,7 @@ static int	read_and_process_line(char **full_line, const char *delimiter,
 			quoted))
 		return (2);
 	return (0);
->>>>>>> main
+
 }
 
 /**

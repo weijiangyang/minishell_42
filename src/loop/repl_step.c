@@ -18,6 +18,11 @@ static int	handle_interruption(t_minishell *ms, char **acc, char *line)
 {
 	ms->last_exit_status = 130;
 	g_signal = 0;
+	if (!line)
+	{
+		ms_clear(ms);
+		exit(ms->last_exit_status);
+	}
 	if (line)
 		free(line);
 	if (acc && *acc)
