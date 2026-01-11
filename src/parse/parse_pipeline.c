@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:17:29 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/11 18:29:19 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ static t_ast *parse_pipeline_1(t_lexer **cur, t_ast **left, int *n_pipes,
 		if (!right)
 		{
 			ms_err_syntax_unexpected("newline");
-			minishell->lt_ast_exit_status = 2;
+			minishell->last_exit_status = 2;
 			return (free_ast(*left), NULL);
 		}
 		node = create_pipe_node(*left, right, n_pipes);

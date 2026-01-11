@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:44 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,14 @@ static int handle_child_exit(int status, int pipefd[2], t_redir *redir,
 		}
 		close(pipefd[0]);
 		redir->heredoc_fd = -1;
-		shell->lt_ast_exit_status = code;
+		shell->last_exit_status = code;
 		return (-1);
 	}
 	else if (WIFSIGNALED(status))
 	{
 		close(pipefd[0]);
 		redir->heredoc_fd = -1;
-		shell->lt_ast_exit_status = 128 + WTERMSIG(status);
+		shell->last_exit_status = 128 + WTERMSIG(status);
 		return (-1);
 	}
 	redir->heredoc_fd = pipefd[0];

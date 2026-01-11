@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 18:30:21 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int repl_join(char **acc, char *line)
 static void run_drop_acc(t_minishell *ms, char **acc, int err_code)
 {
 	if (err_code != 0)
-		ms->lt_ast_exit_status = err_code;
+		ms->last_exit_status = err_code;
 	repl_free_acc(acc);
 	ms->raw_line = NULL;
 	ms->lexer_need_more = 0;
@@ -81,7 +81,7 @@ static void run_one_cmd(t_minishell *ms)
 	root = parse_cmdline(&tmp, ms);
 	if (!root)
 	{
-		ms->lt_ast_exit_status = 2;
+		ms->last_exit_status = 2;
 		clear_list(&ms->lexer);
 		return;
 	}

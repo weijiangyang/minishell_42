@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:20:01 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static int ms_initial_system(t_minishell *ms, char **envp)
 	ms->cur_t_ast = NULL;
 	ms->raw_line = NULL;
 	ms->should_exit = 0;
-	ms->lt_ast_exit_status = 0;
+	ms->last_exit_status = 0;
 	ms->lexer_need_more = 0;
 	ms->lexer_unclosed_quote = 0;
 	if (!ms_initial_env(ms, envp))
@@ -85,5 +85,5 @@ int main(int argc, char **argv, char **envp)
 	}
 	repl_loop(&ms);
 	ms_clear(&ms);
-	return (ms.lt_ast_exit_status);
+	return (ms.last_exit_status);
 }

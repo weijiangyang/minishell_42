@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:24:07 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static long to_long(const char *s)
  * - 非数字参数：如果第一个参数不是数字，报错并以状态码 2 退出。
  * - 参数过多：如果有超过一个参数，报错并不退出（保持 Shell 运行）。
  * 3. 状态码转换：将字符串参数转换为 long，并截断为 unsigned char (0-255)。
- * 4. 默认行为：若无参数，则以最近一次命令的退出状态 (lt_ast_exit_status) 退出。
+ * 4. 默认行为：若无参数，则以最近一次命令的退出状态 (last_exit_status) 退出。
  * * @param argv 命令参数数组。
  * @param msh  全局上下文，用于获取最后的退出状态。
  * @return int 仅在参数过多不退出时返回 1。
@@ -92,7 +92,7 @@ int builtin_exit(char **argv, t_minishell *msh)
 			ret = 2;
 			if (msh)
 			{
-				msh->lt_ast_exit_status = ret;
+				msh->last_exit_status = ret;
 				msh->exit_code = ret;
 				msh->should_exit = 1;
 			}
@@ -103,7 +103,7 @@ int builtin_exit(char **argv, t_minishell *msh)
 		{
 			ms_put3("minishell: exit: ", "too many arguments", "\n");
 			if (msh)
-				msh->lt_ast_exit_status = 1;
+				msh->last_exit_status = 1;
 			return (1);
 		}
 		code = to_long(argv[1]);
@@ -111,12 +111,12 @@ int builtin_exit(char **argv, t_minishell *msh)
 	}
 	else
 	{
-		ret = (msh != NULL) ? msh->lt_ast_exit_status : 0;
+		ret = (msh != NULL) ? msh->last_exit_status : 0;
 	}
 	/* 只有真的要退出时，交给外层 loop 收尾 */
 	if (msh)
 	{
-		msh->lt_ast_exit_status = ret;
+		msh->last_exit_status = ret;
 		msh->exit_code = ret;
 		msh->should_exit = 1;
 	}

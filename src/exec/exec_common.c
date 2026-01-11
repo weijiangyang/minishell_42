@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 19:07:52 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void set_status_from_wait(t_minishell *msh, int status)
 {
 	if (WIFEXITED(status))
 	{
-		msh->lt_ast_exit_status = WEXITSTATUS(status);
+		msh->last_exit_status = WEXITSTATUS(status);
 	}
 	else if (WIFSIGNALED(status))
 	{
@@ -100,7 +100,7 @@ void set_status_from_wait(t_minishell *msh, int status)
 			write(1, "Quit (core dumped)\n", 19);
 		else if (sig == SIGINT)
 			write(1, "\n", 1);
-		msh->lt_ast_exit_status = 128 + sig;
+		msh->last_exit_status = 128 + sig;
 	}
 	else if (WIFSTOPPED(status))
 	{
@@ -109,7 +109,7 @@ void set_status_from_wait(t_minishell *msh, int status)
 		write(1, "\n", 1);
 		// 2. 告诉用户进程已停止（模拟真实 Shell）
 		printf("[1]+  Stopped\n");
-		msh->lt_ast_exit_status = 128 + WSTOPSIG(status);
+		msh->last_exit_status = 128 + WSTOPSIG(status);
 	}
 }
 /*
@@ -128,7 +128,7 @@ int wait_pair_set_right(t_minishell *msh, pid_t left, pid_t right)
 		if (waitpid(right, &st, 0) > 0)
 			set_status_from_wait(msh, st);
 		else
-			msh->lt_ast_exit_status = 1;
+			msh->last_exit_status = 1;
 	}
-	return (msh->lt_ast_exit_status);
+	return (msh->last_exit_status);
 }

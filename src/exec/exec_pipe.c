@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:27:46 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,6 @@ int exec_pipe_node(t_minishell *msh, t_ast *node, int in_fd, int out_fd)
 		close(ctx.in_fd);
 	wait_all_and_set_lt_ast(msh, ctx.pids, done);
 	if (!ok)
-		msh->lt_ast_exit_status = 1;
-	return (free(ctx.pids), free(ctx.arr), msh->lt_ast_exit_status);
+		msh->last_exit_status = 1;
+	return (free(ctx.pids), free(ctx.arr), msh->last_exit_status);
 }

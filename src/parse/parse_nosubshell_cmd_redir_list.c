@@ -64,8 +64,8 @@ static int has_no_argv_and_no_redir(t_cmd *argv_cmd, t_redir *redir, t_minishell
 {
 	if (!argv_cmd && !redir)
 	{
-		if (minishell->lt_ast_exit_status != 130)
-			minishell->lt_ast_exit_status = 2;
+		if (minishell->last_exit_status != 130)
+			minishell->last_exit_status = 2;
 		return 1;
 	}
 	return 0;

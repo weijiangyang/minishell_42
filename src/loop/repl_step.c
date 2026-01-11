@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:19:45 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
 /* 作用：当用户按了 Ctrl+C 时，负责清空当前正在写的半截命令。 */
 static int handle_interruption(t_minishell *ms, char **acc, char *line)
 {
-	ms->lt_ast_exit_status = 130;
+	ms->last_exit_status = 130;
 	g_signal = 0;
 	if (!line)
 	{
 		ms_clear(ms);
-		exit(ms->lt_ast_exit_status);
+		exit(ms->last_exit_status);
 	}
 	if (line)
 		free(line);
@@ -47,7 +47,7 @@ static int step_eof_more(t_minishell *ms, char **acc)
 	// 3. 状态维护
 	if (ms)
 	{
-		ms->lt_ast_exit_status = 258;
+		ms->last_exit_status = 258;
 		ms->raw_line = NULL;
 	}
 	if (acc && *acc)

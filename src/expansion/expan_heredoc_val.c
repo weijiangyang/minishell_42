@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:20:22 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static char *handle_status(t_minishell *ms, char *result, int *step)
 {
 	char *value;
 
-	value = ft_itoa(ms->lt_ast_exit_status);
+	value = ft_itoa(ms->last_exit_status);
 	if (!value)
 		return (result);
 	result = ft_strjoin_free(result, value);

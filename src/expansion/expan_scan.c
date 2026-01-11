@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:32:58 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 18:20:12 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int handle_special_exp(t_exp_data *data, const char *s, int j)
 	if (s[j + 1] == '?')
 	{
 		if (data->minishell)
-			status = data->minishell->lt_ast_exit_status;
+			status = data->minishell->last_exit_status;
 		tmp = ft_itoa(status);
 		if (!tmp)
 			return (2);

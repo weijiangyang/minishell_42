@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 15:21:40 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 18:23:02 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef struct s_minishell
 
 	char *raw_line;
 	int n_pipes;
-	int lt_ast_exit_status;
+	int last_exit_status;
 	int should_exit;
 	int exit_code;
 
