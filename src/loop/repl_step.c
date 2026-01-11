@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   repl_step.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:19:45 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 19:20:43 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:07:19 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 #include "repl.h"
 
 /* 作用：当用户按了 Ctrl+C 时，负责清空当前正在写的半截命令。 */
-static int	handle_interruption(t_minishell *ms, char **acc, char *line)
+static int handle_interruption(t_minishell *ms, char **acc, char *line)
 {
-	ms->last_exit_status = 130;
+	ms->lt_ast_exit_status = 130;
 	g_signal = 0;
 	if (!line)
 	{
 		ms_clear(ms);
-		exit(ms->last_exit_status);
+		exit(ms->lt_ast_exit_status);
 	}
 	if (line)
 		free(line);
@@ -34,9 +34,9 @@ static int	handle_interruption(t_minishell *ms, char **acc, char *line)
 }
 
 /* 作用：如果引号没写完就断掉了，给用户报个错。 */
-static int	step_eof_more(t_minishell *ms, char **acc)
+static int step_eof_more(t_minishell *ms, char **acc)
 {
-	char	q;
+	char q;
 
 	// 1. 确定是哪种引号没闭合
 	q = '"';
@@ -47,7 +47,7 @@ static int	step_eof_more(t_minishell *ms, char **acc)
 	// 3. 状态维护
 	if (ms)
 	{
-		ms->last_exit_status = 258;
+		ms->lt_ast_exit_status = 258;
 		ms->raw_line = NULL;
 	}
 	if (acc && *acc)
@@ -59,7 +59,7 @@ static int	step_eof_more(t_minishell *ms, char **acc)
 }
 
 /* 作用：处理各种输入突然中止的情况。 */
-static int	step_handle_eof(t_minishell *ms, char **acc)
+static int step_handle_eof(t_minishell *ms, char **acc)
 {
 	if (!acc || *acc == NULL)
 	{
@@ -71,10 +71,10 @@ static int	step_handle_eof(t_minishell *ms, char **acc)
 }
 
 /* 作用：走一小步：读入一行，看看是执行还是继续读。 */
-int	repl_step(t_minishell *ms, char **acc)
+int repl_step(t_minishell *ms, char **acc)
 {
-	char	*line;
-	int		ok;
+	char *line;
+	int ok;
 
 	line = repl_read(*acc);
 	if (g_signal == SIGINT)

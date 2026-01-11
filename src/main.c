@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:20:01 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/09 00:57:28 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:07:19 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 /*
 ** 作用：向屏幕报告错误。
 */
-static void	ms_report_error(const char *s)
+static void ms_report_error(const char *s)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while (s[i])
@@ -29,7 +29,7 @@ static void	ms_report_error(const char *s)
 /*
 ** 作用：把电脑里的环境变量拿到程序里用。
 */
-static int	ms_initial_env(t_minishell *ms, char **envp)
+static int ms_initial_env(t_minishell *ms, char **envp)
 {
 	ms->env = init_env(envp);
 	if (!ms->env)
@@ -44,16 +44,16 @@ static int	ms_initial_env(t_minishell *ms, char **envp)
 /*
 ** 作用：给程序做准备工作，清空旧数据并设置新起点。
 */
-static int	ms_initial_system(t_minishell *ms, char **envp)
+static int ms_initial_system(t_minishell *ms, char **envp)
 {
 	ms->env = NULL;
 	ms->envp = NULL;
 	ms->paths = NULL;
 	ms->lexer = NULL;
-	ms->cur_ast = NULL;
+	ms->cur_t_ast = NULL;
 	ms->raw_line = NULL;
 	ms->should_exit = 0;
-	ms->last_exit_status = 0;
+	ms->lt_ast_exit_status = 0;
 	ms->lexer_need_more = 0;
 	ms->lexer_unclosed_quote = 0;
 	if (!ms_initial_env(ms, envp))
@@ -66,9 +66,9 @@ static int	ms_initial_system(t_minishell *ms, char **envp)
 /*
 ** 作用：程序的大门。负责检查参数、启动循环，最后打扫卫生。
 */
-int	main(int argc, char **argv, char **envp)
+int main(int argc, char **argv, char **envp)
 {
-	t_minishell	ms;
+	t_minishell ms;
 
 	(void)argv;
 	if (argc != 1)
@@ -85,5 +85,5 @@ int	main(int argc, char **argv, char **envp)
 	}
 	repl_loop(&ms);
 	ms_clear(&ms);
-	return (ms.last_exit_status);
+	return (ms.lt_ast_exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:18:44 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:07:19 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
  * @param shell   指向全局结构体，用于获取环境变量（用于展开）。
  * @param pipefd  已打开的管道文件描述符数组。
  */
-static void	heredoc_fork_child(t_redir *redir, t_minishell *shell,
-		int pipefd[2])
+static void heredoc_fork_child(t_redir *redir, t_minishell *shell,
+							   int pipefd[2])
 {
-	int	result;
+	int result;
 
 	setup_heredoc_signals();
 	close(pipefd[0]);
@@ -40,10 +40,10 @@ static void	heredoc_fork_child(t_redir *redir, t_minishell *shell,
 	if (result < 0)
 	{
 		close(pipefd[1]);
-		ms_child_exit(shell, shell->cur_ast, 130);
+		ms_child_exit(shell, shell->cur_t_ast, 130);
 	}
 	close(pipefd[1]);
-	ms_child_exit(shell, shell->cur_ast, 0);
+	ms_child_exit(shell, shell->cur_t_ast, 0);
 }
 
 /**
@@ -56,7 +56,7 @@ static void	heredoc_fork_child(t_redir *redir, t_minishell *shell,
  * @param status 指向存储退出状态信息的整数指针。
  * @return int   成功返回 0；发生非中断类的系统错误返回 -1。
  */
-static int	wait_for_child(pid_t pid, int *status)
+static int wait_for_child(pid_t pid, int *status)
 {
 	while (waitpid(pid, status, 0) == -1)
 	{
@@ -80,10 +80,10 @@ static int	wait_for_child(pid_t pid, int *status)
  * @param shell   指向全局结构体，用于更新最后一次执行的状态码。
  * @return int    成功返回 0；失败或被信号中断返回 -1。
  */
-static int	handle_child_exit(int status, int pipefd[2], t_redir *redir,
-		t_minishell *shell)
+static int handle_child_exit(int status, int pipefd[2], t_redir *redir,
+							 t_minishell *shell)
 {
-	int	code;
+	int code;
 
 	if (WIFEXITED(status))
 	{
@@ -95,14 +95,14 @@ static int	handle_child_exit(int status, int pipefd[2], t_redir *redir,
 		}
 		close(pipefd[0]);
 		redir->heredoc_fd = -1;
-		shell->last_exit_status = code;
+		shell->lt_ast_exit_status = code;
 		return (-1);
 	}
 	else if (WIFSIGNALED(status))
 	{
 		close(pipefd[0]);
 		redir->heredoc_fd = -1;
-		shell->last_exit_status = 128 + WTERMSIG(status);
+		shell->lt_ast_exit_status = 128 + WTERMSIG(status);
 		return (-1);
 	}
 	redir->heredoc_fd = pipefd[0];
@@ -122,10 +122,10 @@ static int	handle_child_exit(int status, int pipefd[2], t_redir *redir,
  * @param shell   指向全局结构体，用于获取/更新环境变量及状态。
  * @return int    成功且完成输入返回 0；子进程出错或被信号中断返回 -1。
  */
-static int	heredoc_parent(pid_t pid, int pipefd[2], t_redir *redir,
-		t_minishell *shell)
+static int heredoc_parent(pid_t pid, int pipefd[2], t_redir *redir,
+						  t_minishell *shell)
 {
-	int	status;
+	int status;
 
 	close(pipefd[1]);
 	ignore_heredoc_signals();
@@ -147,12 +147,12 @@ static int	heredoc_parent(pid_t pid, int pipefd[2], t_redir *redir,
  * @param shell 指向全局上下文结构体。
  * @return int   成功读取并准备好 fd 返回 0；发生错误或被中断返回 -1。
  */
-int	handle_heredoc(t_redir *redir, t_minishell *shell)
+int handle_heredoc(t_redir *redir, t_minishell *shell)
 {
-	int				pipefd[2];
-	pid_t			pid;
-	t_saved_signals	saved;
-	int				ret;
+	int pipefd[2];
+	pid_t pid;
+	t_saved_signals saved;
+	int ret;
 
 	save_signals(&saved);
 	if (pipe(pipefd) < 0)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_life.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 02:48:36 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 18:10:06 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:07:19 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void	ms_child_exit(t_minishell *msh, ast *root, int code)
+void ms_child_exit(t_minishell *msh, t_ast *root, int code)
 {
 	if (root)
-		free_ast(root);
+		free_t_ast(root);
 	ms_clear(msh);
 	exit(code);
 }

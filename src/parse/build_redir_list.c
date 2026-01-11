@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #include "minishell.h"
 #include "parse.h"
 /**
@@ -98,7 +96,7 @@ static int consume_redir_pair(t_lexer **cur, t_lexer **op, t_lexer **filetok,
 	{
 		ft_putstr_fd("minishell: syntax error near unexpected token\n", 2);
 		if (ms)
-			ms->last_exit_status = 2;
+			ms->lt_ast_exit_status = 2;
 		return (0);
 	}
 	return (1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 23:59:59 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:07:19 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int has_bad_heredoc(t_redir *r)
 ** - 不执行任何命令；成功返回 0，失败返回 1（更贴近 minishell 行为）。
 ** - 同时把传进来的 in_fd/out_fd（若非标准 fd）关闭，避免父进程泄露。
 */
-static int run_redir_only_parent(t_minishell *msh, ast *node, int in_fd,
+static int run_redir_only_parent(t_minishell *msh, t_ast *node, int in_fd,
 								 int out_fd)
 {
 	int new_in;
@@ -57,18 +57,18 @@ static int run_redir_only_parent(t_minishell *msh, ast *node, int in_fd,
 		close(in_fd);
 	if (out_fd > STDERR_FILENO)
 		close(out_fd);
-	msh->last_exit_status = ret;
+	msh->lt_ast_exit_status = ret;
 	return (ret);
 }
 
 /*
 ** 函数作用：
 ** 执行外部命令：fork 出子进程去 execve，父进程负责关闭 fd 和 wait。
-** wait 结束后，把子进程的退出码写回 msh->last_exit_status。
+** wait 结束后，把子进程的退出码写回 msh->lt_ast_exit_status。
 ** 关键修复：
 ** - fork() 失败时，关闭传进来的 in_fd/out_fd（非 STD），避免父进程泄露。
 */
-static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
+static int run_external_wait(t_minishell *msh, t_ast *node, int in_fd,
 							 int out_fd)
 {
 	pid_t pid;
@@ -84,7 +84,7 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 			close(in_fd);
 		if (out_fd > STDERR_FILENO)
 			close(out_fd);
-		msh->last_exit_status = 1;
+		msh->lt_ast_exit_status = 1;
 		return (1);
 	}
 	if (pid == 0)
@@ -100,7 +100,7 @@ static int run_external_wait(t_minishell *msh, ast *node, int in_fd,
 		set_status_from_wait(msh, st);
 	setup_prompt_signals();
 	rl_on_new_line();
-	return (msh->last_exit_status);
+	return (msh->lt_ast_exit_status);
 }
 
 /*
@@ -129,7 +129,7 @@ static int is_builtin_parent(char *cmd)
 ** 3) builtin 在父进程执行
 ** 4) 外部命令 fork+wait
 */
-int exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
+int exec_cmd_node(t_minishell *msh, t_ast *node, int in_fd, int out_fd)
 {
 	int ret;
 
@@ -138,7 +138,7 @@ int exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 		return (0);
 	if (has_bad_heredoc(node->redir))
 	{
-		ret = msh->last_exit_status;
+		ret = msh->lt_ast_exit_status;
 		return (ret);
 	}
 	if (!node->argv || !node->argv[0])
@@ -146,7 +146,7 @@ int exec_cmd_node(t_minishell *msh, ast *node, int in_fd, int out_fd)
 	if (is_builtin_parent(node->argv[0]))
 	{
 		ret = run_builtin_parent_logic(msh, node, in_fd, out_fd);
-		msh->last_exit_status = ret;
+		msh->lt_ast_exit_status = ret;
 		return (ret);
 	}
 	ensure_paths_ready(msh);

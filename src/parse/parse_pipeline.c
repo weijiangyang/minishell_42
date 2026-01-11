@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:17:29 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:07:19 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,41 +24,41 @@
  */
 static int check_consecutive_pipes(t_lexer **cur)
 {
-    t_lexer *pt;
+	t_lexer *pt;
 
-    pt = peek_token(cur);
-    if (pt && pt->next && pt->next->tokentype == TOK_PIPE)
-    {
-        ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
-        return (-1);
-    }
-    return 0;
+	pt = peek_token(cur);
+	if (pt && pt->next && pt->next->tokentype == TOK_PIPE)
+	{
+		ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
+		return (-1);
+	}
+	return 0;
 }
 
 /**
- * @brief 创建并初始化一个管道类型的 AST 节点。
+ * @brief 创建并初始化一个管道类型的 t_ast 节点。
  * * 该函数用于构建树状结构的中间节点：
- * 1. 分配 ast 结构体的内存并清零。
+ * 1. 分配 t_ast 结构体的内存并清零。
  * 2. 设置节点类型为 NODE_PIPE。
  * 3. 建立父子关系：将左侧分支（通常是已解析的命令）和右侧分支连接到该节点。
  * 4. 计数器递增：更新 pipeline 中管道的总数，用于后续执行器分配管道数组。
  * * @param left    指向管道左侧子树的指针。
  * @param right   指向管道右侧子树的指针。
  * @param n_pipes 指向管道计数器的指针，用于统计整行命令中的管道数量。
- * @return ast* 成功则返回新创建的管道节点；分配失败返回 NULL。
+ * @return t_ast* 成功则返回新创建的管道节点；分配失败返回 NULL。
  */
-static ast *create_pipe_node(ast *left, ast *right, int *n_pipes)
+static t_ast *create_pipe_node(t_ast *left, t_ast *right, int *n_pipes)
 {
-    ast *node;
+	t_ast *node;
 
-    node = ft_calloc(1, sizeof(ast));
-    if (!node)
-        return NULL;
-    node->type = NODE_PIPE;
-    node->left = left;
-    node->right = right;
-    (*n_pipes)++;
-    return node;
+	node = ft_calloc(1, sizeof(t_ast));
+	if (!node)
+		return NULL;
+	node->type = NODE_PIPE;
+	node->left = left;
+	node->right = right;
+	(*n_pipes)++;
+	return node;
 }
 
 /**
@@ -73,32 +73,32 @@ static ast *create_pipe_node(ast *left, ast *right, int *n_pipes)
  * @param left       指向当前已构建好的左侧子树指针的地址。
  * @param n_pipes    指向管道总计数器的指针。
  * @param minishell  指向全局上下文结构体。
- * @return ast* 返回构建完成的管道线 AST 根节点；解析失败则返回 NULL。
+ * @return t_ast* 返回构建完成的管道线 t_ast 根节点；解析失败则返回 NULL。
  */
-static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes,
-        t_minishell *minishell)
+static t_ast *parse_pipeline_1(t_lexer **cur, t_ast **left, int *n_pipes,
+							   t_minishell *minishell)
 {
-    ast *right;
-    ast *node;
+	t_ast *right;
+	t_ast *node;
 
-    while (peek_token(cur) && peek_token(cur)->tokentype == TOK_PIPE)
-    {
-        if (check_consecutive_pipes(cur) == -1)
-            return (free_ast(*left), NULL);
-        consume_token(cur);
-        right = parse_simple_cmd_redir_list(cur, minishell);
-        if (!right)
-        {
-            ms_err_syntax_unexpected("newline");
-            minishell->last_exit_status = 2;
-            return (free_ast(*left), NULL);
-        }
-        node = create_pipe_node(*left, right, n_pipes);
-        if (!node)
-            return (free_ast(*left),free_ast(right), NULL);
-        *left = node;
-    }
-    return *left;
+	while (peek_token(cur) && peek_token(cur)->tokentype == TOK_PIPE)
+	{
+		if (check_consecutive_pipes(cur) == -1)
+			return (free_t_ast(*left), NULL);
+		consume_token(cur);
+		right = parse_simple_cmd_redir_list(cur, minishell);
+		if (!right)
+		{
+			ms_err_syntax_unexpected("newline");
+			minishell->lt_ast_exit_status = 2;
+			return (free_t_ast(*left), NULL);
+		}
+		node = create_pipe_node(*left, right, n_pipes);
+		if (!node)
+			return (free_t_ast(*left), free_t_ast(right), NULL);
+		*left = node;
+	}
+	return *left;
 }
 
 /**
@@ -110,27 +110,27 @@ static ast *parse_pipeline_1(t_lexer **cur, ast **left, int *n_pipes,
  * 4. 计数同步：解析完成后，将统计到的管道总数 (n_pipes) 存入全局结构体供执行器使用。
  * * @param cur        指向当前词法 Token 流指针的地址。
  * @param minishell  指向全局上下文结构体。
- * @return ast* 返回构建完整的管道线 AST 根节点；若解析失败或语法错误则返回 NULL。
+ * @return t_ast* 返回构建完整的管道线 t_ast 根节点；若解析失败或语法错误则返回 NULL。
  */
-ast *parse_pipeline(t_lexer **cur, t_minishell *minishell)
+t_ast *parse_pipeline(t_lexer **cur, t_minishell *minishell)
 {
-    ast *left;
-    int n_pipes;
+	t_ast *left;
+	int n_pipes;
 
-    if (peek_token(cur) && peek_token(cur)->tokentype == TOK_PIPE)
-    {
-        ft_putstr_fd(
-            "minishell: syntax error near unexpected token `|'\n",
-            STDERR_FILENO);
-        return NULL;
-    }
-    left = parse_simple_cmd_redir_list(cur, minishell);
-    if (!left)
-        return NULL;
-    n_pipes = 0;
-    ast *result = parse_pipeline_1(cur, &left, &n_pipes, minishell);
-    if (!result)
-        return NULL;
-    minishell->n_pipes = n_pipes;
-    return result;
+	if (peek_token(cur) && peek_token(cur)->tokentype == TOK_PIPE)
+	{
+		ft_putstr_fd(
+			"minishell: syntax error near unexpected token `|'\n",
+			STDERR_FILENO);
+		return NULL;
+	}
+	left = parse_simple_cmd_redir_list(cur, minishell);
+	if (!left)
+		return NULL;
+	n_pipes = 0;
+	t_ast *result = parse_pipeline_1(cur, &left, &n_pipes, minishell);
+	if (!result)
+		return NULL;
+	minishell->n_pipes = n_pipes;
+	return result;
 }

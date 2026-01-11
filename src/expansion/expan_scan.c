@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expan_scan.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:32:58 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 19:49:36 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/11 18:07:19 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 ** 参数：a(会被 free), b(只读)
 ** 返回：新字符串；失败返回 NULL
 */
-char	*str_join_free(char *a, const char *b)
+char *str_join_free(char *a, const char *b)
 {
-	char	*res;
+	char *res;
 
 	res = NULL;
 	if (!a && !b)
@@ -39,17 +39,17 @@ char	*str_join_free(char *a, const char *b)
 ** 参数：data(上下文), s(源串), j(当前位置)
 ** 返回：消费的字符数（0 表示没处理）
 */
-static int	handle_special_exp(t_exp_data *data, const char *s, int j)
+static int handle_special_exp(t_exp_data *data, const char *s, int j)
 {
-	char	*tmp;
-	int		status;
+	char *tmp;
+	int status;
 
 	tmp = NULL;
 	status = 0;
 	if (s[j + 1] == '?')
 	{
 		if (data->minishell)
-			status = data->minishell->last_exit_status;
+			status = data->minishell->lt_ast_exit_status;
 		tmp = ft_itoa(status);
 		if (!tmp)
 			return (2);
@@ -67,10 +67,10 @@ static int	handle_special_exp(t_exp_data *data, const char *s, int j)
 ** 参数：data(上下文), s(源串), j(当前位置)
 ** 返回：消费的字符数
 */
-static int	handle_var_exp(t_exp_data *data, const char *s, int j)
+static int handle_var_exp(t_exp_data *data, const char *s, int j)
 {
-	int		len;
-	char	*tmp;
+	int len;
+	char *tmp;
 
 	len = 0;
 	tmp = NULL;
@@ -91,9 +91,9 @@ static int	handle_var_exp(t_exp_data *data, const char *s, int j)
 ** 参数：data(上下文), s(源串), j(当前位置), q(引号状态)
 ** 返回：消费的字符数
 */
-int	scan_expand_one(t_exp_data *data, const char *s, int j, enum qstate q)
+int scan_expand_one(t_exp_data *data, const char *s, int j, enum qstate q)
 {
-	int	res;
+	int res;
 
 	res = 0;
 	if (q == Q_SQ)
