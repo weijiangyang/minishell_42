@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   build_redir_list.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:18:45 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/05 13:18:51 by weiyang          ###   ########.fr       */

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   free_env_chars.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 14:43:59 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/05 14:44:02 by weiyang          ###   ########.fr       */

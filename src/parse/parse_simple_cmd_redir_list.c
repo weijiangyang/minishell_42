@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   parse_simple_cmd_redir_list.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:19:10 by weiyang           #+#    #+#             */
 /*   Updated: 2025/12/22 15:19:13 by weiyang          ###   ########.fr       */

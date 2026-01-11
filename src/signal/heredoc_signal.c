@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_signal.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang<weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:19:41 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */

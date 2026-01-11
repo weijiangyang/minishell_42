@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   free_ast_tokens.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:28:05 by weiyang           #+#    #+#             */
 /*   Updated: 2025/11/11 17:28:18 by weiyang          ###   ########.fr       */

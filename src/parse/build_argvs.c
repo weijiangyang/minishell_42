@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   build_argvs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:52:27 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/05 13:52:30 by weiyang          ###   ########.fr       */
