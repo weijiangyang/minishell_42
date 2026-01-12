@@ -42,6 +42,14 @@ typedef struct s_pipe_ctx
 	int				in_fd;
 	int				out_fd;
 }					t_pipe_ctx;
+typedef struct s_exec_ctx
+{
+	t_minishell		*msh;
+	t_ast			*node;
+	t_ast			*root;
+	int				in_fd;
+	int				out_fd;
+}					t_exec_ctx;
 
 int					exec_t_ast(t_minishell *msh, t_ast *root);
 int					exec_cmd_root(t_minishell *msh, t_ast *node);
@@ -51,8 +59,7 @@ int					exec_cmd_node(t_minishell *msh, t_ast *node, int in_fd,
 int					exec_pipe_node(t_minishell *msh, t_ast *node, int in_fd,
 						int out_fd);
 int					pipe_collect(t_ast *root, t_ast ***out_arr, int *out_n);
-void				child_exec_one(t_minishell *msh, t_ast *node, int in_fd,
-						int out_fd, t_ast *root);
+void				child_exec_one(t_exec_ctx *ctx);
 int					apply_redir_list(t_redir *r, int *in_fd, int *out_fd);
 int					dup_in_out_or_close(int in_fd, int out_fd);
 int					exec_refresh_paths(t_minishell *msh);

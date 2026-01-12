@@ -78,10 +78,11 @@ static int	handle_parent_wait(t_minishell *msh, pid_t pid, int in_fd,
 ** - 如果是孩子（pid == 0）：去执行具体的命令（child_exec_one）。
 ** - 如果是父亲（pid > 0）：调用上面的函数，乖乖等待孩子结束。
 */
-static int	run_external_wait(t_minishell *msh, t_ast *node, int in_fd,
-		int out_fd)
+static int	run_external_wait(t_minishell *msh, t_ast *node,
+		int in_fd, int out_fd)
 {
-	pid_t	pid;
+	pid_t		pid;
+	t_exec_ctx	ctx_exec;
 
 	setup_parent_exec_signals();
 	pid = fork();
@@ -98,10 +99,16 @@ static int	run_external_wait(t_minishell *msh, t_ast *node, int in_fd,
 	if (pid == 0)
 	{
 		setup_child_signals();
-		child_exec_one(msh, node, in_fd, out_fd, node);
+		ctx_exec.msh = msh;
+		ctx_exec.node = node;
+		ctx_exec.root = node;
+		ctx_exec.in_fd = in_fd;
+		ctx_exec.out_fd = out_fd;
+		child_exec_one(&ctx_exec);
 	}
 	return (handle_parent_wait(msh, pid, in_fd, out_fd));
 }
+
 
 /*
 ** 函数作用：判断是否必须在父进程执行（会改变父进程状态的 builtin）。

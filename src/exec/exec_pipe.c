@@ -26,8 +26,9 @@
 */
 static void	exec_pipe_child(t_pipe_ctx *ctx, int i, int out_fd, int pfd[2])
 {
-	t_ast	*cmd;
-	int		in_fd;
+	t_ast		*cmd;
+	int			in_fd;
+	t_exec_ctx	ctx_exec;
 
 	cmd = ctx->arr[i];
 	in_fd = ctx->in_fd;
@@ -35,7 +36,12 @@ static void	exec_pipe_child(t_pipe_ctx *ctx, int i, int out_fd, int pfd[2])
 		close(pfd[0]);
 	free(ctx->pids);
 	free(ctx->arr);
-	child_exec_one(ctx->msh, cmd, in_fd, out_fd, ctx->root);
+	ctx_exec.msh = ctx->msh;
+	ctx_exec.node = cmd;
+	ctx_exec.in_fd = in_fd;
+	ctx_exec.out_fd = out_fd;
+	ctx_exec.root = ctx->root;
+	child_exec_one(&ctx_exec);
 }
 
 /*
