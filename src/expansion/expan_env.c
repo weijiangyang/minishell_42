@@ -14,33 +14,16 @@
 #include "expander.h"
 #include "minishell.h"
 
-
-
-/*
-** 函数作用：判断变量名首字符是否合法（字母或 _）。
-** 参数：c(一个字符)
-** 返回：是 1，不是 0
-*/
 int	is_name_start(int c)
 {
 	return (ft_isalpha(c) || c == '_');
 }
 
-/*
-** 函数作用：判断变量名后续字符是否合法（字母/数字/_）。
-** 参数：c(一个字符)
-** 返回：是 1，不是 0
-*/
 int	is_name_char(int c)
 {
 	return (ft_isalnum(c) || c == '_');
 }
 
-/*
-** 函数作用：从 s 开始计算合法变量名长度（s 指向 $ 后第一个字符）。
-** 参数：s(指向变量名开头)
-** 返回：变量名长度（可能为 0）
-*/
 int	var_len(const char *s)
 {
 	int	i;
@@ -51,32 +34,27 @@ int	var_len(const char *s)
 	if (!is_name_start((unsigned char)s[i]))
 		return (0);
 	while (s[i] && is_name_char((unsigned char)s[i]))
-		i = i + 1;
+		i++;
 	return (i);
 }
 
-/*
-** 函数作用：在 minishell->envp 里找变量 name[0..len-1]，并复制它的值。
-** 参数：minishell(全局上下文), name(变量名起点), len(变量名长度)
-** 返回：找到则返回值的 strdup；找不到返回 strdup("")；失败返回 NULL
-*/
-char    *env_value_dup(t_minishell *minishell, const char *name, int len)
+char	*env_value_dup(t_minishell *minishell, const char *name, int len)
 {
-    t_env   *cur;
+	t_env	*cur;
 
-    if (!minishell || !name || len <= 0)
-        return (ft_strdup(""));
-    cur = minishell->env;
-    while (cur)
-    {
-        if (cur->key && (int)ft_strlen(cur->key) == len
-            && ft_strncmp(cur->key, name, len) == 0)
-        {
-            if (cur->value)
-                return (ft_strdup(cur->value));
-            return (ft_strdup(""));
-        }
-        cur = cur->next;
-    }
-    return (ft_strdup(""));
+	if (!minishell || !name || len <= 0)
+		return (ft_strdup(""));
+	cur = minishell->env;
+	while (cur)
+	{
+		if (cur->key && (int)ft_strlen(cur->key) == len
+			&& ft_strncmp(cur->key, name, len) == 0)
+		{
+			if (cur->value)
+				return (ft_strdup(cur->value));
+			return (ft_strdup(""));
+		}
+		cur = cur->next;
+	}
+	return (ft_strdup(""));
 }

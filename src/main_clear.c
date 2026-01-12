@@ -13,9 +13,6 @@
 #include "minishell.h"
 #include "repl.h"
 
-/*
-** 作用：专门负责把一整块字符串数组（矩阵）拆掉并释放。
-*/
 void	release_matrix(char **m)
 {
 	int	i;
@@ -31,9 +28,6 @@ void	release_matrix(char **m)
 	free(m);
 }
 
-/*
-** 作用：在程序关门前，把所有占用的内存都归还给电脑。
-*/
 void	ms_clear(t_minishell *ms)
 {
 	if (!ms)

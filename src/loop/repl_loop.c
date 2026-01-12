@@ -13,9 +13,6 @@
 #include "minishell.h"
 #include "repl.h"
 
-/*
-** 作用：程序的核心发动机，一直循环读取并运行命令，直到用户想离开。
-*/
 void	repl_loop(t_minishell *ms)
 {
 	char	*acc;
@@ -23,7 +20,11 @@ void	repl_loop(t_minishell *ms)
 
 	acc = NULL;
 	stop = 0;
-	while (!stop && ms && ms->should_exit == 0)
+	if (!ms)
+		return ;
+	while (!stop && ms->should_exit == 0)
+	{
 		stop = repl_step(ms, &acc);
+	}
 	repl_free_acc(&acc);
 }

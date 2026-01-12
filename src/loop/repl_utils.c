@@ -13,7 +13,6 @@
 #include "minishell.h"
 #include "repl.h"
 
-/* 返回 1 表示这条命令里真的出现过 heredoc 操作符 <<（不在引号里） */
 int	lexer_has_heredoc(t_lexer *lx)
 {
 	while (lx)
@@ -25,7 +24,6 @@ int	lexer_has_heredoc(t_lexer *lx)
 	return (0);
 }
 
-/* 只复制第一行（遇到 '\n' 就截断） */
 char	*dup_first_line(const char *s)
 {
 	size_t	i;
@@ -38,7 +36,6 @@ char	*dup_first_line(const char *s)
 	return (ft_substr(s, 0, i));
 }
 
-/* 作用：把新读到的一行接在之前没写完的命令后面。 */
 int	repl_join(char **acc, char *line)
 {
 	char	*tmp;
@@ -61,7 +58,6 @@ int	repl_join(char **acc, char *line)
 	return (*acc != NULL);
 }
 
-/* 作用：完全释放存命令的内存，防止泄露。 */
 void	repl_free_acc(char **acc)
 {
 	if (!acc)
