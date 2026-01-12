@@ -13,16 +13,6 @@
 #include "exec.h"
 #include "minishell.h"
 
-/*
-** 函数作用：
-** 把 in_fd 接到标准输入，把 out_fd 接到标准输出。
-** 如果传进来的 fd 不是标准 fd，就 dup2 后把原 fd 关闭，防止泄漏。
-** 参数：
-** in_fd：要作为 stdin 的 fd（>=0 才处理）
-** out_fd：要作为 stdout 的 fd（>=0 才处理）
-** 返回：
-** 成功返回 0；失败返回 -1
-*/
 int	dup_in_out_or_close(int in_fd, int out_fd)
 {
 	if (in_fd >= 0 && in_fd != STDIN_FILENO)
@@ -31,7 +21,7 @@ int	dup_in_out_or_close(int in_fd, int out_fd)
 		{
 			close(in_fd);
 			if (out_fd >= 0 && out_fd != STDOUT_FILENO)
-				close(out_fd); /* 修改：避免 out_fd 泄漏 */
+				close(out_fd);
 			return (-1);
 		}
 		close(in_fd);
@@ -48,10 +38,6 @@ int	dup_in_out_or_close(int in_fd, int out_fd)
 	return (0);
 }
 
-/*
-** 函数作用：
-** 保存当前标准输入输出，给“父进程跑 builtin 且带重定向”用。
-*/
 int	save_std_fds(t_fd_save *save)
 {
 	if (!save)
@@ -62,11 +48,7 @@ int	save_std_fds(t_fd_save *save)
 		return (1);
 	return (0);
 }
-/*
-** 函数作用：
-** 恢复之前保存的标准输入输出。
-** 让重定向只影响一次 builtin，不影响后面的提示符。
-*/
+
 void	restore_std_fds(t_fd_save *save)
 {
 	if (!save)
@@ -82,19 +64,13 @@ void	restore_std_fds(t_fd_save *save)
 		close(save->out);
 	}
 }
-/*
-** 函数作用：
-** 把 waitpid 的返回状态 st 转换成 shell 退出码：
-** 正常 exit -> 取 exit code；被信号杀死 -> 128 + 信号号。
-*/
+
 void	set_status_from_wait(t_minishell *msh, int status)
 {
 	int	sig;
 
 	if (WIFEXITED(status))
-	{
 		msh->last_exit_status = WEXITSTATUS(status);
-	}
 	else if (WIFSIGNALED(status))
 	{
 		sig = WTERMSIG(status);
@@ -107,14 +83,11 @@ void	set_status_from_wait(t_minishell *msh, int status)
 	else if (WIFSTOPPED(status))
 	{
 		write(1, "\n", 1);
-		printf("[1]+  Stopped\n");
+		ft_putstr_fd("[1]+  Stopped\n", 1);
 		msh->last_exit_status = 128 + WSTOPSIG(status);
 	}
 }
-/*
-** 函数作用：
-** 等待一对管道子进程，并把“右边命令”的退出码当作整条管道的退出码。
-*/
+
 int	wait_pair_set_right(t_minishell *msh, pid_t left, pid_t right)
 {
 	int	st;
