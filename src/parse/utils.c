@@ -90,21 +90,19 @@ int is_redir_token(t_lexer *pt)
         return 0;
 }
 
-/**
- * @brief 安全的字符串复制函数。
- * * 相比于标准的 ft_strdup，该函数增加了以下保护：
- * 1. 输入检查：如果输入字符串指针 s 为空，直接返回 NULL，防止程序崩溃。
- * 2. 失败反馈：如果 ft_strdup 因为内存耗尽（malloc 失败）返回 NULL，
- * 则向标准错误输出报错信息。
- * * @param s 指向待复制原始字符串的指针。
- * @return char* 成功返回新分配的字符串副本；若输入为空或分配失败则返回 NULL。
- */
-char *safe_strdup(const char *s)
+const char *tok_type_to_str(tok_type type)
 {
-    if (!s)
-        return NULL;
-    char *p = ft_strdup(s);
-    if (!p)
-        fprintf(stderr, "memory error: strdup failed\n");
-    return p;
+	switch (type)
+	{
+		case TOK_WORD:       return "WORD";
+		case TOK_PIPE:       return "|";
+		case TOK_REDIR_IN:   return "<";
+		case TOK_REDIR_OUT:  return ">";
+		case TOK_APPEND:     return ">>";
+		case TOK_HEREDOC:    return "<<";
+		case TOK_END:        return "EOF";
+		case TOK_ERROR:      return "ERROR";
+		default:             return "UNKNOWN";
+	}
 }
+
