@@ -16,11 +16,11 @@
  * @brief 创建并初始化一个新的重定向节点 (t_redir)。
  * * 该函数分配内存，并将 Lexer 识别到的 Token 类型转换为执行器识别的重定向类型。
  * 同时，它会通过 ft_strdup 复制文件名或 Heredoc 的限定符。
- * * @param type    词法分析后的 Token 类型 (tok_type)。
+ * * @param type    词法分析后的 Token 类型 (t_tok_type)。
  * @param content 重定向指向的文件名或 Heredoc 终止符。
  * @return t_redir* 指向新创建节点的指针，若分配失败则返回 NULL。
  */
-static t_redir *create_redir(tok_type type, char *content)
+static t_redir *create_redir(t_tok_type type, char *content)
 {
 	t_redir *new_node;
 

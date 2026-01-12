@@ -12,34 +12,34 @@
 
 /* include/lexer.h */
 #ifndef LEXER_H
-# define LEXER_H
+#define LEXER_H
 
-# include "../libft/libft.h"
-# include <ctype.h>
-# include <fcntl.h>
-# include <limits.h>
-# include <readline/history.h>
-# include <readline/readline.h>
-# include <signal.h>
-# include <stdbool.h>
-# include <stddef.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <termios.h>
-# include <unistd.h>
+#include "../libft/libft.h"
+#include <ctype.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <signal.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <termios.h>
+#include <unistd.h>
 
 /* === 在 include/lexer.h 中添加 / 替换（放在头文件顶部其它定义附近） === */
 
-# define LEX_OK 1
-# define LEX_ERR 0
-# define LEX_NEED_MORE 2       /* 词法发现未闭合引号，需上层继续读行 */
-# define LEX_UNCLOSED_QUOTE -2 /* 内部返回值：match_quotes/word 发现未闭合 */
+#define LEX_OK 1
+#define LEX_ERR 0
+#define LEX_NEED_MORE 2		  /* 词法发现未闭合引号，需上层继续读行 */
+#define LEX_UNCLOSED_QUOTE -2 /* 内部返回值：match_quotes/word 发现未闭合 */
 
 // 前置声明：t_minishell 是程序的总上下文结构，此处不展开定义。
-typedef struct s_minishell	t_minishell;
+typedef struct s_minishell t_minishell;
 
 // 临时信息包，用来构造 t_lexer 节点：
 // clean：去除包裹引号后的文本；
@@ -48,12 +48,12 @@ typedef struct s_minishell	t_minishell;
 // quoted_single / quoted_double：是否出现过 ' / "。
 typedef struct s_token_info
 {
-	char					*clean;
-	char					*raw;
-	int						had_quotes;
-	int						quoted_single;
-	int						quoted_double;
-}							t_token_info;
+	char *clean;
+	char *raw;
+	int had_quotes;
+	int quoted_single;
+	int quoted_double;
+} t_token_info;
 
 // 记号类型枚举：
 // WORD：普通单词/参数；
@@ -65,16 +65,16 @@ typedef struct s_token_info
 typedef enum
 {
 	TOK_WORD,
-	TOK_PIPE,      // |
-	TOK_LPAREN,    // (
-	TOK_RPAREN,    // )
+	TOK_PIPE,	   // |
+	TOK_LPAREN,	   // (
+	TOK_RPAREN,	   // )
 	TOK_REDIR_IN,  // <
 	TOK_REDIR_OUT, // >
-	TOK_APPEND,    // >>
+	TOK_APPEND,	   // >>
 	TOK_HEREDOC,   // <<
-	TOK_END,       // EOF
+	TOK_END,	   // EOF
 	TOK_ERROR
-}	tok_type;
+} t_tok_type;
 
 // 词法链表节点：
 // str：节点主文本（通常指去引号后的展示/使用文本）；
@@ -86,49 +86,49 @@ typedef enum
 // prev / next：双向链表指针。
 typedef struct s_lexer
 {
-	char					*str;
-	tok_type				tokentype;
-	int						idx;
-	int						had_quotes;
-	int						quoted_by;
+	char *str;
+	t_tok_type tokentype;
+	int idx;
+	int had_quotes;
+	int quoted_by;
 
-	char					*raw;
-	struct s_lexer			*prev;
-	struct s_lexer			*next;
-}							t_lexer;
+	char *raw;
+	struct s_lexer *prev;
+	struct s_lexer *next;
+} t_lexer;
 
 // remove_quotes拷贝/扫描用索引对：i 为源串读指针，j 为目标串写指针（常用于去引号复制过程）。
 typedef struct s_index
 {
-	size_t					i;
-	size_t					j;
-}							t_index;
+	size_t i;
+	size_t j;
+} t_index;
 
-const char					*token_symbol(tok_type t);
-t_lexer						*new_node(t_token_info *info, tok_type tokentype);
-void						list_add_back(t_lexer **lst, t_lexer *new);
-int							add_node(t_token_info *info, tok_type tokentype,
-								t_lexer **list);
+const char *token_symbol(t_tok_type t);
+t_lexer *new_node(t_token_info *info, t_tok_type tokentype);
+void list_add_back(t_lexer **lst, t_lexer *new);
+int add_node(t_token_info *info, t_tok_type tokentype,
+			 t_lexer **list);
 
-t_lexer						*clear_one(t_lexer **lst);
-void						del_first(t_lexer **lst);
-void						del_one(t_lexer **lst, int target);
-void						clear_list(t_lexer **lst);
-int							detect_signal(t_lexer **list);
-tok_type					is_token(int c);
-int							finalize_word_node(t_token_info *info,
-								t_lexer **list);
-int							handle_token(char *str, int idx, t_lexer **list);
-int							match_quotes(int i, char *str, char quote);
+t_lexer *clear_one(t_lexer **lst);
+void del_first(t_lexer **lst);
+void del_one(t_lexer **lst, int target);
+void clear_list(t_lexer **lst);
+int detect_signal(t_lexer **list);
+t_tok_type is_token(int c);
+int finalize_word_node(t_token_info *info,
+					   t_lexer **list);
+int handle_token(char *str, int idx, t_lexer **list);
+int match_quotes(int i, char *str, char quote);
 
-char						*remove_quotes_flag(const char *s, int *had_q,
-								int *q_single, int *q_double);
+char *remove_quotes_flag(const char *s, int *had_q,
+						 int *q_single, int *q_double);
 
 /* 修改 handle_word 的声明：增加 out_unclosed 参数用于通知是哪种引号未闭合 */
-int							handle_word(char *str, int i, t_lexer **list,
-								char *out_unclosed);
-int							skip_spaces(char *str, int i);
-int							handle_lexer(t_minishell *minishell);
-int							check_space(char c);
+int handle_word(char *str, int i, t_lexer **list,
+				char *out_unclosed);
+int skip_spaces(char *str, int i);
+int handle_lexer(t_minishell *minishell);
+int check_space(char c);
 
 #endif

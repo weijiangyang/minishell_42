@@ -34,7 +34,7 @@ t_ast *parse_cmdline(t_lexer **cur, t_minishell *minishell)
 	pt = peek_token(cur);
 	if (pt && pt->tokentype != TOK_END)
 	{
-		ms_put3("Syntax error: unexpected token at end (type ", tok_type_to_str(pt->tokentype), ")\n");
+		ms_put3("Syntax error: unexpected token at end (type ", t_tok_type_to_str(pt->tokentype), ")\n");
 		free_ast(root);
 		return NULL;
 	}
