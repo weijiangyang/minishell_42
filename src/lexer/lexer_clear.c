@@ -13,9 +13,6 @@
 #include "lexer.h"
 #include "minishell.h"
 
-// 作用：释放一个词法节点内部动态资源。
-// 参数：节点指针。
-// 逻辑：逐字段判空 `free`，再置空以防悬垂。（函数体被截断，但与同文件其他函数配合可确定职责）
 static void	free_lexer_content(t_lexer *node)
 {
 	if (!node)
@@ -41,9 +38,6 @@ static void	free_lexer_content(t_lexer *node)
 	}
 }
 
-// 作用：释放并删除当前指向的单个词法节点（含其内部动态内存），将头指针置为 NULL。
-// 参数/逻辑：入参是链表头指针地址；判空后取出节点→free_lexer_content
-// →断开 next/prev→free(node)→*lst=NULL→返回 NULL。
 t_lexer	*clear_one(t_lexer **lst)
 {
 	t_lexer	*node;
@@ -59,10 +53,6 @@ t_lexer	*clear_one(t_lexer **lst)
 	return (NULL);
 }
 
-// 作用：清空并释放整个词法链表。
-// 参数：头指针地址。
-// 逻辑：遍历：缓存 `next` → `clear_one(lst)`（你项目中的单节点释放器）→前进；
-// 结束后头指针为 `NULL`。
 void	clear_list(t_lexer **lst)
 {
 	t_lexer	*tmp;

@@ -35,6 +35,8 @@ typedef struct s_minishell
 	int							lexer_need_more;
 	char						**envp;
 	char						**paths;
+	int							heredoc_quoted;
+	int							heredoc_write_fd;
 }					t_minishell;
 
 void	ms_clear(t_minishell *ms);

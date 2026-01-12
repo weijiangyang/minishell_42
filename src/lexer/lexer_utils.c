@@ -13,17 +13,7 @@
 #include "lexer.h"
 #include "minishell.h"
 
-/*
-** 函数作用：
-** 给“符号 token”提供它应该显示的文本，比如 TOK_PIPE -> "|"
-**
-** 参数含义：
-** t：token 类型
-**
-** 返回值：
-** 返回对应的字符串常量；没有就返回 NULL
-*/
-const char *token_symbol(t_tok_type t)
+const char	*token_symbol(t_tok_type t)
 {
 	if (t == TOK_PIPE)
 		return ("|");
@@ -38,10 +28,7 @@ const char *token_symbol(t_tok_type t)
 	return (NULL);
 }
 
-/*
-** 作用：检查是否有人按了 Ctrl+C，如果按了就清理掉已经切好的零件。
-*/
-int detect_signal(t_lexer **list)
+int	detect_signal(t_lexer **list)
 {
 	if (g_signal == SIGINT)
 	{
@@ -52,10 +39,7 @@ int detect_signal(t_lexer **list)
 	return (0);
 }
 
-/*
-** 作用：当程序出错时，负责把刚才申请的内存全部还给电脑（释放内存）。
-*/
-static void release_word_memory(t_token_info *info)
+static void	release_word_memory(t_token_info *info)
 {
 	if (info->raw && info->clean && info->raw != info->clean)
 	{
@@ -68,10 +52,7 @@ static void release_word_memory(t_token_info *info)
 		free(info->clean);
 }
 
-/*
-** 作用：完成最后一步，把准备好的单词信息正式塞进零件链表里。
-*/
-int finalize_word_node(t_token_info *info, t_lexer **list)
+int	finalize_word_node(t_token_info *info, t_lexer **list)
 {
 	if (!add_node(info, TOK_WORD, list))
 	{

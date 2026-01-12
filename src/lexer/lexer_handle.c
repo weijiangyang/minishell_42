@@ -13,22 +13,16 @@
 #include "lexer.h"
 #include "minishell.h"
 
-/*
-** 作用：跳过从某个位置开始的所有空格。
-*/
 int	skip_spaces(char *str, int i)
 {
 	int	j;
 
 	j = 0;
-	while (check_space(str[i + j]))
+	while (str[i + j] && check_space(str[i + j]))
 		j++;
 	return (j);
 }
 
-/*
-** 作用：如果发现引号没写完，就记录状态并告诉系统需要更多输入。
-*/
 static int	process_unclosed(t_minishell *ms, char quote)
 {
 	ms->lexer_unclosed_quote = quote;
@@ -37,9 +31,6 @@ static int	process_unclosed(t_minishell *ms, char quote)
 	return (LEX_NEED_MORE);
 }
 
-/*
-** 作用：根据当前字符是特殊符号还是普通文字，选择不同的处理方式。
-*/
 static int	process_segment(t_minishell *ms, int i)
 {
 	int		step;
@@ -60,9 +51,6 @@ static int	process_segment(t_minishell *ms, int i)
 	return (step);
 }
 
-/*
-** 作用：这是切分命令的总入口，把一整行命令拆成一个一个的“零件”。
-*/
 int	handle_lexer(t_minishell *ms)
 {
 	int	i;
