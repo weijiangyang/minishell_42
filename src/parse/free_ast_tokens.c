@@ -80,17 +80,19 @@ void free_ast(t_ast *node)
  * 3. Token 结构体本身的内存。
  * * @param tok 指向待释放 Token 链表头部的指针。
  */
-void free_tokens(t_lexer *tok)
+void	free_tokens(t_lexer *tok)
 {
+	t_lexer	*next;
+
 	while (tok)
 	{
-		t_lexer *nx = tok->next;
-
-		if (tok->str)
-			free(tok->str);
+		next = tok->next;
 		if (tok->raw)
 			free(tok->raw);
+		if (tok->str && tok->str != tok->raw)
+			free(tok->str);
 		free(tok);
-		tok = nx;
+		tok = next;
 	}
 }
+

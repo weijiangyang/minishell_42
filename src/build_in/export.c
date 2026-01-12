@@ -6,7 +6,7 @@
 /*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:17:12 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/09 15:13:33 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/12 11:43:47 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ static int export_one(char *arg, t_env **env)
 
     if (!is_valid_identifier(key))
     {
-        ms_put3("export: ", arg, " not a valid identifier\n");
+        ms_put3("export: ", NULL, "not a valid identifier\n");
         free(key);
         free(value);
         return 1;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 15:40:59 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/06 18:47:02 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/12 10:50:39 by weiyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,6 @@ typedef enum
 {
 	TOK_WORD,
 	TOK_PIPE,      // |
-	//TOK_AND,       // &&
-	//TOK_OR,        // ||
 	TOK_LPAREN,    // (
 	TOK_RPAREN,    // )
 	TOK_REDIR_IN,  // <
@@ -75,10 +73,8 @@ typedef enum
 	TOK_APPEND,    // >>
 	TOK_HEREDOC,   // <<
 	TOK_END,       // EOF
-	//TOK_AMP,       // &
-	//TOK_SEMI,      // ;
 	TOK_ERROR
-}							tok_type;
+}	tok_type;
 
 // 词法链表节点：
 // str：节点主文本（通常指去引号后的展示/使用文本）；
