@@ -64,5 +64,3 @@ void	handle_parent_pipes(t_pipe_ctx *ctx, int pfd[2])
 		close(pfd[1]);
 	ctx->in_fd = pfd[0];
 }
-
-
