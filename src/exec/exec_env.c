@@ -13,11 +13,6 @@
 #include "minishell.h"
 #include "exec.h"
 
-/*
-** 函数作用：
-** 从 msh->envp 里找到 PATH=... 并复制出 PATH 的值（新字符串，需要 free）。
-** 如果 envp 里没有 PATH，返回 NULL。
-*/
 static char	*dup_env_path(t_minishell *msh)
 {
 	int		i;
@@ -32,44 +27,31 @@ static char	*dup_env_path(t_minishell *msh)
 		line = msh->envp[i];
 		if (ft_strncmp(line, "PATH=", 5) == 0)
 			return (ft_strdup(line + 5));
-		i = i + 1;
+		i++;
 	}
 	return (NULL);
 }
 
-/*
-** 函数作用：
-** 释放 msh->paths（PATH 切出来的目录数组），防止内存泄漏。
-*/
 void	free_paths(t_minishell *msh)
 {
 	int	i;
 
-	i = 0;
 	if (!msh || !msh->paths)
 		return ;
+	i = 0;
 	while (msh->paths[i])
 	{
 		free(msh->paths[i]);
-		i = i + 1;
+		i++;
 	}
 	free(msh->paths);
 	msh->paths = NULL;
 }
 
-/*
-** 函数作用：
-** 重新读取 envp 里的 PATH，并更新 msh->paths。
-** 这样 export PATH=... 之后，找命令路径才会用新的 PATH。
-** 返回值：
-** - 成功返回 0
-** - 内存分配失败返回 1
-*/
 int	exec_refresh_paths(t_minishell *msh)
 {
 	char	*raw;
 
-	raw = NULL;
 	if (!msh)
 		return (1);
 	free_paths(msh);
@@ -83,13 +65,6 @@ int	exec_refresh_paths(t_minishell *msh)
 	return (0);
 }
 
-/*
-** 函数作用：
-** 确保 msh->paths 已经准备好：第一次用才生成。
-** 返回值：
-** - 已有 paths 或刷新成功：返回 0
-** - 刷新失败：返回 1
-*/
 int	ensure_paths_ready(t_minishell *msh)
 {
 	if (!msh)
