@@ -56,6 +56,8 @@ static int ms_initial_system(t_minishell *ms, char **envp)
 	ms->last_exit_status = 0;
 	ms->lexer_need_more = 0;
 	ms->lexer_unclosed_quote = 0;
+	ms->heredoc_quoted = 0;
+	ms->heredoc_write_fd = -1;
 	if (!ms_initial_env(ms, envp))
 		return (0);
 	if (ensure_paths_ready(ms) != 0)
