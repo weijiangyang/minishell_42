@@ -143,32 +143,30 @@ static void	child_exec_external(t_minishell *msh, t_ast *node, t_ast *root)
 ** @param in_fd/out_fd: 管道传进来的输入输出口。
 ** @param root: AST 根节点。
 */
-void	child_exec_one(t_minishell *msh, t_ast *node, int in_fd, int out_fd,
-		t_ast *root)
+void	child_exec_one(t_exec_ctx *ctx)
 {
-	int	new_in;
-	int	new_out;
-
-	if (!msh || !node || node->type != NODE_CMD)
-		ms_child_exit(msh, root, 1);
-	if (has_bad_heredoc(node->redir))
-		ms_child_exit(msh, root, 1);
-	new_in = in_fd;
-	new_out = out_fd;
-	if (new_in > 2 && node->argv && node->argv[0] && is_builtin(node->argv[0]))
+	int	new_in = ctx->in_fd;
+	int	new_out = ctx->out_fd;
+	
+	if (!ctx->msh || !ctx->node || ctx->node->type != NODE_CMD)
+		ms_child_exit(ctx->msh, ctx->root, 1);
+	if (has_bad_heredoc(ctx->node->redir))
+		ms_child_exit(ctx->msh, ctx->root, 1);
+	
+	if (new_in > 2 && ctx->node->argv && ctx->node->argv[0] && is_builtin(ctx->node->argv[0]))
 	{
 		close(new_in);
 		new_in = -1;
 	}
-	if (apply_redir_list(node->redir, &new_in, &new_out) < 0)
-		ms_child_exit(msh, root, 1);
-	close_all_heredoc_fds(root);
+	if (apply_redir_list(ctx->node->redir, &new_in, &new_out) < 0)
+		ms_child_exit(ctx->msh, ctx->root, 1);
+	close_all_heredoc_fds(ctx->root);
 	if (dup_in_out_or_close(new_in, new_out) < 0)
-		ms_child_exit(msh, root, 1);
-	if (node->argv && node->argv[0] && is_builtin(node->argv[0]))
-		ms_child_exit(msh, root, exec_builtin(node, &msh->env, msh));
-	child_exec_external(msh, node, root);
-	ms_child_exit(msh, root, 1);
+		ms_child_exit(ctx->msh, ctx->root, 1);
+	if (ctx->node->argv && ctx->node->argv[0] && is_builtin(ctx->node->argv[0]))
+			ms_child_exit(ctx->msh, ctx->root, exec_builtin(ctx->node, &ctx->msh->env, ctx->msh));
+	child_exec_external(ctx->msh, ctx->node, ctx->root);
+	ms_child_exit(ctx->msh, ctx->root, 1);
 }
 
 // #include "exec.h"
