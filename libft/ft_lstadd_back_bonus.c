@@ -12,17 +12,17 @@
 
 #include "libft.h"
 
-void ft_lstadd_back(t_list **lst, t_list *new)
+void	ft_lstadd_back(t_list **lst, t_list *new)
 {
-	t_list *lt_ast;
+	t_list	*lt_ast;
 
 	if (!lst || !new)
-		return;
+		return ;
 	if (!*lst)
 	{
 		*lst = new;
-		return;
+		return ;
 	}
-	lt_ast = ft_lstlt_ast(*lst);
+	lt_ast = ft_lstlast(*lst);
 	lt_ast->next = new;
 }
