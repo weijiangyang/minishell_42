@@ -91,7 +91,7 @@ static int handle_var_exp(t_exp_data *data, const char *s, int j)
 ** 参数：data(上下文), s(源串), j(当前位置), q(引号状态)
 ** 返回：消费的字符数
 */
-int scan_expand_one(t_exp_data *data, const char *s, int j, enum qstate q)
+int scan_expand_one(t_exp_data *data, const char *s, int j, enum e_qstate q)
 {
 	int res;
 

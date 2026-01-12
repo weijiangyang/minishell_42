@@ -25,9 +25,9 @@
 ** c：当前字符（比如 '|' '<' '>'）
 **
 ** 返回值：
-** 对应的 tok_type；如果不是符号就返回 0
+** 对应的 t_tok_type；如果不是符号就返回 0
 */
-tok_type	is_token(int c)
+t_tok_type is_token(int c)
 {
 	if (c == '|')
 		return (TOK_PIPE);
@@ -52,8 +52,8 @@ tok_type	is_token(int c)
 ** 失败返回 -1
 ** 不属于双字符返回 0
 */
-static int	handle_double_token(tok_type tokentype, int next_char,
-		t_lexer **list)
+static int handle_double_token(t_tok_type tokentype, int next_char,
+							   t_lexer **list)
 {
 	if (tokentype == TOK_REDIR_OUT && is_token(next_char) == TOK_REDIR_OUT)
 	{
@@ -84,11 +84,11 @@ static int	handle_double_token(tok_type tokentype, int next_char,
 ** 出错返回 -1
 ** 如果当前位置不是符号返回 0
 */
-int	handle_token(char *str, int i, t_lexer **list)
+int handle_token(char *str, int i, t_lexer **list)
 {
-	tok_type	token;
-	int			next_char;
-	int			res;
+	t_tok_type token;
+	int next_char;
+	int res;
 
 	token = is_token((unsigned char)str[i]);
 	next_char = (unsigned char)str[i + 1];
@@ -118,9 +118,9 @@ int	handle_token(char *str, int i, t_lexer **list)
 ** 未闭合：返回 -1
 ** 当前位置不是该引号：返回 0
 */
-int	match_quotes(int i, char *str, char quote)
+int match_quotes(int i, char *str, char quote)
 {
-	int	j;
+	int j;
 
 	j = 0;
 	if (str[i + j] == quote)

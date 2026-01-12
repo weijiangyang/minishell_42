@@ -24,9 +24,9 @@
  */
 t_lexer *peek_token(t_lexer **cur)
 {
-    if (!cur)
-        return NULL;
-    return *cur;
+	if (!cur)
+		return NULL;
+	return *cur;
 }
 
 /**
@@ -41,12 +41,12 @@ t_lexer *peek_token(t_lexer **cur)
  */
 t_lexer *consume_token(t_lexer **cur)
 {
-    if (!cur || !*cur)
-        return NULL;
+	if (!cur || !*cur)
+		return NULL;
 
-    t_lexer *old = *cur;
-    *cur = (*cur)->next;
-    return old;
+	t_lexer *old = *cur;
+	*cur = (*cur)->next;
+	return old;
 }
 
 /**
@@ -59,14 +59,14 @@ t_lexer *consume_token(t_lexer **cur)
  * @param cur  指向当前词法 Token 流指针的地址。
  * @return t_lexer* 匹配成功返回被消耗的 Token；匹配失败返回 NULL。
  */
-t_lexer *expect_token(tok_type type, t_lexer **cur)
+t_lexer *expect_token(t_tok_type type, t_lexer **cur)
 {
-    if (!cur || !*cur || (*cur)->tokentype != type)
-    {
-        ms_put3("Syntax error : expected token type ", (char*)type, "\n");
-        return NULL;
-    }
-    return consume_token(cur);
+	if (!cur || !*cur || (*cur)->tokentype != type)
+	{
+		ms_put3("Syntax error : expected token type ", (char *)type, "\n");
+		return NULL;
+	}
+	return consume_token(cur);
 }
 
 /**
@@ -81,28 +81,36 @@ t_lexer *expect_token(tok_type type, t_lexer **cur)
  */
 int is_redir_token(t_lexer *pt)
 {
-    if (pt->tokentype == TOK_REDIR_IN ||
-        pt->tokentype == TOK_REDIR_OUT ||
-        pt->tokentype == TOK_APPEND ||
-        pt->tokentype == TOK_HEREDOC)
-        return 1;
-    else
-        return 0;
+	if (pt->tokentype == TOK_REDIR_IN ||
+		pt->tokentype == TOK_REDIR_OUT ||
+		pt->tokentype == TOK_APPEND ||
+		pt->tokentype == TOK_HEREDOC)
+		return 1;
+	else
+		return 0;
 }
 
-const char *tok_type_to_str(tok_type type)
+const char *t_tok_type_to_str(t_tok_type type)
 {
 	switch (type)
 	{
-		case TOK_WORD:       return "WORD";
-		case TOK_PIPE:       return "|";
-		case TOK_REDIR_IN:   return "<";
-		case TOK_REDIR_OUT:  return ">";
-		case TOK_APPEND:     return ">>";
-		case TOK_HEREDOC:    return "<<";
-		case TOK_END:        return "EOF";
-		case TOK_ERROR:      return "ERROR";
-		default:             return "UNKNOWN";
+	case TOK_WORD:
+		return "WORD";
+	case TOK_PIPE:
+		return "|";
+	case TOK_REDIR_IN:
+		return "<";
+	case TOK_REDIR_OUT:
+		return ">";
+	case TOK_APPEND:
+		return ">>";
+	case TOK_HEREDOC:
+		return "<<";
+	case TOK_END:
+		return "EOF";
+	case TOK_ERROR:
+		return "ERROR";
+	default:
+		return "UNKNOWN";
 	}
 }
-
