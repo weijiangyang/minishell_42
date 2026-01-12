@@ -13,11 +13,6 @@
 #include "minishell.h"
 #include "expander.h"
 
-/*
-** 函数作用：把 s 去引号；如果本来没有引号，就复制一份 s。
-** 参数：s(输入字符串)
-** 返回：新分配的字符串，失败返回 NULL
-*/
 static char	*api_clean_dup(const char *s)
 {
 	char	*clean;
@@ -25,7 +20,6 @@ static char	*api_clean_dup(const char *s)
 	int		q_s;
 	int		q_d;
 
-	clean = NULL;
 	had_q = 0;
 	q_s = 0;
 	q_d = 0;
@@ -35,18 +29,11 @@ static char	*api_clean_dup(const char *s)
 	return (clean);
 }
 
-/*
-** 函数作用：对 str 做 $ 展开 + 去引号，并 free 掉旧 str。
-** 参数：minishell(提供 envp 和 $? 等), str(会被 free)
-** 返回：新分配的字符串，失败返回 NULL
-*/
 char	*expander_str(t_minishell *minishell, char *str)
 {
 	char	*tmp;
 	char	*clean;
 
-	tmp = NULL;
-	clean = NULL;
 	if (!str)
 		return (NULL);
 	tmp = expand_all(minishell, str);

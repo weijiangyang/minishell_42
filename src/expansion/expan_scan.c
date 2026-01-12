@@ -13,14 +13,9 @@
 #include "expander.h"
 #include "minishell.h"
 
-/*
-** 函数作用：把 b 拼到 a 后面，并 free(a)。
-** 参数：a(会被 free), b(只读)
-** 返回：新字符串；失败返回 NULL
-*/
-char *str_join_free(char *a, const char *b)
+char	*str_join_free(char *a, const char *b)
 {
-	char *res;
+	char	*res;
 
 	res = NULL;
 	if (!a && !b)
@@ -34,15 +29,10 @@ char *str_join_free(char *a, const char *b)
 	return (res);
 }
 
-/*
-** 函数作用：处理特殊变量：$? 和 $数字。
-** 参数：data(上下文), s(源串), j(当前位置)
-** 返回：消费的字符数（0 表示没处理）
-*/
-static int handle_special_exp(t_exp_data *data, const char *s, int j)
+static int	handle_special_exp(t_exp_data *data, const char *s, int j)
 {
-	char *tmp;
-	int status;
+	char	*tmp;
+	int		status;
 
 	tmp = NULL;
 	status = 0;
@@ -62,15 +52,10 @@ static int handle_special_exp(t_exp_data *data, const char *s, int j)
 	return (0);
 }
 
-/*
-** 函数作用：处理普通变量 $VAR。
-** 参数：data(上下文), s(源串), j(当前位置)
-** 返回：消费的字符数
-*/
-static int handle_var_exp(t_exp_data *data, const char *s, int j)
+static int	handle_var_exp(t_exp_data *data, const char *s, int j)
 {
-	int len;
-	char *tmp;
+	int		len;
+	char	*tmp;
 
 	len = 0;
 	tmp = NULL;
@@ -86,14 +71,9 @@ static int handle_var_exp(t_exp_data *data, const char *s, int j)
 	return (1);
 }
 
-/*
-** 函数作用：展开一次从 s[j] 开始的 $...（考虑引号状态）。
-** 参数：data(上下文), s(源串), j(当前位置), q(引号状态)
-** 返回：消费的字符数
-*/
-int scan_expand_one(t_exp_data *data, const char *s, int j, enum e_qstate q)
+int	scan_expand_one(t_exp_data *data, const char *s, int j, enum e_qstate q)
 {
-	int res;
+	int	res;
 
 	res = 0;
 	if (q == Q_SQ)

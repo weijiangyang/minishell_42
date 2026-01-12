@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expan_t_ast.c                                        :+:      :+:    :+:   */
+/*   expan_t_ast.c                                        :+:      :+:    :+: */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,12 +13,7 @@
 #include "minishell.h"
 #include "expander.h"
 
-/*
-** 函数作用：递归走完整棵 t_ast，遇到 CMD 节点就展开它。
-** 参数：msh(全局上下文), node(t_ast 当前节点)
-** 返回：成功 1，失败 0
-*/
-static int walk_t_ast(t_minishell *msh, t_ast *node)
+static int	walk_t_ast(t_minishell *msh, t_ast *node)
 {
 	if (!node)
 		return (1);
@@ -36,12 +31,7 @@ static int walk_t_ast(t_minishell *msh, t_ast *node)
 	return (1);
 }
 
-/*
-** 函数作用：expander 总入口：parse 完成后调用它。
-** 参数：minishell(全局上下文), root(t_ast 根节点)
-** 返回：成功 1，失败 0
-*/
-int expander_t_ast(t_minishell *minishell, t_ast *root)
+int	expander_t_ast(t_minishell *minishell, t_ast *root)
 {
 	if (!minishell)
 		return (0);

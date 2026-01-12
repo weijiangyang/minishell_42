@@ -13,13 +13,12 @@
 #include "expander.h"
 #include "minishell.h"
 
-/* 保持逻辑不变：剥离引号 */
-static int strip_quotes_inplace(char **s)
+static int	strip_quotes_inplace(char **s)
 {
-	char *tmp;
-	int had_q;
-	int q_s;
-	int q_d;
+	char	*tmp;
+	int		had_q;
+	int		q_s;
+	int		q_d;
 
 	had_q = 0;
 	q_s = 0;
@@ -36,22 +35,20 @@ static int strip_quotes_inplace(char **s)
 	return (1);
 }
 
-/* 保持逻辑不变：数组前移一位（删除元素） */
-static void argv_shift_left(char **argv, int i)
+static void	argv_shift_left(char **argv, int i)
 {
 	while (argv[i])
 	{
 		argv[i] = argv[i + 1];
-		i = i + 1;
+		i++;
 	}
 }
 
-/* 保持逻辑不变：展开并处理 argv */
-static int expand_argv_inplace(t_minishell *msh, t_ast *node)
+static int	expand_argv_inplace(t_minishell *msh, t_ast *node)
 {
-	int i;
-	int had_q;
-	char *tmp;
+	int		i;
+	int		had_q;
+	char	*tmp;
 
 	i = 0;
 	while (node->argv && node->argv[i])
@@ -68,16 +65,15 @@ static int expand_argv_inplace(t_minishell *msh, t_ast *node)
 		else
 		{
 			node->argv[i] = tmp;
-			i = i + 1;
+			i++;
 		}
 	}
 	return (1);
 }
 
-/* 保持逻辑不变：处理重定向文件名 */
-static int expand_redirs_inplace(t_minishell *msh, t_redir *r)
+static int	expand_redirs_inplace(t_minishell *msh, t_redir *r)
 {
-	char *tmp;
+	char	*tmp;
 
 	while (r)
 	{
@@ -98,8 +94,7 @@ static int expand_redirs_inplace(t_minishell *msh, t_redir *r)
 	return (1);
 }
 
-/* 保持逻辑不变：入口函数 */
-int expander_expand_cmd_node(t_minishell *msh, t_ast *node)
+int	expander_expand_cmd_node(t_minishell *msh, t_ast *node)
 {
 	if (!msh || !node || node->type != NODE_CMD)
 		return (1);
