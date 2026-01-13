@@ -6,12 +6,12 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 19:16:05 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/09 15:13:32 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/13 15:12:35 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
 static char	*join_dir_cmd(const char *dir, const char *cmd)
 {
@@ -36,6 +36,8 @@ char	*find_cmd_path(t_minishell *msh, const char *cmd)
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
 	ensure_paths_ready(msh);
+	if (!msh->paths || !msh->paths[0])
+		return (ft_strdup(cmd));
 	i = 0;
 	while (msh->paths && msh->paths[i])
 	{
