@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 23:25:54 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 23:26:16 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/13 13:27:53 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,23 @@ void	wait_all_and_set_lt_ast(t_minishell *msh, pid_t *pids, int n)
 {
 	int		i;
 	int		st;
-	int		saw_pipe;
 	pid_t	pid;
 
 	i = 0;
-	saw_pipe = 0;
 	while (i < n)
 	{
 		pid = waitpid(pids[i], &st, 0);
-		if (pid > 0 && pid != pids[n - 1] && saw_pipe == 0)
+		if (pid > 0)
 		{
-			if (WIFSIGNALED(st) && WTERMSIG(st) == SIGPIPE)
+			if (WIFSIGNALED(st))
 			{
-				write(STDERR_FILENO, "Broken pipe\n", 12);
-				saw_pipe = 1;
+				if (WTERMSIG(st) == SIGPIPE)
+				{
+				}
+				else if (WTERMSIG(st) == SIGSEGV)
+					write(STDERR_FILENO, "Segmentation fault\n", 19);
+				else if (WTERMSIG(st) == SIGQUIT)
+					write(STDERR_FILENO, "Quit: 3\n", 8);
 			}
 		}
 		if (pid == pids[n - 1])
