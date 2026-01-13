@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:23:39 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/12 10:34:00 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/13 15:32:57 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ static int	cd_change_dir(const char *target)
 {
 	if (chdir(target) != 0)
 	{
-		ms_put3("minishell: cd: ", NULL, "No such file or directory\n");
+		ms_put3("minishell: cd: ", (char *)target,
+			": No such file or directory\n");
 		return (-1);
 	}
 	return (0);
