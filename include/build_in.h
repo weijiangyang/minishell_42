@@ -46,5 +46,6 @@ void	print_env(t_env *env);
 void	free_env(t_env *env);
 int		is_valid_identifier(const char *s);
 void	free_char_matrix(char **matrix);
+void	print_export(t_env *env);
 
 #endif
