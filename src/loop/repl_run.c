@@ -36,10 +36,10 @@ static void	run_one_cmd(t_minishell *ms)
 		clear_list(&ms->lexer);
 		return ;
 	}
-	ms->cur_t_ast = root;
+	ms->cur_ast = root;
 	if (!prepare_heredocs(root, ms))
 	{
-		ms->cur_t_ast = NULL;
+		ms->cur_ast = NULL;
 		free_ast(root);
 		clear_list(&ms->lexer);
 		return ;
@@ -47,7 +47,7 @@ static void	run_one_cmd(t_minishell *ms)
 	change_envp(ms->env, &ms->envp);
 	expander_t_ast(ms, root);
 	exec_t_ast(ms, root);
-	ms->cur_t_ast = NULL;
+	ms->cur_ast = NULL;
 	free_ast(root);
 	clear_list(&ms->lexer);
 }

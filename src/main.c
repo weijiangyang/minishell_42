@@ -43,7 +43,7 @@ static int	ms_initial_system(t_minishell *ms, char **envp)
 	ms->envp = NULL;
 	ms->paths = NULL;
 	ms->lexer = NULL;
-	ms->cur_t_ast = NULL;
+	ms->cur_ast = NULL;
 	ms->raw_line = NULL;
 	ms->should_exit = 0;
 	ms->last_exit_status = 0;
