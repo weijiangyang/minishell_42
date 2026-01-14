@@ -27,11 +27,7 @@ typedef enum e_node_type
 {
 	NODE_CMD,
 	NODE_PIPE,
-	NODE_AND,
-	NODE_OR,
 	NODE_SUBSHELL,
-	NODE_BACKGROUND,
-	NODE_SEQUENCE
 }						t_node_type;
 
 typedef enum e_redir_type
