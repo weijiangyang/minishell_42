@@ -13,13 +13,29 @@
 #include "build_in.h"
 #include "minishell.h"
 
-static char	*cd_get_target(char **argv)
+static char	*get_env_value(t_minishell *ms, const char *key)
+{
+	t_env	*cur;
+
+	if (!ms || !key)
+		return (NULL);
+	cur = ms->env;
+	while (cur)
+	{
+		if (ft_strcmp(cur->key, key) == 0)
+			return (cur->value);
+		cur = cur->next;
+	}
+	return (NULL);
+}
+
+static char	*cd_get_target(char **argv, t_minishell *ms)
 {
 	char	*target;
 
 	if (!argv[1])
 	{
-		target = getenv("HOME");
+		target = get_env_value(ms, "HOME");
 		if (!target)
 		{
 			ft_putstr_fd("cd: HOME not set\n", STDERR_FILENO);
@@ -56,12 +72,12 @@ static int	cd_change_dir(const char *target)
 	return (0);
 }
 
-int	ft_cd(char **argv, t_env **env)
+int	ft_cd(char **argv, t_env **env, t_minishell *msh)
 {
 	char	cwd[4096];
 	char	*target;
 
-	target = cd_get_target(argv);
+	target = cd_get_target(argv, msh);
 	if (!target)
 		return (1);
 	if (cd_get_oldcwd(cwd, sizeof(cwd)) != 0)
