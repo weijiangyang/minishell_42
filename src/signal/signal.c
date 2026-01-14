@@ -22,6 +22,7 @@ void	sigint_prompt(int sig)
 	rl_replace_line("", 0);
 	rl_redisplay();
 	g_signal = SIGINT;
+	rl_done = 1;
 }
 
 void	setup_child_signals(void)
