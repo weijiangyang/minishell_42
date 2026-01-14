@@ -25,7 +25,7 @@ typedef struct s_minishell
 {
 	t_lexer						*lexer;
 	t_env						*env;
-	t_ast						*cur_t_ast;
+	t_ast						*cur_ast;
 	char						*raw_line;
 	int							n_pipes;
 	int							last_exit_status;
@@ -37,7 +37,7 @@ typedef struct s_minishell
 	char						**paths;
 	int							heredoc_quoted;
 	int							heredoc_write_fd;
-}					t_minishell;
+}								t_minishell;
 
 void	ms_clear(t_minishell *ms);
 

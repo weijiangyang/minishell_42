@@ -15,7 +15,7 @@
 #include "parse.h"
 
 static void	heredoc_fork_child(t_redir *redir, t_minishell *shell,
-	int pipefd[2])
+							int pipefd[2])
 {
 	int	result;
 
@@ -27,8 +27,8 @@ static void	heredoc_fork_child(t_redir *redir, t_minishell *shell,
 		result = heredoc_loop(pipefd[1], redir->filename, shell, 0);
 	close(pipefd[1]);
 	if (result < 0)
-		ms_child_exit(shell, shell->cur_t_ast, 130);
-	ms_child_exit(shell, shell->cur_t_ast, 0);
+		ms_child_exit(shell, shell->cur_ast, 130);
+	ms_child_exit(shell, shell->cur_ast, 0);
 }
 
 static int	wait_for_child(pid_t pid, int *status)
@@ -42,7 +42,7 @@ static int	wait_for_child(pid_t pid, int *status)
 }
 
 static int	handle_child_exit(int status, int pipefd[2], t_redir *redir,
-								t_minishell *shell)
+							t_minishell *shell)
 {
 	int	code;
 
@@ -71,7 +71,7 @@ static int	handle_child_exit(int status, int pipefd[2], t_redir *redir,
 }
 
 static int	heredoc_parent(pid_t pid, int pipefd[2], t_redir *redir,
-							t_minishell *shell)
+					t_minishell *shell)
 {
 	int	status;
 
@@ -84,10 +84,10 @@ static int	heredoc_parent(pid_t pid, int pipefd[2], t_redir *redir,
 
 int	handle_heredoc(t_redir *redir, t_minishell *shell)
 {
-	int					pipefd[2];
-	pid_t				pid;
-	t_saved_signals		saved;
-	int					ret;
+	int				pipefd[2];
+	pid_t			pid;
+	t_saved_signals	saved;
+	int				ret;
 
 	save_signals(&saved);
 	if (pipe(pipefd) < 0)
