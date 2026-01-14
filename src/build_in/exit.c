@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:24:07 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/13 15:29:14 by yzhang2          ###   ########.fr       */
