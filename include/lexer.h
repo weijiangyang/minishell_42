@@ -131,4 +131,6 @@ int							skip_spaces(char *str, int i);
 int							handle_lexer(t_minishell *minishell);
 int							check_space(char c);
 
+void						print_lexer(t_minishell *msh);
+
 #endif

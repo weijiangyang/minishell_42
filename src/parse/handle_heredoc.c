@@ -40,10 +40,10 @@ static void heredoc_fork_child(t_redir *redir, t_minishell *shell,
 	if (result < 0)
 	{
 		close(pipefd[1]);
-		ms_child_exit(shell, shell->cur_t_ast, 130);
+		ms_child_exit(shell, shell->cur_ast, 130);
 	}
 	close(pipefd[1]);
-	ms_child_exit(shell, shell->cur_t_ast, 0);
+	ms_child_exit(shell, shell->cur_ast, 0);
 }
 
 /**

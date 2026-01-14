@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 #include "repl.h"
 
 /* 作用：执行完后打扫战场，把积累的输入清空。 */
-static void	run_drop_acc(t_minishell *ms, char **acc, int err_code)
+static void run_drop_acc(t_minishell *ms, char **acc, int err_code)
 {
 	if (err_code != 0)
 		ms->last_exit_status = err_code;
@@ -25,39 +24,40 @@ static void	run_drop_acc(t_minishell *ms, char **acc, int err_code)
 	ms->lexer_unclosed_quote = 0;
 }
 
-static void	run_one_cmd(t_minishell *ms)
+static void run_one_cmd(t_minishell *ms)
 {
-	t_ast	*root;
-	t_lexer	*tmp;
+	t_ast *root;
+	t_lexer *tmp;
 
 	tmp = ms->lexer;
+	//print_lexer(ms);
 	root = parse_cmdline(&tmp, ms);
 	if (!root)
 	{
 		ms->last_exit_status = 2;
 		clear_list(&ms->lexer);
-		return ;
+		return;
 	}
-	ms->cur_t_ast = root;
+	ms->cur_ast = root;
 	if (!prepare_heredocs(root, ms))
 	{
-		ms->cur_t_ast = NULL;
+		ms->cur_ast = NULL;
 		free_ast(root);
 		clear_list(&ms->lexer);
-		return ;
+		return;
 	}
 	change_envp(ms->env, &ms->envp);
 	expander_t_ast(ms, root);
 	exec_t_ast(ms, root);
-	ms->cur_t_ast = NULL;
+	ms->cur_ast = NULL;
 	free_ast(root);
 	clear_list(&ms->lexer);
 }
 
 /* 辅助函数：处理历史记录添加逻辑 */
-static void	repl_add_history(t_minishell *ms, char *acc)
+static void repl_add_history(t_minishell *ms, char *acc)
 {
-	char	*hist;
+	char *hist;
 
 	if (isatty(STDIN_FILENO) && repl_has_text(acc))
 	{
@@ -75,9 +75,9 @@ static void	repl_add_history(t_minishell *ms, char *acc)
 }
 
 /* 作用：判断命令是否写完，完整就去执行，不完整就等下一行。 */
-void	repl_run_acc(t_minishell *ms, char **acc)
+void repl_run_acc(t_minishell *ms, char **acc)
 {
-	int	lex_ret;
+	int lex_ret;
 
 	if (!repl_has_text(*acc))
 		return (run_drop_acc(ms, acc, 0));
@@ -86,7 +86,7 @@ void	repl_run_acc(t_minishell *ms, char **acc)
 	if (lex_ret == LEX_NEED_MORE)
 	{
 		ms->raw_line = NULL;
-		return ;
+		return;
 	}
 	if (lex_ret != LEX_OK)
 		return (run_drop_acc(ms, acc, 2));
@@ -172,10 +172,10 @@ void	repl_run_acc(t_minishell *ms, char **acc)
 // 		clear_list(&ms->lexer);
 // 		return;
 // 	}
-// 	ms->cur_t_ast = root;
+// 	ms->cur_ast = root;
 // 	if (!prepare_heredocs(root, ms))
 // 	{
-// 		ms->cur_t_ast = NULL;
+// 		ms->cur_ast = NULL;
 // 		free_ast(root);
 // 		clear_list(&ms->lexer);
 // 		return;
@@ -183,7 +183,7 @@ void	repl_run_acc(t_minishell *ms, char **acc)
 // 	change_envp(ms->env, &ms->envp);
 // 	expander_t_ast(ms, root);
 // 	exec_t_ast(ms, root);
-// 	ms->cur_t_ast = NULL;
+// 	ms->cur_ast = NULL;
 // 	free_ast(root);
 // 	clear_list(&ms->lexer);
 // }

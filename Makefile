@@ -32,6 +32,7 @@ SRC_DIRS    := src \
                src/loop \
                src/env \
                src/build_in \
+			   src/test \
 
 # 自动扫描所有源文件
 SRCS        := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
