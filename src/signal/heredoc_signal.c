@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 #include "signals.h"
 
@@ -26,9 +25,9 @@ volatile sig_atomic_t g_signal;
  */
 void save_signals(t_saved_signals *old)
 {
-    sigaction(SIGINT, NULL, &old->sigint);
-    sigaction(SIGQUIT, NULL, &old->sigquit);
-    sigaction(SIGTSTP, NULL, &old->sigtstp);
+	sigaction(SIGINT, NULL, &old->sigint);
+	sigaction(SIGQUIT, NULL, &old->sigquit);
+	sigaction(SIGTSTP, NULL, &old->sigtstp);
 }
 
 /**
@@ -41,14 +40,14 @@ void save_signals(t_saved_signals *old)
  */
 void ignore_heredoc_signals(void)
 {
-    struct sigaction sa_ignore;
+	struct sigaction sa_ignore;
 
-    sa_ignore.sa_handler = SIG_IGN;
-    sigemptyset(&sa_ignore.sa_mask);
-    sa_ignore.sa_flags = 0;
-    sigaction(SIGINT, &sa_ignore, NULL);
-    sigaction(SIGQUIT, &sa_ignore, NULL);
-    sigaction(SIGTSTP, &sa_ignore, NULL);
+	sa_ignore.sa_handler = SIG_IGN;
+	sigemptyset(&sa_ignore.sa_mask);
+	sa_ignore.sa_flags = 0;
+	sigaction(SIGINT, &sa_ignore, NULL);
+	sigaction(SIGQUIT, &sa_ignore, NULL);
+	sigaction(SIGTSTP, &sa_ignore, NULL);
 }
 
 /**
@@ -63,9 +62,9 @@ void ignore_heredoc_signals(void)
  */
 void restore_signals(t_saved_signals *old)
 {
-    sigaction(SIGINT, &old->sigint, NULL);
-    sigaction(SIGQUIT, &old->sigquit, NULL);
-    sigaction(SIGTSTP, &old->sigtstp, NULL);
+	sigaction(SIGINT, &old->sigint, NULL);
+	sigaction(SIGQUIT, &old->sigquit, NULL);
+	sigaction(SIGTSTP, &old->sigtstp, NULL);
 }
 
 /**
@@ -78,8 +77,8 @@ void restore_signals(t_saved_signals *old)
  */
 static void sigint_heredoc(int sig)
 {
-    (void)sig;
-    g_signal = SIGINT;
+	(void)sig;
+	g_signal = SIGINT;
 }
 
 /**
@@ -89,19 +88,19 @@ static void sigint_heredoc(int sig)
  * g_signal，允许读取循环识别中断并退出。
  * 2. SIGTSTP (Ctrl+Z): 设置为 SIG_IGN (忽略)。防止用户在 Heredoc 输入期间
  * 将 Shell 挂起到后台，这会导致复杂的终端状态恢复问题。
- * 3. SIGQUIT (Ctrl+\): 设置为 SIG_IGN (忽略)。minishell 的标准行为是在 
+ * 3. SIGQUIT (Ctrl+\): 设置为 SIG_IGN (忽略)。minishell 的标准行为是在
  * Heredoc 提示符下不产生 Core Dump 也不退出。
  */
 void setup_heredoc_signals(void)
 {
-    struct sigaction sa;
+	struct sigaction sa;
 
-    sa.sa_handler = sigint_heredoc;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sigaction(SIGINT, &sa, NULL);
-    sa.sa_handler = SIG_IGN;
-    sigaction(SIGTSTP, &sa, NULL);
-    sa.sa_handler = SIG_IGN;
-    sigaction(SIGQUIT, &sa, NULL);
+	sa.sa_handler = sigint_heredoc;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGTSTP, &sa, NULL);
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &sa, NULL);
 }
