@@ -6,7 +6,7 @@
 /*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 07:53:04 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 22:23:44 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/15 18:12:43 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ int	handle_lexer(t_minishell *ms)
 		if (ms->raw_line[i] == '\0')
 			break ;
 		step = process_segment(ms, i);
+		if (ms->lexer_need_more)
+			return (LEX_NEED_MORE);
 		if (step <= 0)
 			return (step);
 		i += step;
