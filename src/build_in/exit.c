@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:24:07 by weiyang           #+#    #+#             */
-/*   Updated: 2026/01/13 15:29:14 by yzhang2          ###   ########.fr       */
+/*   Updated: 2026/01/15 20:01:20 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	builtin_exit(char **argv, t_minishell *msh)
 		if (!ft_is_long(argv[1], &ret))
 		{
 			ms_put3("minishell: exit: ", argv[1],
-				":numeric argument required\n");
+				": numeric argument required\n");
 			msh->last_exit_status = 2;
 			return (2);
 		}
