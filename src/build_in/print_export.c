@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   print_export.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: weiyang <weiyang@student.42.fr>                     +#+  +:+       +#*/
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 11:25:20 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/14 11:25:23 by weiyang          ###   ########.fr       */

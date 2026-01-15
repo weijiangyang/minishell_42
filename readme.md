@@ -4,7 +4,7 @@
 #                                                         :::      ::::::::    #
 #    readme.md                                          :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: weiyang <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: weiyang <weiyang@student.42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/09 12:05:00 by weiyang           #+#    #+#              #
 #    Updated: 2026/01/09 12:05:05 by weiyang          ###   ########.fr        #

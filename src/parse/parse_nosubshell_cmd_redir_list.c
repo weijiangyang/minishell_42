@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   parse_nosubshell_cmd_redir_list.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+       */
+/*   By: weiyang <weiyang@student.42.fr>                     +#+  +:+       +#*/
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:53:10 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/05 13:53:13 by weiyang          ###   ########.fr       */

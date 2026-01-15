@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   exec_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+       */
+/*   By: weiyang <weiyang@student.42.fr>                     +#+  +:+       +#*/
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:21:10 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/05 13:21:13 by weiyang          ###   ########.fr       */

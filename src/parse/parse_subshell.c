@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   parse_subshell.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+       */
+/*   By: weiyang <weiyang@student.42.fr>                     +#+  +:+       +#*/
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:30:13 by weiyang           #+#    #+#             */
 /*   Updated: 2025/11/11 17:30:14 by weiyang          ###   ########.fr       */

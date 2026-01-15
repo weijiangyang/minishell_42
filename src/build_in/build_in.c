@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   build_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+       */
+/*   By: weiyang <weiyang@student.42.fr>                     +#+  +:+       +#*/
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 13:23:18 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/05 13:23:22 by weiyang          ###   ########.fr       */

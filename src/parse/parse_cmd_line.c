@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@42.fr>                        +#+  +:+       +#+    */
+/*   By: weiyang <weiyang@student.42.fr>                        +#+  +:+      */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 22:19:34 by yang              #+#    #+#             */
 /*   Updated: 2025/10/31 22:19:38 by yang             ###   ########.fr       */

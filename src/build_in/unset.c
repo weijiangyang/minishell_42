@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+       */
+/*   By: weiyang <weiyang@student.42.fr>                     +#+  +:+       +#*/
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:17:35 by weiyang           #+#    #+#             */
 /*   Updated: 2025/12/22 15:17:37 by weiyang          ###   ########.fr       */

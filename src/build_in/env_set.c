@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   env_set.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+       */
+/*   By: weiyang <weiyang@student.42.fr>                     +#+  +:+       +#*/
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 14:01:46 by weiyang           #+#    #+#             */
 /*   Updated: 2026/01/05 14:01:49 by weiyang          ###   ########.fr       */

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   free_redir_argv.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@42.fr>                     +#+  +:+       +#+       */
+/*   By: weiyang <weiyang@student.42.fr>                     +#+  +:+       +#*/
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 16:25:07 by weiyang           #+#    #+#             */
 /*   Updated: 2025/11/25 16:25:09 by weiyang          ###   ########.fr       */
