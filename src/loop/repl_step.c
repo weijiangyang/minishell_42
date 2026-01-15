@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   repl_step.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weiyang <weiyang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yzhang2 <yzhang2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 15:19:45 by yzhang2           #+#    #+#             */
-/*   Updated: 2026/01/11 20:31:46 by weiyang          ###   ########.fr       */
+/*   Updated: 2026/01/15 17:52:20 by yzhang2          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,12 @@ static int	handle_interruption(t_minishell *ms, char **acc, char *line)
 	g_signal = 0;
 	if (!line)
 	{
-		ms_clear(ms);
-		exit(ms->last_exit_status);
+		if (acc && *acc)
+		{
+			free(*acc);
+			*acc = NULL;
+		}
+		return (0);
 	}
 	if (line)
 		free(line);
