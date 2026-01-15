@@ -12,7 +12,7 @@
 
 #include "expander.h"
 #include "minishell.h"
-#include "parse.h"
+#include "signals.h"
 
 static char	*join_full_line(char *full_line, char *line)
 {

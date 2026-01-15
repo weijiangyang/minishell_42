@@ -15,7 +15,6 @@
 
 # include "../libft/libft.h"
 # include "lexer.h"
-# include "signals.h"
 # include "error.h"
 
 # define BUFFER_SIZE 42
@@ -74,14 +73,6 @@ t_lexer		*expect_token(t_tok_type type, t_lexer **cur);
 int			is_redir_token(t_lexer *pt);
 const char	*t_tok_type_to_str(t_tok_type type);
 
-/* debug / print */
-void		print_indent(int depth);
-void		print_ast(t_ast *node, int depth);
-void		print_ast_by_type(t_ast *node, int depth);
-void		print_ast_pipe(t_ast *node, int depth);
-void		print_ast_cmd(t_ast *node);
-void		print_ast_subshell(t_ast *node, int depth);
-
 /* parsing */
 t_ast		*parse_cmdline(t_lexer **cur, t_minishell *minishell);
 t_ast		*parse_pipeline(t_lexer **cur, t_minishell *minishell);
@@ -94,15 +85,6 @@ t_ast		*parse_normal_cmd_redir_list(t_lexer **cur, t_ast *node,
 t_cmd		*create_argv(char *str);
 char		**build_argvs(t_cmd *argv_cmd, t_redir *redir, t_ast *node);
 
-/* env / safe string utils */
-char		*safe_strdup(const char *s);
-
-/* redirection / heredoc */
-int			handle_heredoc(t_redir *new_redir, t_minishell *minishell);
 int			build_redir(t_lexer **cur, t_redir **redir_list, t_minishell *msh);
-int			end_line(char *str);
-char		*extract_line(char *str);
-int			heredoc_loop(int write_fd, const char *delim, t_minishell *msh,
-				int quoted);
 
 #endif

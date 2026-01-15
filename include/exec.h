@@ -72,7 +72,6 @@ void				restore_std_fds(t_fd_save *save);
 void				set_status_from_wait(t_minishell *msh, int st);
 int					wait_pair_set_right(t_minishell *msh, pid_t left,
 						pid_t right);
-int					prepare_heredocs(t_ast *node, t_minishell *ms);
 int					run_builtin_parent_logic(t_minishell *msh, t_ast *node,
 						int in_fd, int out_fd);
 
@@ -86,5 +85,11 @@ void				wait_all_and_set_lt_ast(t_minishell *msh, pid_t *pids,
 						int n);
 int					pipe_make(int i, int n, int out_fd, int pfd[2]);
 void				handle_parent_pipes(t_pipe_ctx *ctx, int pfd[2]);
+
+/* heredoc */
+int					handle_heredoc(t_redir *new_redir, t_minishell *minishell);
+int					heredoc_loop(int write_fd, const char *delim,
+						t_minishell *msh, int quoted);
+int					prepare_heredocs(t_ast *node, t_minishell *ms);
 
 #endif
