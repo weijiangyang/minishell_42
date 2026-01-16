@@ -67,6 +67,5 @@ int	builtin_exit(char **argv, t_minishell *msh)
 	else
 		ret = msh->last_exit_status;
 	msh->last_exit_status = (unsigned char)ret;
-	msh->should_exit = 1;
-	return ((unsigned char)ret);
+	return (msh->should_exit = 1, (unsigned char)ret);
 }
