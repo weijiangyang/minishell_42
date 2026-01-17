@@ -58,6 +58,11 @@ static int	ms_initial_system(t_minishell *ms, char **envp)
 	return (1);
 }
 
+static int	check_sign(void)
+{
+	return (0);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	ms;
@@ -68,6 +73,7 @@ int	main(int argc, char **argv, char **envp)
 		ms_report_error("minishell: no argument allowed\n");
 		return (1);
 	}
+	rl_event_hook = check_sign;
 	setup_prompt_signals();
 	if (!ms_initial_system(&ms, envp))
 	{

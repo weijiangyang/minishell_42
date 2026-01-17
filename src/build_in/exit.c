@@ -54,7 +54,7 @@ int	builtin_exit(char **argv, t_minishell *msh)
 			ms_put3("minishell: exit: ", argv[1],
 				": numeric argument required\n");
 			msh->last_exit_status = 2;
-			return (2);
+			return (msh->should_exit = 1, msh->last_exit_status);
 		}
 		if (argv[2])
 		{
